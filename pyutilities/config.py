@@ -9,14 +9,16 @@
     Added child config class that is able to load config (as dictionary) from xls file (from specified sheet).
 
     Created:  Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 04.03.2019
+    Modified: Gusev Dmitrii, 10.01.2021
 
 """
 
 import os
 import logging
-import xlrd  # reading excel files
-# import xlwt  # writing excel files
+import xlrd  # reading excel files (old Excel - xls)
+import xlwt  # writing excel files
+import openpyxl  # reading excel files (Excel 2010 - xlsx)
+
 from string import Template
 from pyutilities.utils import parse_yaml
 
@@ -240,12 +242,15 @@ class ConfigError(Exception):
 
 
 # numbers of name/value columns in excel config sheet
-XLS_NAMES_COLUMN = 0
-XLS_VALUES_COLUMN = 1
+# NOTE! For excel < 2010 (xls) - zero-based, for excel >= 2010 (xlsx) - one-based.
+#       For excel < 2010 (xls) used xlrd lib, for excel >= 2010 (xlsx) used openpyxl lib.
+NAMES_COLUMN = 0
+VALUES_COLUMN = 1
 
 
 class ConfigurationXls(Configuration):
-    """"""
+    """Extension for Configuration class for work with excel config files.
+    """
 
     def __init__(self, path_to_xls, config_sheet_name, dict_to_merge=None, path_to_yaml=None,
                  is_override_config=True, is_merge_env=True):
@@ -284,18 +289,33 @@ class ConfigurationXls(Configuration):
         if not os.path.exists(path_to_xls):
             raise ConfigError('Provided path [%s] doesn\'t exist!' % path_to_xls)
 
-        # loading xls workbook
-        excel_book = xlrd.open_workbook(path_to_xls, encoding_override=DEFAULT_ENCODING)
-        # loading config sheet
-        excel_sheet = excel_book.sheet_by_name(config_sheet_name)
-        self.log.debug("Loaded xls config. Found [{}] row(s). Loading.".format(excel_sheet.nrows))
-        # loading disctionary from xls file
-        dictionary = {}
-        for rownumber in range(excel_sheet.nrows):
-            name = excel_sheet.cell_value(rownumber, XLS_NAMES_COLUMN)
-            value = excel_sheet.cell_value(rownumber, XLS_VALUES_COLUMN)
-            self.log.debug("Loaded config parameter: {} = {}".format(name, value))
-            dictionary[name] = value
+        dictionary = {}  # dictionary loaded from excel file
+
+        # loading xls/xlsx workbook
+        if path_to_xls.endswith('xls'):  # load from excel file - format xls
+            excel_book = xlrd.open_workbook(path_to_xls, encoding_override=DEFAULT_ENCODING)
+            excel_sheet = excel_book.sheet_by_name(config_sheet_name)
+            self.log.debug("Loaded XLS config. Found [{}] row(s). Loading.".format(excel_sheet.nrows))
+            # loading dictionary from xls file
+            for rownumber in range(excel_sheet.nrows):
+                name = excel_sheet.cell_value(rownumber, NAMES_COLUMN)
+                value = excel_sheet.cell_value(rownumber, VALUES_COLUMN)
+                self.log.debug("XLS: loaded config parameter: {} = {}".format(name, value))
+                dictionary[name] = value
+
+        elif path_to_xls.endswith('xlsx'):  # load from excel file - format xlsx
+            excel_book = openpyxl.load_workbook(path_to_xls)  # workbook
+            excel_sheet = excel_book[config_sheet_name]  # specified sheet by name
+            self.log.debug("Loaded XSLX config. Found [{}] row(s). Loading.".format(excel_sheet.max_row))
+            for rownumber in range(excel_sheet.max_row):
+                name = excel_sheet.cell(row=rownumber + 1, column=NAMES_COLUMN + 1).value
+                value = excel_sheet.cell(row=rownumber + 1, column=VALUES_COLUMN + 1).value
+                self.log.debug("XLSX: loaded config parameter: {} = {}".format(name, value))
+                dictionary[name] = value
+
+        else:  # unknown extension of excel file - raise an issue
+            raise ConfigError("Provided unknown excel file extension [%s]!" % path_to_xls)
+
         self.log.info("Loaded dictionary from xls config:\n\t{}".format(dictionary))
         return dictionary
 

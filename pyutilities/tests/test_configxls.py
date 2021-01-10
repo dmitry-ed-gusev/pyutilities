@@ -5,15 +5,16 @@
     Unit tests for ConfigurationXls class.
 
     Created:  Gusev Dmitrii, XX.12.2018
-    Modified: Gusev Dmitrii, 06.01.2019
+    Modified: Gusev Dmitrii, 10.01.2021
 """
 
 import unittest
 from pyutilities.config import ConfigurationXls, ConfigError
 from pyutilities.tests.pyutils_test_helper import get_test_logger
 
-XLS_CONFIG_FILE = 'pyutilities/tests/configs/xls_config.xlsx'
-XLS_CONFIG_SHEET = 'config_sheet'
+XLSX_CONFIG_FILE = 'pyutilities/tests/configs/xlsx_config.xlsx'  # xlsx format (Excel 2010)
+XLS_CONFIG_FILE = 'pyutilities/tests/configs/xls_config.xls'     # xls format (old Excel)
+CONFIG_SHEET = 'config_sheet'
 
 
 # todo: add more test cases!!!
@@ -25,7 +26,8 @@ class ConfigurationTest(unittest.TestCase):
 
     def setUp(self):
         # init config before each test, don't merge with environment
-        self.config = ConfigurationXls(XLS_CONFIG_FILE, XLS_CONFIG_SHEET)
+        self.config_xls = ConfigurationXls(XLS_CONFIG_FILE, CONFIG_SHEET)
+        self.config_xlsx = ConfigurationXls(XLSX_CONFIG_FILE, CONFIG_SHEET)
 
     def tearDown(self):
         self.config = None
@@ -44,35 +46,66 @@ class ConfigurationTest(unittest.TestCase):
 
     def test_invalid_dict_to_merge(self):
         with self.assertRaises(ConfigError):
-            ConfigurationXls(XLS_CONFIG_FILE, XLS_CONFIG_SHEET, dict_to_merge='sss')
+            ConfigurationXls(XLS_CONFIG_FILE, CONFIG_SHEET, dict_to_merge='sss')
 
-    def test_simple_init(self):
-        self.assertEquals(self.config.get('name2'), 'value2')
-        self.assertEquals(self.config.get('name1'), 'value1')
+    def test_simple_xls_init(self):
+        self.assertEquals(self.config_xls.get('name2xls'), 'value2')
+        self.assertEquals(self.config_xls.get('name1xls'), 'value1')
 
-    def test_init_dict_for_merge_is_empty_dict(self):
-        config = ConfigurationXls(XLS_CONFIG_FILE, XLS_CONFIG_SHEET, dict_to_merge={})
-        self.assertEquals(config.get('name2'), 'value2')
-        self.assertEquals(config.get('name1'), 'value1')
+    def test_simple_xlsx_init(self):
+        self.assertEquals(self.config_xlsx.get('name2xlsx'), 'value2')
+        self.assertEquals(self.config_xlsx.get('name1xlsx'), 'value1')
 
-    def test_init_dict_to_merge_is_nonempty_dict(self):
-        config = ConfigurationXls(XLS_CONFIG_FILE, XLS_CONFIG_SHEET, dict_to_merge={'a': 'b', 'c': 'd'})
-        self.assertEquals(config.get('name2'), 'value2')
-        self.assertEquals(config.get('name1'), 'value1')
-        self.assertEquals(config.get('a'), 'b')
-        self.assertEquals(config.get('c'), 'd')
+    def test_init_dict_for_merge_is_empty_dict_xls(self):
+        config_xls = ConfigurationXls(XLS_CONFIG_FILE, CONFIG_SHEET, dict_to_merge={})
+        self.assertEquals(config_xls.get('name2xls'), 'value2')
+        self.assertEquals(config_xls.get('name1xls'), 'value1')
 
-    def test_init_dict_to_merge_is_empty_list(self):
-        config = ConfigurationXls(XLS_CONFIG_FILE, XLS_CONFIG_SHEET, dict_to_merge=[])
-        self.assertEquals(config.get('name2'), 'value2')
-        self.assertEquals(config.get('name1'), 'value1')
+    def test_init_dict_for_merge_is_empty_dict_xlsx(self):
+        config_xls = ConfigurationXls(XLSX_CONFIG_FILE, CONFIG_SHEET, dict_to_merge={})
+        self.assertEquals(config_xls.get('name2xlsx'), 'value2')
+        self.assertEquals(config_xls.get('name1xlsx'), 'value1')
 
-    def test_init_dict_to_merge_is_nonempty_list(self):
-        config = ConfigurationXls(XLS_CONFIG_FILE, XLS_CONFIG_SHEET, dict_to_merge=[{'a': 'b', 'c': 'd'}, {},
+    def test_init_dict_to_merge_is_nonempty_dict_xls(self):
+        config_xls = ConfigurationXls(XLS_CONFIG_FILE, CONFIG_SHEET, dict_to_merge={'a': 'b', 'c': 'd'})
+        self.assertEquals(config_xls.get('name2xls'), 'value2')
+        self.assertEquals(config_xls.get('name1xls'), 'value1')
+        self.assertEquals(config_xls.get('a'), 'b')
+        self.assertEquals(config_xls.get('c'), 'd')
+
+    def test_init_dict_to_merge_is_nonempty_dict_xlsx(self):
+        config_xls = ConfigurationXls(XLSX_CONFIG_FILE, CONFIG_SHEET, dict_to_merge={'a': 'b', 'c': 'd'})
+        self.assertEquals(config_xls.get('name2xlsx'), 'value2')
+        self.assertEquals(config_xls.get('name1xlsx'), 'value1')
+        self.assertEquals(config_xls.get('a'), 'b')
+        self.assertEquals(config_xls.get('c'), 'd')
+
+    def test_init_dict_to_merge_is_empty_list_xls(self):
+        config_xls = ConfigurationXls(XLS_CONFIG_FILE, CONFIG_SHEET, dict_to_merge=[])
+        self.assertEquals(config_xls.get('name2xls'), 'value2')
+        self.assertEquals(config_xls.get('name1xls'), 'value1')
+
+    def test_init_dict_to_merge_is_empty_list_xlsx(self):
+        config_xls = ConfigurationXls(XLSX_CONFIG_FILE, CONFIG_SHEET, dict_to_merge=[])
+        self.assertEquals(config_xls.get('name2xlsx'), 'value2')
+        self.assertEquals(config_xls.get('name1xlsx'), 'value1')
+
+    def test_init_dict_to_merge_is_nonempty_list_xls(self):
+        config_xls = ConfigurationXls(XLS_CONFIG_FILE, CONFIG_SHEET, dict_to_merge=[{'a': 'b', 'c': 'd'}, {},
                                                                                     {'aa': 'bb', 'cc': 'dd'}])
-        self.assertEquals(config.get('name2'), 'value2')
-        self.assertEquals(config.get('name1'), 'value1')
-        self.assertEquals(config.get('a'), 'b')
-        self.assertEquals(config.get('c'), 'd')
-        self.assertEquals(config.get('aa'), 'bb')
-        self.assertEquals(config.get('cc'), 'dd')
+        self.assertEquals(config_xls.get('name2xls'), 'value2')
+        self.assertEquals(config_xls.get('name1xls'), 'value1')
+        self.assertEquals(config_xls.get('a'), 'b')
+        self.assertEquals(config_xls.get('c'), 'd')
+        self.assertEquals(config_xls.get('aa'), 'bb')
+        self.assertEquals(config_xls.get('cc'), 'dd')
+
+    def test_init_dict_to_merge_is_nonempty_list_xlsx(self):
+        config_xls = ConfigurationXls(XLSX_CONFIG_FILE, CONFIG_SHEET, dict_to_merge=[{'a': 'b', 'c': 'd'}, {},
+                                                                                    {'aa': 'bb', 'cc': 'dd'}])
+        self.assertEquals(config_xls.get('name2xlsx'), 'value2')
+        self.assertEquals(config_xls.get('name1xlsx'), 'value1')
+        self.assertEquals(config_xls.get('a'), 'b')
+        self.assertEquals(config_xls.get('c'), 'd')
+        self.assertEquals(config_xls.get('aa'), 'bb')
+        self.assertEquals(config_xls.get('cc'), 'dd')

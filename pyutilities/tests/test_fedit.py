@@ -6,7 +6,7 @@
     Unit tests for fedit utility.
 
     Created:  Gusev Dmitrii, 26.09.2018
-    Modified: Dmitrii Gusev, 04.03.2019
+    Modified: Dmitrii Gusev, 10.01.2021
 
 """
 
@@ -33,4 +33,5 @@ class FEditTest(unittest.TestCase):
         cls.log.debug('tearDownClass() is working.')
 
     def test(self):
+        # todo: implement unit test
         pass
