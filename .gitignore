@@ -53,6 +53,7 @@ coverage.xml
 *.py,cover
 .hypothesis/
 .pytest_cache/
+nose2-junit.xml
 
 # Translations
 *.mo
