@@ -15,10 +15,8 @@ import csv
 import yaml
 import xlrd
 import codecs
-# import logging
 import logging.config
 from os import walk
-from subprocess import Popen
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
 # don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
@@ -89,8 +87,7 @@ def list_files(path, out_to_console=False):
 
 
 def parse_yaml(file_path):
-    """
-    Parses single YAML file and return its contents as object (dictionary).
+    """ Parses single YAML file and return its contents as object (dictionary).
     :param file_path: path to YAML file to load settings from
     :return python object with YAML file contents
     """
@@ -100,8 +97,9 @@ def parse_yaml(file_path):
     with open(file_path, 'r') as cfg_file:
         cfg_file_content = cfg_file.read()
         if "\t" in cfg_file_content:  # no tabs allowed in file content
-            raise IOError("Config file [{}] contains 'tab' character!".format(file_path))
-        return yaml.load(cfg_file_content)
+            raise IOError(f"Config file [{file_path}] contains 'tab' character!")
+        # return yaml.load(cfg_file_content)
+        return yaml.load(cfg_file, Loader=yaml.FullLoader)
 
 
 def save_file_with_path(file_path, content):  # todo: move it to utilities module
