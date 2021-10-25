@@ -13,6 +13,8 @@ pyyaml = "*"
 nose2 = "*"
 mock = "*"
 cov-core = "*"
+mypy = "*"
+ipykernel = "*"
 pytest = "*"
 
 [requires]
