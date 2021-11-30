@@ -13,8 +13,8 @@
 """
 
 from subprocess import Popen
-from pyutilities.pylog import init_logger, myself
-from pyutilities.pyexception import PyUtilsException
+from src.pyutilities.pylog import init_logger, myself
+from src.pyutilities.pyexception import PyUtilsException
 
 # useful constants
 GIT_EXECUTABLE = 'git'

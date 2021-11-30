@@ -13,7 +13,7 @@
 import yaml
 import logging
 import logging.config
-from pyutilities.tests.pyutils_test_constants import TEST_LOGGING_CONFIG
+from tests.pyutils_test_constants import TEST_LOGGING_CONFIG
 
 
 def get_test_logger(name: str):

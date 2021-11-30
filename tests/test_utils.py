@@ -12,8 +12,8 @@
 
 import unittest
 from mock import patch, mock_open
-from pyutilities.utils import parse_yaml, filter_str, list_files, _list_files
-from pyutilities.tests.pyutils_test_helper import get_test_logger
+from src.pyutilities.utils import parse_yaml, filter_str, list_files, _list_files
+from tests.pyutils_test_helper import get_test_logger
 
 
 MOCK_OPEN_METHOD = 'pyutilities.utils.open'

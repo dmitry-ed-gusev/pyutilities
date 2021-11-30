@@ -16,11 +16,10 @@
 import os
 import logging
 import xlrd  # reading excel files (old Excel - xls)
-import xlwt  # writing excel files
 import openpyxl  # reading excel files (Excel 2010 - xlsx)
 
 from string import Template
-from pyutilities.utils import parse_yaml
+from src.pyutilities.utils import parse_yaml
 
 YAML_EXTENSION_1 = '.yml'
 YAML_EXTENSION_2 = '.yaml'

@@ -11,8 +11,8 @@
 import os
 import unittest
 from mock import patch
-from pyutilities.config import Configuration, ConfigError
-from pyutilities.tests.pyutils_test_helper import get_test_logger
+from src.pyutilities.config import Configuration, ConfigError
+from tests.pyutils_test_helper import get_test_logger
 
 CONFIG_PATH = 'pyutilities/tests/configs'
 CONFIG_MODULE_MOCK_YAML = 'pyutilities.config.parse_yaml'

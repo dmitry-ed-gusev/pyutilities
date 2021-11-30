@@ -9,8 +9,8 @@
 """
 
 import unittest
-from pyutilities.config import ConfigurationXls, ConfigError
-from pyutilities.tests.pyutils_test_helper import get_test_logger
+from src.pyutilities.config import ConfigurationXls, ConfigError
+from tests.pyutils_test_helper import get_test_logger
 
 XLSX_CONFIG_FILE = 'pyutilities/tests/configs/xlsx_config.xlsx'  # xlsx format (Excel 2010)
 XLS_CONFIG_FILE = 'pyutilities/tests/configs/xls_config.xls'     # xls format (old Excel)

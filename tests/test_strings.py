@@ -11,8 +11,8 @@
 """
 
 import unittest
-import pyutilities.strings as pystr
-from pyutilities.tests.pyutils_test_helper import get_test_logger
+import src.pyutilities.strings as pystr
+from tests.pyutils_test_helper import get_test_logger
 
 # common constants for testing
 EMPTY_STRINGS = ['', '     ', None, "", "  "]

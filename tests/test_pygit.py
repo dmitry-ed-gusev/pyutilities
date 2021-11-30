@@ -11,8 +11,8 @@
 """
 
 import unittest
-from pyutilities.tests.pyutils_test_helper import get_test_logger
-from pyutilities.pygit import PyGit
+from tests.pyutils_test_helper import get_test_logger
+from src.pyutilities.pygit import PyGit
 
 
 class PyGitTest(unittest.TestCase):

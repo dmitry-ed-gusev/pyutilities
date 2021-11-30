@@ -4,18 +4,22 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-xlrd = "*"
-xlwt = "*"
-openpyxl = "*"
-pyyaml = "*"
+pyutilities = {editable = true, path = "."}
 
 [dev-packages]
-nose2 = "*"
 mock = "*"
-cov-core = "*"
-mypy = "*"
-ipykernel = "*"
+nose2 = "*"
 pytest = "*"
+mypy = "*"
+flake8 = "*"
+black = "*"
+pytest-cov = "*"
+pre-commit = "*"
+build = "*"
+twine = "*"
 
 [requires]
 python_version = "3.9"
+
+[pipenv]
+allow_prereleases = true

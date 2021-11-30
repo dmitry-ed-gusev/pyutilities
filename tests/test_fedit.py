@@ -11,7 +11,7 @@
 """
 
 import unittest
-from pyutilities.tests.pyutils_test_helper import get_test_logger
+from tests.pyutils_test_helper import get_test_logger
 
 
 # todo: implement unit tests for fedit utility
