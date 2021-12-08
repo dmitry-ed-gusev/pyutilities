@@ -11,19 +11,15 @@
 """
 
 import unittest
-import src.pyutilities.strings as pystr
+import pyutilities.strings as pystr
 from tests.pyutils_test_helper import get_test_logger
 
 # common constants for testing
-EMPTY_STRINGS = ['', '     ', None, "", "  "]
-NON_EMPTY_STRINGS = {'str1': '   str1',
-                     'str2': 'str2    ',
-                     'str3': '   str3     ',
-                     'str4': 'str4'}
+EMPTY_STRINGS = ["", "     ", None, "", "  "]
+NON_EMPTY_STRINGS = {"str1": "   str1", "str2": "str2    ", "str3": "   str3     ", "str4": "str4"}
 
 
 class StringsTest(unittest.TestCase):
-
     def setUp(self):
         print("StringsTest.setUp()")
 
@@ -33,11 +29,11 @@ class StringsTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.log = get_test_logger(__name__)
-        cls.log.debug('setUpClass() is working.')
+        cls.log.debug("setUpClass() is working.")
 
     @classmethod
     def tearDownClass(cls):
-        cls.log.debug('tearDownClass() is working.')
+        cls.log.debug("tearDownClass() is working.")
 
     def test_is_str_empty_with_empty_strings(self):
         for s in EMPTY_STRINGS:
@@ -58,7 +54,7 @@ class StringsTest(unittest.TestCase):
 
     def test_trim_to_empty_with_empty_strings(self):
         for s in EMPTY_STRINGS:
-            self.assertEqual('', pystr.trim_to_empty(s), "Must be an empty string!")
+            self.assertEqual("", pystr.trim_to_empty(s), "Must be an empty string!")
             self.assertEqual("", pystr.trim_to_empty(s), "Must be an empty string!")
 
     def test_trim_to_empty_with_non_empty_strings(self):

@@ -11,16 +11,15 @@
 import os
 import unittest
 from mock import patch
-from src.pyutilities.config import Configuration, ConfigError
+from pyutilities.config import Configuration, ConfigError
 from tests.pyutils_test_helper import get_test_logger
 
-CONFIG_PATH = 'pyutilities/tests/configs'
-CONFIG_MODULE_MOCK_YAML = 'pyutilities.config.parse_yaml'
-CONFIG_MODULE_MOCK_OS = 'pyutilities.config.os'
+CONFIG_PATH = "tests/configs"
+CONFIG_MODULE_MOCK_YAML = "pyutilities.config.parse_yaml"
+CONFIG_MODULE_MOCK_OS = "pyutilities.config.os"
 
 
 class ConfigurationTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         cls.log = get_test_logger(__name__)
@@ -34,7 +33,7 @@ class ConfigurationTest(unittest.TestCase):
         self.config = None
 
     def test_load_invalid_path(self):
-        for invalid_path in ['', "", '   ', "    ", "non-exist path"]:
+        for invalid_path in ["", "", "   ", "    ", "non-exist path"]:
             with self.assertRaises(ConfigError):
                 self.config.load(invalid_path)
 
@@ -52,25 +51,25 @@ class ConfigurationTest(unittest.TestCase):
 
     # todo: add more test cases here
     def test_merge_dict_single_on_init(self):
-        dict_to_merge = {'a': 'b', 'c': 'd', 'aa.bb': 'eee'}
-        config = Configuration(path_to_config=CONFIG_PATH, dict_to_merge=dict_to_merge,
-                               is_merge_env=True)
-        self.assertEquals(config.get("section1.key1"), "value1")
-        self.assertEquals(config.get("section2.key3"), "value3")
-        self.assertEquals(config.get('a'), 'b')
-        self.assertEquals(config.get('c'), 'd')
-        self.assertEquals(config.get('aa.bb'), 'eee')
+        dict_to_merge = {"a": "b", "c": "d", "aa.bb": "eee"}
+        config = Configuration(path_to_config=CONFIG_PATH, dict_to_merge=dict_to_merge, is_merge_env=True)
+        self.assertEqual(config.get("section1.key1"), "value1")
+        self.assertEqual(config.get("section2.key3"), "value3")
+        self.assertEqual(config.get("a"), "b")
+        self.assertEqual(config.get("c"), "d")
+        self.assertEqual(config.get("aa.bb"), "eee")
 
     # todo: add more test cases here
     def test_merge_dict_list_on_init(self):
-        dict_list_to_merge = [{'a': 'b'}, {'c': 'd'}, {'aa.bb': 'eee'}]
-        config = Configuration(path_to_config=CONFIG_PATH, dict_to_merge=dict_list_to_merge,
-                               is_merge_env=True)
-        self.assertEquals(config.get("section1.key1"), "value1")
-        self.assertEquals(config.get("section2.key3"), "value3")
-        self.assertEquals(config.get('a'), 'b')
-        self.assertEquals(config.get('c'), 'd')
-        self.assertEquals(config.get('aa.bb'), 'eee')
+        dict_list_to_merge = [{"a": "b"}, {"c": "d"}, {"aa.bb": "eee"}]
+        config = Configuration(
+            path_to_config=CONFIG_PATH, dict_to_merge=dict_list_to_merge, is_merge_env=True
+        )
+        self.assertEqual(config.get("section1.key1"), "value1")
+        self.assertEqual(config.get("section2.key3"), "value3")
+        self.assertEqual(config.get("a"), "b")
+        self.assertEqual(config.get("c"), "d")
+        self.assertEqual(config.get("aa.bb"), "eee")
 
     # todo: implement test case
     def test_append_dict(self):
@@ -81,31 +80,31 @@ class ConfigurationTest(unittest.TestCase):
             self.config.get("non_existing")
 
     def test_get_not_exisitng_complex_property(self):
-        self.config.set('level1', None)
+        self.config.set("level1", None)
         with self.assertRaises(ConfigError):
-            self.config.get('level1.level2')
+            self.config.get("level1.level2")
 
     def test_get_top_property(self):
-        self.config.merge_dict({'f': 'h'})
-        self.assertEqual(self.config.get('f'), 'h')
+        self.config.merge_dict({"f": "h"})
+        self.assertEqual(self.config.get("f"), "h")
 
     def test_set_top_property(self):
-        self.config.set('m', 'n')
-        self.assertEqual(self.config.get('m'), 'n')
+        self.config.set("m", "n")
+        self.assertEqual(self.config.get("m"), "n")
 
     def test_get_deep_property(self):
-        self.config.merge_dict({'x': {'y': {'z': '100'}}})
-        self.assertEqual(self.config.get('x.y.z'), '100')
+        self.config.merge_dict({"x": {"y": {"z": "100"}}})
+        self.assertEqual(self.config.get("x.y.z"), "100")
 
     def test_set_deep_property(self):
-        self.config.set('a.b.c', 'e')
-        self.assertEqual(self.config.get('a.b.c'), 'e')
+        self.config.set("a.b.c", "e")
+        self.assertEqual(self.config.get("a.b.c"), "e")
 
     def test_replace_deep_property(self):
-        self.config.merge_dict({'a': {'b': {'c': 'd'}}})
-        self.assertEqual(self.config.get('a.b.c'), 'd')
-        self.config.set('a.b.c', 'e')
-        self.assertEqual(self.config.get('a.b.c'), 'e')
+        self.config.merge_dict({"a": {"b": {"c": "d"}}})
+        self.assertEqual(self.config.get("a.b.c"), "d")
+        self.config.set("a.b.c", "e")
+        self.assertEqual(self.config.get("a.b.c"), "e")
 
     @patch(CONFIG_MODULE_MOCK_YAML)
     @patch(CONFIG_MODULE_MOCK_OS)
@@ -133,7 +132,7 @@ class ConfigurationTest(unittest.TestCase):
         mock_os.isfile.return_value = True
         mock_os.isdir.return_value = True
         # mock for os.listdir() - list of files
-        mock_os.listdir.return_value = ['file1.yml', 'file2.yml']
+        mock_os.listdir.return_value = ["file1.yml", "file2.yml"]
         # each call to parse_yaml() will return next value
         mock_parse_yaml.side_effect = [{"key1": "value1"}, {"key2": "value2"}]
 
@@ -142,18 +141,18 @@ class ConfigurationTest(unittest.TestCase):
         self.assertEqual(self.config.get("key1"), "value1")
         self.assertEqual(self.config.get("key2"), "value2")
 
-    @patch.object(Configuration, 'load')
+    @patch.object(Configuration, "load")
     def test_init_with_path(self, mock_load):
         # case 1 - merge with environment
-        Configuration('some_path1', is_merge_env=True)
-        mock_load.assert_called_with('some_path1', True)
+        Configuration("some_path1", is_merge_env=True)
+        mock_load.assert_called_with("some_path1", True)
         # case 2 - don't merge with environment
-        Configuration('some_path2', is_merge_env=False)
-        mock_load.assert_called_with('some_path2', False)
+        Configuration("some_path2", is_merge_env=False)
+        mock_load.assert_called_with("some_path2", False)
 
     def test_init_with_dict_override(self):
-        config = Configuration(dict_to_merge={'key': 'value'}, is_override_config=True)
-        self.assertEqual(config.get('key'), 'value')
+        config = Configuration(dict_to_merge={"key": "value"}, is_override_config=True)
+        self.assertEqual(config.get("key"), "value")
 
     @patch(CONFIG_MODULE_MOCK_YAML)
     @patch(CONFIG_MODULE_MOCK_OS)  # name for patch should be equals to import in real module!
@@ -164,18 +163,21 @@ class ConfigurationTest(unittest.TestCase):
         mock_os.isdir.return_value = False
         mock_parse_yaml.return_value = {"key": "initial_value"}
         # init config instance
-        config = Configuration(path_to_config='yaml_file.yml',
-                               dict_to_merge={'key': 'new_value', 'aaa': 'bbb'}, is_override_config=False)
+        config = Configuration(
+            path_to_config="yaml_file.yml",
+            dict_to_merge={"key": "new_value", "aaa": "bbb"},
+            is_override_config=False,
+        )
         # assertions
-        self.assertEqual(config.get('key'), 'initial_value')
+        self.assertEqual(config.get("key"), "initial_value")
 
     # todo: possible wrong behaviour: can't get multi-level key (a.b.c) after merge_dict()
     def test_merge_dict_multi_level_key_issue(self):
-        new_dict = {'name.subname3': 'subvalue3'}
+        new_dict = {"name.subname3": "subvalue3"}
 
-        self.config.set('name', {'subname1': 'subvalue1', 'subname2': 'subvalue2'})
+        self.config.set("name", {"subname1": "subvalue1", "subname2": "subvalue2"})
         self.config.merge_dict(new_dict)
 
         # line that generates issue
         with self.assertRaises(ConfigError):
-            print(self.config.get('name.subname3'))
+            print(self.config.get("name.subname3"))

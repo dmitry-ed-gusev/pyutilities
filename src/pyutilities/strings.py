@@ -13,7 +13,7 @@
 
 
 def is_str_empty(string):
-    """ Check is string empty/NoNe or not.
+    """Check is string empty/NoNe or not.
     :param string:
     :return:
     """
@@ -27,7 +27,7 @@ def is_str_empty(string):
 
 
 def trim_to_none(string):
-    """ Trim the provided string to None (if empty) or just strip whitespaces.
+    """Trim the provided string to None (if empty) or just strip whitespaces.
     :param string:
     :return:
     """
@@ -38,15 +38,15 @@ def trim_to_none(string):
 
 
 def trim_to_empty(string):
-    """ Trim the provided string to empty string (''/"") or just strip whitespaces.
+    """Trim the provided string to empty string (''/"") or just strip whitespaces.
     :param string:
     :return:
     """
     if is_str_empty(string):  # check for empty string
-        return ''
+        return ""
 
     return string.strip()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("pyutilities.strings: Don't try to execute library as a standalone app!")

@@ -5,7 +5,7 @@
     Common utilities in python. Can be useful in different cases.
 
     Created:  Gusev Dmitrii, 04.04.2017
-    Modified: Gusev Dmitrii, 04.03.2019
+    Modified: Gusev Dmitrii, 08.12.2021
 """
 
 import os
@@ -35,10 +35,16 @@ def count_lines(filename):
     """
     counter = 0
     # open file, received as first cmd line argument, mode - read+Unicode
-    with open(filename, mode='rU') as infile:
+    with open(filename, mode="rU") as infile:
         # skip initial space - don't work without it
-        reader = csv.reader(infile, delimiter=b',', skipinitialspace=True, quoting=csv.QUOTE_MINIMAL, quotechar=b'"',
-                            lineterminator="\n")
+        reader = csv.reader(
+            infile,
+            delimiter=b",",
+            skipinitialspace=True,
+            quoting=csv.QUOTE_MINIMAL,
+            quotechar=b'"',
+            lineterminator="\n",
+        )
         # counting rows in a cycle
         for _ in reader:
             # print row  # <- just a debug output
@@ -60,10 +66,10 @@ def _list_files(path, files_buffer, out_to_console=False):
     # todo: line for python 2 -> for (dirpath, dirnames, filenames) in walk(unicode(path)):
     for (dirpath, dirnames, filenames) in walk(path):
         for filename in filenames:
-            abs_path = dirpath + '/' + filename
+            abs_path = dirpath + "/" + filename
             if out_to_console:  # debug output
                 if sys.stdout.encoding is not None:  # sometimes encoding may be null!
-                    print(abs_path.encode(sys.stdout.encoding, errors='replace'))
+                    print(abs_path.encode(sys.stdout.encoding, errors="replace"))
                 else:
                     print(abs_path)
             files_buffer.append(abs_path)
@@ -87,23 +93,22 @@ def list_files(path, out_to_console=False):
 
 
 def parse_yaml(file_path):
-    """ Parses single YAML file and return its contents as object (dictionary).
+    """Parses single YAML file and return its contents as object (dictionary).
     :param file_path: path to YAML file to load settings from
     :return python object with YAML file contents
     """
     log.debug("parse_yaml() is working. Parsing YAML file [{}].".format(file_path))
     if not file_path or not file_path.strip():
         raise IOError("Empty path to YAML file!")
-    with open(file_path, 'r') as cfg_file:
+    with open(file_path, "r") as cfg_file:
         cfg_file_content = cfg_file.read()
         if "\t" in cfg_file_content:  # no tabs allowed in file content
             raise IOError(f"Config file [{file_path}] contains 'tab' character!")
-        # return yaml.load(cfg_file_content)
-        return yaml.load(cfg_file, Loader=yaml.FullLoader)
+        return yaml.load(cfg_file_content, Loader=yaml.FullLoader)
 
 
 def save_file_with_path(file_path, content):  # todo: move it to utilities module
-    log.debug('save_file_with_path(): saving content to [{}].'.format(file_path))
+    log.debug("save_file_with_path(): saving content to [{}].".format(file_path))
     if not os.path.exists(os.path.dirname(file_path)):
         try:
             os.makedirs(os.path.dirname(file_path))
@@ -128,6 +133,7 @@ def benchmark(func):
         res = func(*args, **kwargs)
         print(func.__name__, time.clock() - t)
         return res
+
     return wrapper
 
 
@@ -136,10 +142,12 @@ def logger(func):
     Декоратор, логирующий работу кода.
     (хорошо, он просто выводит вызовы, но тут могло быть и логирование!)
     """
+
     def wrapper(*args, **kwargs):
         res = func(*args, **kwargs)
         print(func.__name__, args, kwargs)
         return res
+
     return wrapper
 
 
@@ -148,11 +156,13 @@ def call_counter(func):
     Декоратор, считающий и выводящий количество вызовов
     декорируемой функции.
     """
+
     def wrapper(*args, **kwargs):
         wrapper.count += 1
         res = func(*args, **kwargs)
         print("{0} была вызвана: {1}x".format(func.__name__, wrapper.count))
         return res
+
     wrapper.count = 0
     return wrapper
 
@@ -167,8 +177,13 @@ def filter_str(string):  # todo: fix filtering for non-cyrillic symbols too (add
     if not string or not string.strip():  # if empty, return 'as is'
         return string
     # filter out all, except symbols, spaces, or comma
-    return ''.join(char for char in string if char.isalnum() or char.isspace() or
-                   char in 'абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ.,/-№')
+    return "".join(
+        char
+        for char in string
+        if char.isalnum()
+        or char.isspace()
+        or char in "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ.,/-№"
+    )
 
 
 def get_str_val(value, value_type, encoding):  # todo: make filtering optional
@@ -179,7 +194,7 @@ def get_str_val(value, value_type, encoding):  # todo: make filtering optional
     :return:
     """
     if xlrd.XL_CELL_EMPTY == value_type or xlrd.XL_CELL_BLANK == value_type:
-        return ''
+        return ""
     elif xlrd.XL_CELL_NUMBER == value_type:
         return filter_str(str(int(value)).encode(encoding))
     elif xlrd.XL_CELL_TEXT == value_type:
@@ -212,7 +227,7 @@ def write_report_to_file(txt_report, out_file):
     if not out_file or not out_file.strip():  # fail fast check
         raise PyUtilitiesError("Output file wasn't specified!")
     # writing data to specified file
-    with codecs.open(out_file, 'w', DEFAULT_ENCODING) as out:
+    with codecs.open(out_file, "w", DEFAULT_ENCODING) as out:
         out.write(txt_report)
 
 
@@ -220,5 +235,5 @@ class PyUtilitiesError(Exception):
     """Something went wrong in utilities module..."""
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("pyutilities.utils: Don't try to execute library as a standalone app!")

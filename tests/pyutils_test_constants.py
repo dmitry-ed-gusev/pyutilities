@@ -10,4 +10,4 @@
 
 """
 
-TEST_LOGGING_CONFIG = 'pyutilities/tests/configs/logging.yml'
+TEST_LOGGING_CONFIG = "tests/configs/logging.yml"

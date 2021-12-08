@@ -8,23 +8,23 @@
     13.05.2019 Module is in DRAFT state.
 
     Created:  Dmitrii Gusev, 03.05.2019
-    Modified: Dmitrii Gusev, 27.05.2019
+    Modified: Dmitrii Gusev, 08.12.2021
 
 """
 
 from subprocess import Popen
-from src.pyutilities.pylog import init_logger, myself
-from src.pyutilities.pyexception import PyUtilsException
+from pyutilities.pylog import init_logger, myself
+from pyutilities.pyexception import PyUtilsException
 
 # useful constants
-GIT_EXECUTABLE = 'git'
+GIT_EXECUTABLE = "git"
 
 
 # todo: save currently set global proxy and restore it after this class
 class PyGit:
-    """ Class represents GIT functionality """
+    """Class represents GIT functionality"""
 
-    def __init__(self, git_url,  http=None, https=None):
+    def __init__(self, git_url, http=None, https=None):
         self.log = init_logger(__name__, add_null_handler=False)
         self.log.info("Initializing PyGit class.")
         # init internal state
@@ -33,73 +33,73 @@ class PyGit:
         # self.set_global_proxy(http, https)
 
     def set_global_proxy(self, http=None, https=None):  # todo: unit tests! make it decorator?
-        """ Set specified proxies (http/https) for local git instance as a global variables. """
+        """Set specified proxies (http/https) for local git instance as a global variables."""
         self.log.debug(f"{myself()}() is working.")
         self.log.info(f"Setting proxies: http -> [{http}], https -> [{https}]")
         if http:
             self.log.info(f"Setting HTTP proxy: {http}")
-            process = Popen([GIT_EXECUTABLE, 'config', '--global', 'http.proxy', http])
+            process = Popen([GIT_EXECUTABLE, "config", "--global", "http.proxy", http])
             process.wait()
         if https:
             self.log.info(f"Setting HTTPS proxy: {https}")
-            process = Popen([GIT_EXECUTABLE, 'config', '--global', 'https.proxy', https])
+            process = Popen([GIT_EXECUTABLE, "config", "--global", "https.proxy", https])
             process.wait()
 
     def clean_global_proxy(self):  # todo: unit tests! make it decorator?
-        """ Clear git global proxies (both http/https). """
+        """Clear git global proxies (both http/https)."""
         self.log.debug(f"{myself()}() is working.")
         self.log.info("Cleaning up git global proxies.")
-        process = Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'http.proxy'])
+        process = Popen([GIT_EXECUTABLE, "config", "--global", "--unset", "http.proxy"])
         process.wait()
-        process = Popen([GIT_EXECUTABLE, 'config', '--global', '--unset', 'https.proxy'])
+        process = Popen([GIT_EXECUTABLE, "config", "--global", "--unset", "https.proxy"])
         process.wait()
 
     def __generate_repo_url(self, repo):
-        """  Generates repository URL for other methods. Internal method. """
-        url = self.__git_url + '/' + repo + '.git'
+        """Generates repository URL for other methods. Internal method."""
+        url = self.__git_url + "/" + repo + ".git"
         # self.log.debug(f"Generated url [{url}]")  # <- shows password in cmd line...
         return url
 
     def clone(self, repo, location):
-        """ Clone specified repository. """
+        """Clone specified repository."""
         self.log.info(f"Clone repo [{repo}].")
         try:
-            process = Popen([GIT_EXECUTABLE, 'clone', self.__generate_repo_url(repo)], cwd=location)
+            process = Popen([GIT_EXECUTABLE, "clone", self.__generate_repo_url(repo)], cwd=location)
             process.wait()
 
             if process.returncode != 0:
                 raise PyUtilsException(f"Process returned non zero exit code [{process.returncode}]!")
         except AttributeError as se:
-            self.log.error(f'Error while cloning repo [{repo}]! {se}')
+            self.log.error(f"Error while cloning repo [{repo}]! {se}")
 
     def pull(self, repo, location):
-        """ Pull (update) specified repository. """
+        """Pull (update) specified repository."""
         self.log.info(f"Pull repo [{repo}]")
         try:
-            process = Popen([GIT_EXECUTABLE, 'pull'], cwd=location)
+            process = Popen([GIT_EXECUTABLE, "pull"], cwd=location)
             process.wait()
 
             if process.returncode != 0:
                 raise PyUtilsException(f"Process returned non zero exit code [{process.returncode}]!")
         except AttributeError as se:
-            self.log.error(f'Error while updating repo [{repo}]! {se}')
+            self.log.error(f"Error while updating repo [{repo}]! {se}")
 
     def gc(self, repo, location):
-        """ execute gc() - garbage collection - for repository. """
+        """execute gc() - garbage collection - for repository."""
         self.log.info(f"Calling gc() for repo [{repo}]")
         try:
-            process = Popen([GIT_EXECUTABLE, 'gc'], cwd=location)
+            process = Popen([GIT_EXECUTABLE, "gc"], cwd=location)
             process.wait()
 
             if process.returncode != 0:
                 raise PyUtilsException(f"Process returned non zero exit code [{process.returncode}]!")
         except AttributeError as se:
-            self.log.error(f'Error while calling gc() for [{repo}]! {se}')
+            self.log.error(f"Error while calling gc() for [{repo}]! {se}")
 
 
 class GitException(Exception):
     """GIT Exception, used if something is wrong with/in GIT interaction."""
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("pyutilities.pygit: Don't try to execute library as a standalone app!")

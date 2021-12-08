@@ -16,7 +16,6 @@ from tests.pyutils_test_helper import get_test_logger
 
 # todo: implement unit tests for fedit utility
 class FEditTest(unittest.TestCase):
-
     def setUp(self):
         print("FEditTest.setUp()")
 
@@ -26,11 +25,11 @@ class FEditTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.log = get_test_logger(__name__)
-        cls.log.debug('setUpClass() is working.')
+        cls.log.debug("setUpClass() is working.")
 
     @classmethod
     def tearDownClass(cls):
-        cls.log.debug('tearDownClass() is working.')
+        cls.log.debug("tearDownClass() is working.")
 
     def test(self):
         # todo: implement unit test

@@ -17,8 +17,8 @@ from tests.pyutils_test_constants import TEST_LOGGING_CONFIG
 
 
 def get_test_logger(name: str):
-    """ Initializing logger for testing. """
+    """Initializing logger for testing."""
     log = logging.getLogger(name)
-    with open(TEST_LOGGING_CONFIG, 'rt') as f:
+    with open(TEST_LOGGING_CONFIG, "rt") as f:
         logging.config.dictConfig(yaml.safe_load(f.read()))
     return log

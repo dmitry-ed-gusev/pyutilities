@@ -7,20 +7,20 @@
     Functions are incapsulated in PyMaven class.
 
     Created:  Dmitrii Gusev, 02.05.2019
-    Modified: Dmitrii Gusev, 30.05.2019
+    Modified: Dmitrii Gusev, 08.12.2021
 
 """
 
 import os
 import platform
-import src.pyutilities.strings as strings
+import pyutilities.strings as strings
 from subprocess import Popen
-from src.pyutilities.pylog import init_logger, myself
-from src.pyutilities.pyexception import PyUtilsException
+from pyutilities.pylog import init_logger, myself
+from pyutilities.pyexception import PyUtilsException
 
 
 class PyMaven:
-    """ Class represents maven functionality. """
+    """Class represents maven functionality."""
 
     def __init__(self, mvn_settings: str = None):
         self.log = init_logger(__name__, add_null_handler=False)
@@ -40,54 +40,54 @@ class PyMaven:
         self.log.info(f"Loaded special maven settings [{self.__mvn_settings}].")
 
     def get_mvn_executable(self):
-        """ Return Maven executable, depending on OS (windows-family or not). """
+        """Return Maven executable, depending on OS (windows-family or not)."""
         self.log.debug(f"{myself()}() is working.")
-        if 'windows' in platform.system().lower():
-            return 'mvn.cmd'
+        if "windows" in platform.system().lower():
+            return "mvn.cmd"
         else:
-            return 'mvn'
+            return "mvn"
 
     def append_mvn_settings(self, cmd: list):
         self.log.debug(f"{myself()}() is working.")
         if self.__mvn_settings is not None:
-            cmd.extend(['-s', self.__mvn_settings])
+            cmd.extend(["-s", self.__mvn_settings])
         return cmd
 
     def build(self, location: str):
         self.log.debug(f"{myself()}() is working.")
-        self.log.info(f'Building repo in location [{location}].')
+        self.log.info(f"Building repo in location [{location}].")
         try:
-            cmd = self.append_mvn_settings([self.__mvn_exec, 'clean', 'install'])
+            cmd = self.append_mvn_settings([self.__mvn_exec, "clean", "install"])
             process = Popen(cmd, cwd=location)
             process.wait()
             # check exit code
             if process.returncode != 0:
                 raise PyUtilsException(f"Process returned non zero exit code [{process.returncode}]!")
         except AttributeError as se:
-            self.log.error(f'Error building repo in location [{location}]! {se}')
+            self.log.error(f"Error building repo in location [{location}]! {se}")
 
     def javadoc(self, location: str):
         self.log.debug(f"{myself()}() is working.")
-        self.log.info(f'Downloading javadoc for repo [{location}].')
+        self.log.info(f"Downloading javadoc for repo [{location}].")
         try:
-            cmd = self.append_mvn_settings([self.__mvn_exec, 'dependency:resolve', '-Dclassifier=javadoc'])
+            cmd = self.append_mvn_settings([self.__mvn_exec, "dependency:resolve", "-Dclassifier=javadoc"])
             process = Popen(cmd, cwd=location)
             process.wait()
             # check exit code
             if process.returncode != 0:
                 raise PyUtilsException(f"Process returned non zero exit code [{process.returncode}]!")
         except AttributeError as se:
-            self.log.error(f'Error downloading javadoc for repo [{location}]! {se}')
+            self.log.error(f"Error downloading javadoc for repo [{location}]! {se}")
 
     def sources(self, location):
         self.log.debug(f"{myself()}() is working.")
-        self.log.info(f'Downloading sources for repo [{location}].')
+        self.log.info(f"Downloading sources for repo [{location}].")
         try:
-            cmd = self.append_mvn_settings([self.__mvn_exec, 'dependency:resolve', '-Dclassifier=sources'])
+            cmd = self.append_mvn_settings([self.__mvn_exec, "dependency:resolve", "-Dclassifier=sources"])
             process = Popen(cmd, cwd=location)
             process.wait()
             # check exit code
             if process.returncode != 0:
                 raise PyUtilsException(f"Process returned non zero exit code [{process.returncode}]!")
         except AttributeError as se:
-            self.log.error(f'Error downloading sources for repo [{location}]! {se}')
+            self.log.error(f"Error downloading sources for repo [{location}]! {se}")

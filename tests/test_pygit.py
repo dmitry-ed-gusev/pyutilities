@@ -12,26 +12,25 @@
 
 import unittest
 from tests.pyutils_test_helper import get_test_logger
-from src.pyutilities.pygit import PyGit
+from pyutilities.pygit import PyGit
 
 
 class PyGitTest(unittest.TestCase):
-
     def setUp(self):
-        self.log.debug('setUp() is working.')
-        self.pygit = PyGit('http://stash.server.com/scm')
+        self.log.debug("setUp() is working.")
+        self.pygit = PyGit("http://stash.server.com/scm")
 
     def tearDown(self):
-        self.log.debug('tearDown() is working.')
+        self.log.debug("tearDown() is working.")
 
     @classmethod
     def setUpClass(cls):
         cls.log = get_test_logger(__name__)
-        cls.log.debug('setUpClass() is working.')
+        cls.log.debug("setUpClass() is working.")
 
     @classmethod
     def tearDownClass(cls):
-        cls.log.debug('tearDownClass() is working.')
+        cls.log.debug("tearDownClass() is working.")
 
     def test(self):
         pass

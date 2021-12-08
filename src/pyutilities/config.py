@@ -9,7 +9,7 @@
     Added child config class that is able to load config (as dictionary) from xls file (from specified sheet).
 
     Created:  Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 10.01.2021
+    Modified: Gusev Dmitrii, 08.12.2021
 
 """
 
@@ -19,11 +19,11 @@ import xlrd  # reading excel files (old Excel - xls)
 import openpyxl  # reading excel files (Excel 2010 - xlsx)
 
 from string import Template
-from src.pyutilities.utils import parse_yaml
+from pyutilities.utils import parse_yaml
 
-YAML_EXTENSION_1 = '.yml'
-YAML_EXTENSION_2 = '.yaml'
-DEFAULT_ENCODING = 'UTF8'
+YAML_EXTENSION_1 = ".yml"
+YAML_EXTENSION_2 = ".yaml"
+DEFAULT_ENCODING = "UTF8"
 
 
 class Configuration(object):
@@ -41,8 +41,11 @@ class Configuration(object):
         self.log = logging.getLogger(__name__)
         self.log.addHandler(logging.NullHandler())
         self.log.debug("Initializing Configuration() instance...")
-        self.log.debug("Load configuration:\n\tpath -> {}\n\tdict -> {}\n\toverride config -> {}\n\tmerge env -> {}"
-                       .format(path_to_config, dict_to_merge, is_override_config, is_merge_env))
+        self.log.debug(
+            "Load configuration:\n\tpath -> {}\n\tdict -> {}\n\toverride config -> {}\n\tmerge env -> {}".format(
+                path_to_config, dict_to_merge, is_override_config, is_merge_env
+            )
+        )
 
         # init internal dictionary
         self.config_dict = {}
@@ -54,20 +57,26 @@ class Configuration(object):
         if dict_to_merge:  # merge config from file(s) (if any) with dictionary, if any
             self.log.debug("Dictionary for merge isn't empty: {}".format(dict_to_merge))
             if isinstance(dict_to_merge, dict):  # provided single dictionary
-                self.log.debug("Merging with provided single dictionary. Override: [{}].".format(is_override_config))
+                self.log.debug(
+                    "Merging with provided single dictionary. Override: [{}].".format(is_override_config)
+                )
                 self.append_dict(dict_to_merge, is_override_config)
             elif isinstance(dict_to_merge, list):  # provided list of dictionaries
-                self.log.debug("Merging with provided list of dictionaries. Override: [{}].".format(is_override_config))
+                self.log.debug(
+                    "Merging with provided list of dictionaries. Override: [{}].".format(is_override_config)
+                )
                 for dictionary in dict_to_merge:
                     self.append_dict(dictionary, is_override_config)
             else:
-                raise ConfigError('Provided unknown type [{}] of dictionary for merge!'.format(type(dict_to_merge)))
+                raise ConfigError(
+                    "Provided unknown type [{}] of dictionary for merge!".format(type(dict_to_merge))
+                )
         self.log.info("Configuration loaded successfully.")
 
     def append_dict(self, dictionary, is_override):
         """Appends specified dictionary to internal dictionary of current class.
-            :param dictionary
-            :param is_override
+        :param dictionary
+        :param is_override
         """
         self.log.debug("append_dict() is working.")
         for key, value in dictionary.items():
@@ -78,16 +87,16 @@ class Configuration(object):
 
     def load(self, path, is_merge_env=True):
         """Parses YAML file(s) from the given directory/file to add content into this configuration instance
-            :param is_merge_env: merge parameters with environment (True) or not (False)
-            :param path: directory/file to load files from
-            :type path: str
+        :param is_merge_env: merge parameters with environment (True) or not (False)
+        :param path: directory/file to load files from
+        :type path: str
         """
-        self.log.debug('load() is working. Path [{}], is_merge_env [{}].'.format(path, is_merge_env))
+        self.log.debug("load() is working. Path [{}], is_merge_env [{}].".format(path, is_merge_env))
         # fail-fast checks
         if not path or not path.strip():
-            raise ConfigError('Provided empty path for config loading!')
+            raise ConfigError("Provided empty path for config loading!")
         if not os.path.exists(path):
-            raise ConfigError('Provided path [%s] doesn\'t exist!' % path)
+            raise ConfigError("Provided path [%s] doesn't exist!" % path)
 
         # todo: extract two methods - load from file/load from dir + refactor unit tests
         # if provided path to single file - load it, otherwise - load from directory
@@ -96,24 +105,27 @@ class Configuration(object):
             try:
                 self.merge_dict(parse_yaml(path))
             except ConfigError as ex:
-                raise ConfigError('ERROR while merging file %s to configuration.\n%s' % (path, ex.message))
+                raise ConfigError("ERROR while merging file %s to configuration.\n%s" % (path, ex.message))
 
         # loading from directory (all YAML files)
         elif os.path.isdir(path):
             self.log.debug("Provided path [{}] is a directory. Loading all YAML files.".format(path))
             for some_file in os.listdir(path):
                 file_path = os.path.join(path, some_file)
-                if os.path.isfile(file_path) and \
-                        (some_file.endswith(YAML_EXTENSION_1) or some_file.endswith(YAML_EXTENSION_2)):
+                if os.path.isfile(file_path) and (
+                    some_file.endswith(YAML_EXTENSION_1) or some_file.endswith(YAML_EXTENSION_2)
+                ):
                     self.log.debug("Loading configuration from [{}].".format(some_file))
                     try:
                         self.merge_dict(parse_yaml(file_path))
                     except ConfigError as ex:
-                        raise ConfigError('ERROR while merging file %s to configuration.\n%s' % (file_path, ex.message))
+                        raise ConfigError(
+                            "ERROR while merging file %s to configuration.\n%s" % (file_path, ex.message)
+                        )
 
         # unknown file/dir type
         else:
-            raise ConfigError('Unknown thing [%s], not a file, not a dir!' % path)
+            raise ConfigError("Unknown thing [%s], not a file, not a dir!" % path)
 
         # merge environment variables to internal dictionary
         if is_merge_env:
@@ -136,7 +148,7 @@ class Configuration(object):
             self.config_dict.update(new_dict)
         return
 
-    def __add_entity__(self, dict1, dict2, current_key=''):
+    def __add_entity__(self, dict1, dict2, current_key=""):
         """Adds second dictionary to the first (processing nested dicts recursively)
         No overwriting is accepted.
         :param dict1: target dictionary (exception raising if it is not dict)
@@ -149,14 +161,16 @@ class Configuration(object):
         if isinstance(dict2, dict) and isinstance(dict1, dict):
             for key in dict2.keys():
                 if key in dict1.keys():
-                    sep = '.'
-                    if current_key == '':
-                        sep = ''
-                    self.__add_entity__(dict1[key], dict2[key], '%s%s%s' % (current_key, sep, key))
+                    sep = "."
+                    if current_key == "":
+                        sep = ""
+                    self.__add_entity__(dict1[key], dict2[key], "%s%s%s" % (current_key, sep, key))
                 else:
                     dict1[key] = dict2[key]
         else:
-            raise ConfigError("Attempt of overwriting old value %s with new %s to the key %s" % (dict1, dict2, current_key))
+            raise ConfigError(
+                "Attempt of overwriting old value %s with new %s to the key %s" % (dict1, dict2, current_key)
+            )
         return dict1
 
     def merge_env(self):
@@ -167,10 +181,10 @@ class Configuration(object):
 
     def get(self, key, default=None):
         """Retrieves config value for given key.
-            :param key: text key, which could be complex, e.g. "key1.key2.key3" to reach nested dictionaries
-            :type key: str
-            :type default: Any
-            :rtype: Any
+        :param key: text key, which could be complex, e.g. "key1.key2.key3" to reach nested dictionaries
+        :type key: str
+        :type default: Any
+        :rtype: Any
         """
         try:
             result = self.__get_value(key, self.config_dict)
@@ -182,8 +196,8 @@ class Configuration(object):
 
     def set(self, key, value):
         """Sets config value, creating all the nested levels if necessary
-            :type key: str
-            :type value: Any
+        :type key: str
+        :type value: Any
         """
         keys = key.split(".")
         values = self.config_dict
@@ -196,10 +210,10 @@ class Configuration(object):
 
     def resolve_and_set(self, key, value):
         """Performs template substitution in "value" using mapping from config (only top-level), then sets it in config
-            :param key: key to assign value to (could be multi-level)
-            :type key: str
-            :param value: value with substitution patterns e.g. "system-$env" (see string.Template)
-            :type value: str 
+        :param key: key to assign value to (could be multi-level)
+        :type key: str
+        :param value: value with substitution patterns e.g. "system-$env" (see string.Template)
+        :type value: str
         """
         template = Template(value)
         resolved = template.substitute(self.config_dict)
@@ -207,10 +221,10 @@ class Configuration(object):
 
     def __get_value(self, key, values):
         """Internal method for using in "get", recursively search for dictionaries by key parts and retrieves value
-            :type key: str
-            :param values: dictionary to search in
-            :type values: dict
-            :rtype: Any
+        :type key: str
+        :param values: dictionary to search in
+        :type values: dict
+        :rtype: Any
         """
         if not values:
             raise KeyError
@@ -248,11 +262,17 @@ VALUES_COLUMN = 1
 
 
 class ConfigurationXls(Configuration):
-    """Extension for Configuration class for work with excel config files.
-    """
+    """Extension for Configuration class for work with excel config files."""
 
-    def __init__(self, path_to_xls, config_sheet_name, dict_to_merge=None, path_to_yaml=None,
-                 is_override_config=True, is_merge_env=True):
+    def __init__(
+        self,
+        path_to_xls,
+        config_sheet_name,
+        dict_to_merge=None,
+        path_to_yaml=None,
+        is_override_config=True,
+        is_merge_env=True,
+    ):
         # init class instance logger
         self.log = logging.getLogger(__name__)
         self.log.addHandler(logging.NullHandler())
@@ -275,8 +295,12 @@ class ConfigurationXls(Configuration):
             raise ConfigError("Invalid dictionary to merge type: {}!".format(type(dict_to_merge)))
 
         # init instance with superclass constructor
-        super(ConfigurationXls, self).__init__(path_to_config=path_to_yaml, dict_to_merge=dictionary,
-                                               is_override_config=is_override_config, is_merge_env=is_merge_env)
+        super(ConfigurationXls, self).__init__(
+            path_to_config=path_to_yaml,
+            dict_to_merge=dictionary,
+            is_override_config=is_override_config,
+            is_merge_env=is_merge_env,
+        )
 
     def load_dict_from_xls(self, path_to_xls, config_sheet_name):
         self.log.debug("load_dict_from_xls() is working.")
@@ -284,14 +308,14 @@ class ConfigurationXls(Configuration):
 
         # some preliminary checks (fast-fail)
         if not path_to_xls or not path_to_xls.strip():
-            raise ConfigError('Provided empty path to xls file!')
+            raise ConfigError("Provided empty path to xls file!")
         if not os.path.exists(path_to_xls):
-            raise ConfigError('Provided path [%s] doesn\'t exist!' % path_to_xls)
+            raise ConfigError("Provided path [%s] doesn't exist!" % path_to_xls)
 
         dictionary = {}  # dictionary loaded from excel file
 
         # loading xls/xlsx workbook
-        if path_to_xls.endswith('xls'):  # load from excel file - format xls
+        if path_to_xls.endswith("xls"):  # load from excel file - format xls
             excel_book = xlrd.open_workbook(path_to_xls, encoding_override=DEFAULT_ENCODING)
             excel_sheet = excel_book.sheet_by_name(config_sheet_name)
             self.log.debug("Loaded XLS config. Found [{}] row(s). Loading.".format(excel_sheet.nrows))
@@ -302,7 +326,7 @@ class ConfigurationXls(Configuration):
                 self.log.debug("XLS: loaded config parameter: {} = {}".format(name, value))
                 dictionary[name] = value
 
-        elif path_to_xls.endswith('xlsx'):  # load from excel file - format xlsx
+        elif path_to_xls.endswith("xlsx"):  # load from excel file - format xlsx
             excel_book = openpyxl.load_workbook(path_to_xls)  # workbook
             excel_sheet = excel_book[config_sheet_name]  # specified sheet by name
             self.log.debug("Loaded XSLX config. Found [{}] row(s). Loading.".format(excel_sheet.max_row))
@@ -319,5 +343,5 @@ class ConfigurationXls(Configuration):
         return dictionary
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("pyutilities.config: Don't try to execute library as a standalone app!")
