@@ -15,8 +15,8 @@ flake8 = "*"
 black = "*"
 pytest-cov = "*"
 pre-commit = "*"
-build = "*"
 twine = "*"
+build = "*"
 
 [requires]
 python_version = "3.9"

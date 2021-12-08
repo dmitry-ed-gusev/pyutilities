@@ -28,7 +28,7 @@ rm -r "${DIST_DIR}"
 pipenv clean
 pipenv update
 # -- update outdated dependencies (optional)
-#pipenv update --outdated
+pipenv update --outdated
 
 # -- run pytest with pytest-cov (see pytest.ini/setup.cfg - additional parameters)
 pipenv run pytest tests/
