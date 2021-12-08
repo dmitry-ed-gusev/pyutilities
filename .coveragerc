@@ -1,0 +1,30 @@
+###############################################################################
+#
+#   .coveragerc config file to control pytest-cov plugin.
+#   See full doc here:
+#       - https://pytest-cov.readthedocs.io/en/latest/index.html
+#
+#   Created:  Dmitrii Gusev, 08.12.2021
+#   Modified:
+#
+###############################################################################
+
+[run]
+branch = True
+data_file = .coverage/.coverage
+omit =
+        *__init__*
+        *temp*
+        *tests/*
+
+[report]
+show_missing = True
+# -- show 2 decimal digits for coverage values
+precision = 2
+
+[html]
+directory = .coverage/htmlcoverage
+title = "PyUtilities: Tests Coverage Report"
+
+[xml]
+output = .coverage/coverage.xml
