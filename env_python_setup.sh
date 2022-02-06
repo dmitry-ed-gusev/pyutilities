@@ -1,50 +1,50 @@
 #!/usr/bin/env bash
-
-#########################################################################################
+###############################################################################
 #
-#   General setup/update script for the main python environment.
+#   General python environment setup/reset script. Script can be used to 
+#   re-create python general environment from 'scratch'.
+#   Script installs basic libraries:
+#       - pipenv
+#       - jupyter
+#       - pytest
 #
 #   Warning: script must be used (run) from shell, not from the virtual
 #            environment (pipenv shell).
 #
-#   Created:  Dmitrii Gusev, 18.01.2022
-#   Modified:
+#   Created:  Dmitrii Gusev, 12.11.2021
+#   Modified: Dmitrii Gusev, 06.02.2022
 #
-#########################################################################################
+###############################################################################
 
+
+export LANG='en_US.UTF-8'
 TMP_FILE="req.txt"
 
 clear
-printf "Python Environment RESET Starting\n\n"
+printf "Python Development Environment setup is starting...\n\n"
 
-# freeze current pip depende
-pip freeze > "${TMP_FILE}"
-echo "- environment freeze -> done"
+# -- upgrading pip (just for the case)
+pip install --upgrade pip
+echo "  - upgrading pip - done"
 
-# delete everything + auto "yes" answer
-pip uninstall -r "${TMP_FILE}" -y
-echo "- uninstall -> done"
+# -- freeze current global dependencies
+pip freeze > ${TMP_FILE}
 
-# list clean python environment and wait for 5sec
-printf "\n--- Clean environment ---\n\n"
-pip list 
-printf "\n\n"
+# -- remove all dependencies
+pip uninstall -r ${TMP_FILE} -y
+printf "\n\n  - uninstalled current dependencies - done\n"
+
+# -- list the current empty environment
+printf "\n\n--- Current Empty Environment ---\n\n"
+pip list
 sleep 5
 
-# update pip
-pip install --upgrade pip
-echo "- pip update -> done"
+# -- remove temporary file
+rm ${TMP_FILE}
+printf "\n\n  - removing tmp file %s - done\n" ${TMP_FILE}
 
-# install necessary common dependencies
-# todo: do we need pytest installed globally?
+# -- install necessary dependencies
 pip install pipenv pytest jupyter
-echo "- common dependencies install -> done"
+echo "  - installing dependencies - done"
 
-# remove tmp file
-rm "${TMP_FILE}"
-echo "- temporary file ${TMP_FILE} remove -> done"
-
-# list all installed things
-pip list
-
-printf "\n\nPython Environment RESET is done.\n"
+printf "\n\nPython Development Environment setup is done.\n"
