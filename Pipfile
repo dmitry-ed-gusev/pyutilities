@@ -4,22 +4,29 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyutilities = {editable = true, path = "."}
+# pyutilities = {editable = true, path = "."}
 
 [dev-packages]
 mock = "*"
 nose2 = "*"
 pytest = "*"
+pytest-cov = "*"
+pytest-mock = "*"
 mypy = "*"
 flake8 = "*"
 black = "*"
-pytest-cov = "*"
 pre-commit = "*"
 twine = "*"
 build = "*"
+ipykernel = "*"
+responses = "*"
+sphinx = "*"
+types-six = "*"
+types-requests = "*"
+hypothesis = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.10"
 
 [pipenv]
 allow_prereleases = true

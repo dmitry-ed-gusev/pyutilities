@@ -12,7 +12,7 @@
 
 import unittest
 from tests.pyutils_test_helper import get_test_logger
-from pyutilities.pygit import PyGit
+from pyutilities.commands.pygit import PyGit
 
 
 class PyGitTest(unittest.TestCase):

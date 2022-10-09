@@ -1,10 +1,12 @@
 ###############################################################################
 #
-#   .coveragerc config file to control pytest-cov plugin.
+#   Configuration file .coveragerc for control of the behaviour of 
+#   coverage.py / pytest-cov plugins.
 #   See full doc here:
+#       - https://coverage.readthedocs.io/en/latest/config.html
 #       - https://pytest-cov.readthedocs.io/en/latest/index.html
 #
-#   Created:  Dmitrii Gusev, 08.12.2021
+#   Created:  Dmitrii Gusev, 09.10.2022
 #   Modified:
 #
 ###############################################################################
@@ -28,3 +30,8 @@ title = "PyUtilities: Tests Coverage Report"
 
 [xml]
 output = .coverage/coverage.xml
+
+# -- used by coverage.py, ignored by pytest-cov
+[json]
+output = .coverage/coverage.json
+pretty_print = True
