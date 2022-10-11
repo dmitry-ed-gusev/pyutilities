@@ -12,7 +12,10 @@ Useful utilities/experimantal modules/research in python 3.x. Some of the module
 **0.14.0**  
 
 - updated build mechanism with pipenv, instead of virtualenv and requirements.txt file
-- ???
+- added several packages:
+  - eeee
+  - ddd
+- ffff
 
 **0.13.1**  
 Updated library dependencies. Added openpyxl as support of xlsx format was removed from

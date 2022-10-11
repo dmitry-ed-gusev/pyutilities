@@ -11,7 +11,7 @@
 """
 
 import unittest
-import pyutilities.strings as pystr
+import pyutilities.utils.strings as pystr
 from tests.pyutils_test_helper import get_test_logger
 
 # common constants for testing

@@ -14,7 +14,7 @@
 
 from subprocess import Popen
 from pyutilities.pylog import init_logger, myself
-from pyutilities.pyexception import PyUtilsException
+from pyutilities.exception import PyUtilsException
 
 # useful constants
 GIT_EXECUTABLE = "git"

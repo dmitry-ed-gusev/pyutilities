@@ -1,14 +1,12 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 """
-
     Some useful/convenient string functions (sometimes - similar
     to module String in java library Apache Commons).
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 26.04.2019
-
+    Modified: Dmitrii Gusev, 11.10.2022
 """
 
 

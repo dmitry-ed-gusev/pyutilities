@@ -14,8 +14,8 @@ import yaml
 import logging
 import inspect
 import logging.config
-import pyutilities.strings as strings
-from pyutilities.pyexception import PyUtilsException
+import pyutilities.utils.strings as strings
+from pyutilities.exception import PyUtilsException
 
 # init module logger. See more info in utils.py
 log = logging.getLogger(__name__)

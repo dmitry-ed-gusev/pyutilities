@@ -12,7 +12,7 @@
 import unittest
 from logging import Logger, NullHandler
 from pyutilities.pylog import init_logger
-from pyutilities.pyexception import PyUtilsException
+from pyutilities.exception import PyUtilsException
 from tests.pyutils_test_helper import get_test_logger
 
 

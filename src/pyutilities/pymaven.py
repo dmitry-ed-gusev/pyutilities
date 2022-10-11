@@ -13,10 +13,10 @@
 
 import os
 import platform
-import pyutilities.strings as strings
+import pyutilities.utils.strings as strings
 from subprocess import Popen
 from pyutilities.pylog import init_logger, myself
-from pyutilities.pyexception import PyUtilsException
+from pyutilities.exception import PyUtilsException
 
 
 class PyMaven:
