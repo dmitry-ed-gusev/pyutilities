@@ -2,10 +2,10 @@
 # coding=utf-8
 
 """
-    Inplace/inline file editing utility.
+    Inplace/inline file editing utility. Executable from cmd line.
 
     Created:  Gusev Dmitrii, 13.04.2017
-    Modified: Gusev Dmitrii, 04.03.2019
+    Modified: Gusev Dmitrii, 11.10.2022
 """
 
 # todo: implement: add line mode (if not found needed line)
@@ -39,26 +39,19 @@ def check_str(check_type, source_str, test_str):
 
 # create arguments parser
 parser = argparse.ArgumentParser(description="File editing tool: replace inline values.")
-# add arguments to parser (mandatory/optional)
-parser.add_argument(
-    "-f", "--file", dest="infile", action="store", required=True, help="file to change inline"
-)
-parser.add_argument(
-    "-s", "--sourceStr", dest="sourceStr", action="store", required=True, help="source string for change"
-)
-parser.add_argument(
-    "-d", "--destStr", dest="destStr", action="store", required=True, help="target string for change"
-)
-# optional
-parser.add_argument(
-    "-t",
-    "--type",
-    dest="edit_type",
-    action="store",
-    choices=CHECK_TYPES,
-    default=CHECK_TYPE_STARTS,
-    help="type of inline edit",
-)
+
+# add mandatory arguments to parser
+parser.add_argument("-f", "--file", dest="infile", action="store",
+                    required=True, help="file to change inline")
+parser.add_argument("-s", "--sourceStr", dest="sourceStr", action="store",
+                    required=True, help="source string for change")
+parser.add_argument("-d", "--destStr", dest="destStr", action="store",
+                    required=True, help="target string for change")
+
+# add optional arguments to parser
+parser.add_argument("-t", "--type", dest="edit_type", action="store", choices=CHECK_TYPES,
+                    default=CHECK_TYPE_STARTS, help="type of inline edit",)
+
 # parse cmd line parameters
 args = parser.parse_args()
 
@@ -71,6 +64,4 @@ for line in fileinput.input(files=[args.infile], inplace=True, backup=".original
         sys.stderr.write("Found: {}\n".format(args.sourceStr))
         print(args.destStr)
     else:
-        print(
-            line,
-        )
+        print(line,)

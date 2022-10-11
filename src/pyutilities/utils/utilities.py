@@ -16,8 +16,8 @@
 
 import os
 import csv
-import errno
 import logging
+import inspect
 import hashlib
 import threading
 from pathlib import Path
@@ -66,6 +66,37 @@ def threadsafe_function(fn):
         return r
 
     return new
+
+
+def debug_benchmark(func):
+    """This decorator logs the given function execution time."""
+    import time
+
+    def wrapper(*args, **kwargs):
+        t = time.clock()
+        res = func(*args, **kwargs)
+        log.debug(f"Function [{func.__name__}] executed in [{time.clock() - t}] second(s).")
+        return res
+
+    return wrapper
+
+
+def debug_function_name(func):
+    """This decorator logs the name of the decorating function."""
+
+    def wrapper(*args, **kwargs):
+        log.debug(f"Function [{func.__name__}] is working.")
+        # print(func.__name__, args, kwargs)
+        res = func(*args, **kwargs)
+        return res
+
+    return wrapper
+
+
+# handy utility function/lambda for getting name of executing function from inside the function
+# myself = lambda: inspect.stack()[1][3]
+def myself():
+    return inspect.stack()[1][3]
 
 
 # todo: 1. perform the pre-build of the variations and store them in the scraper db
@@ -123,37 +154,6 @@ def dict_2_csv(dicts_list: List[Dict[str, str]], filename: str, overwrite_file: 
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(dicts_list)
-
-
-def str_2_file(filename: str, content: str, overwrite_file: bool = False):
-    """Write string/text content to the provided file."""
-    log.debug(f'str_2_file(): saving content to file: [{filename}].')
-
-    if os.path.exists(filename) and not overwrite_file:  # file exists and we don't want to overwrite it
-        raise PyUtilitiesException(f"File [{filename}] exists but overwrite is [{overwrite_file}]!")
-
-    if not os.path.exists(os.path.dirname(filename)):  # create a dir for file
-        try:
-            os.makedirs(os.path.dirname(filename))
-        except OSError as exc:  # guard against race condition
-            if exc.errno != errno.EEXIST:
-                raise
-
-    with open(filename, "w") as f:  # write content to a file
-        f.write(content)
-
-
-def file_2_str(filename: str) -> str:
-    """Read content from the provided file as string/text."""
-    log.debug(f'file_2_str(): reading content from file: [{filename}].')
-
-    if not filename:  # fail-fast behaviour (empty path)
-        raise PyUtilitiesException("Specified empty file path!")
-    if not os.path.exists(os.path.dirname(filename)):  # fail-fast behaviour (non-existent path)
-        raise PyUtilitiesException(f"Specified path [{filename}] doesn't exist!")
-
-    with open(filename, mode='r') as infile:
-        return infile.read()
 
 
 if __name__ == "__main__":

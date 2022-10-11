@@ -1,13 +1,11 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 """
-
     Unit tests for strings module.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 26.04.2019
-
+    Modified: Dmitrii Gusev, 11.10.2022
 """
 
 import unittest

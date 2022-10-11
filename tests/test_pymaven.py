@@ -13,7 +13,7 @@
 import os
 import unittest
 from tests.pyutils_test_helper import get_test_logger
-from pyutilities.pymaven import PyMaven
+from pyutilities.commands.pymaven import PyMaven
 
 MVN_SPECIAL_SETTINGS = "tests/configs/mvn_settings_empty.xml"
 MVN_SPECIAL_SETTINGS_NON_EXISTING = "non-existing-mvn-settings.xml"
