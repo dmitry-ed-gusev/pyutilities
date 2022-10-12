@@ -5,12 +5,12 @@
     Unit tests for strings module.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 11.10.2022
+    Modified: Dmitrii Gusev, 12.10.2022
 """
 
+import pytest
 import unittest
 import pyutilities.utils.strings as pystr
-from tests.pyutils_test_helper import get_test_logger
 
 # common constants for testing
 EMPTY_STRINGS = ["", "     ", None, "", "  "]
@@ -18,20 +18,24 @@ NON_EMPTY_STRINGS = {"str1": "   str1", "str2": "str2    ", "str3": "   str3    
 
 
 class StringsTest(unittest.TestCase):
+
     def setUp(self):
-        print("StringsTest.setUp()")
+        # method just for the demo purpose
+        pass
 
     def tearDown(self):
-        print("StringsTest.tearDown()")
+        # method just for the demo purpose
+        pass
 
     @classmethod
     def setUpClass(cls):
-        cls.log = get_test_logger(__name__)
-        cls.log.debug("setUpClass() is working.")
+        # method just for the demo purpose
+        pass
 
     @classmethod
     def tearDownClass(cls):
-        cls.log.debug("tearDownClass() is working.")
+        # method just for the demo purpose
+        pass
 
     def test_is_str_empty_with_empty_strings(self):
         for s in EMPTY_STRINGS:
@@ -58,3 +62,17 @@ class StringsTest(unittest.TestCase):
     def test_trim_to_empty_with_non_empty_strings(self):
         for k, v in NON_EMPTY_STRINGS.items():
             self.assertEqual(k, pystr.trim_to_empty(v), "Must be equals!")
+
+
+@pytest.mark.parametrize("url, postfix, format_params, expected", [
+        ('http://myurl/', '123456', None, 'http://myurl/123456'),
+        ('http://myurl', '123456', None, 'http://myurl/123456'),
+        ('http://myurl{}/suburl/', '', ('xxx',), 'http://myurlxxx/suburl/'),
+        ('http://myurl{}/suburl/', '', ('xxx', 'zzz'), 'http://myurlxxx/suburl/'),
+        ('http://myurl{}/suburl{}/{}', '', ('aaa', 'bbb', 'ccc',), 'http://myurlaaa/suburlbbb/ccc'),
+        ('http://myurl{}/suburl{}/{}', '', ('aaa', 'bbb', 'ccc', 'www'), 'http://myurlaaa/suburlbbb/ccc'),
+        ('http://myurl{}/suburl{}/{}', '2', ('_a', '_b', '_c',), 'http://myurl_a/suburl_b/_c/2'),
+    ]
+)
+def test_process_url(url, postfix, format_params, expected):
+    assert pystr.process_url(url, postfix, format_params) == expected

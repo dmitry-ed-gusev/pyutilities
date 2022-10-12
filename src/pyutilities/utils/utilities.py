@@ -11,7 +11,7 @@
         - ???
 
     Created:  Gusev Dmitrii, 10.10.2022
-    Modified: Dmitrii Gusev, 11.10.2022
+    Modified: Dmitrii Gusev, 12.10.2022
 """
 
 import os
@@ -115,13 +115,6 @@ def build_variations_list() -> list:
                 result.append(letter1 + spec_symbol + letter2)  # add value to resulting list
 
     return result
-
-
-def get_last_part_of_the_url(url: str) -> str:
-    if not url:  # fail-fast behaviour
-        raise PyUtilitiesException("Specified empty URL!")
-
-    return url[url.rfind('/') + 1:]
 
 
 def add_kv_2_dict(dicts_list: List[Dict[str, str]], kv: Tuple[str, str]):

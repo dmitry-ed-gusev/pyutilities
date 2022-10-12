@@ -5,24 +5,25 @@
     Unit tests for Configuration class.
 
     Created:  Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 04.03.2019
+    Modified: Gusev Dmitrii, 12.10.2022
 """
 
 import os
 import unittest
 from mock import patch
-from pyutilities.config import Configuration, ConfigError
-from tests.pyutils_test_helper import get_test_logger
+from pyutilities.config.configuration import Configuration, ConfigError
 
-CONFIG_PATH = "tests/configs"
-CONFIG_MODULE_MOCK_YAML = "pyutilities.config.parse_yaml"
-CONFIG_MODULE_MOCK_OS = "pyutilities.config.os"
+CONFIG_PATH = "test_configs"
+CONFIG_MODULE_MOCK_YAML = "pyutilities.config.configuration.parse_yaml"
+CONFIG_MODULE_MOCK_OS = "pyutilities.config.configuration.os"
 
 
 class ConfigurationTest(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
-        cls.log = get_test_logger(__name__)
+        # method just for the demo purpose
+        pass
 
     def setUp(self):
         # init config instance before each test, don't merge with environment

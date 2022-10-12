@@ -1,19 +1,16 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 """
-
     Unit tests for utils module from [pyutilities] library. Covers most of methods in a module.
 
     Created:  Gusev Dmitrii, 2017
-    Modified: Gusev Dmitrii, 26.09.2018
-
+    Modified: Gusev Dmitrii, 12.10.2022
 """
 
 import unittest
 from mock import patch, mock_open
-from pyutilities.utils import parse_yaml, filter_str, list_files, _list_files
-from tests.pyutils_test_helper import get_test_logger
+from pyutilities.utils.utilities import parse_yaml, filter_str, list_files, _list_files
 
 
 MOCK_OPEN_METHOD = "pyutilities.utils.open"
@@ -21,12 +18,15 @@ MOCK_WALK_METHOD = "pyutilities.utils.walk"
 
 
 class ConfigurationTest(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
-        cls.log = get_test_logger(__name__)
+        # method just for the demo purpose
+        pass
 
     @classmethod
     def tearDownClass(cls):
+        # method just for the demo purpose
         pass
 
     def test_parse_yaml(self):

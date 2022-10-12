@@ -9,7 +9,7 @@
     Added child config class that is able to load config (as dictionary) from xls file (from specified sheet).
 
     Created:  Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 08.12.2021
+    Modified: Gusev Dmitrii, 12.10.2022
 
 """
 

@@ -2,41 +2,40 @@
 # coding=utf-8
 
 """
-
     Unit tests for pygit module/PyMaven class.
 
     Created:  Dmitrii Gusev, 28.05.2019
-    Modified: Dmitrii Gusev, 30.05.2019
-
+    Modified: Dmitrii Gusev, 12.10.2022
 """
 
 import os
 import unittest
-from tests.pyutils_test_helper import get_test_logger
 from pyutilities.commands.pymaven import PyMaven
 
-MVN_SPECIAL_SETTINGS = "tests/configs/mvn_settings_empty.xml"
+MVN_SPECIAL_SETTINGS = "mvn_settings_empty.xml"
 MVN_SPECIAL_SETTINGS_NON_EXISTING = "non-existing-mvn-settings.xml"
 MVN_DEFAULT_CMD = cmd = ["mvn", "clean", "install"]
 
 
 class PyMavenTest(unittest.TestCase):
+
     def setUp(self):
-        self.log.debug("setUp() is working.")
         self.pymaven = PyMaven()
         self.pymaven_with_settings = PyMaven(MVN_SPECIAL_SETTINGS)
 
     def tearDown(self):
-        self.log.debug("tearDown() is working.")
+        # method just for the demo purpose
+        pass
 
     @classmethod
     def setUpClass(cls):
-        cls.log = get_test_logger(__name__)
-        cls.log.debug("setUpClass() is working.")
+        # method just for the demo purpose
+        pass
 
     @classmethod
     def tearDownClass(cls):
-        cls.log.debug("tearDownClass() is working.")
+        # method just for the demo purpose
+        pass
 
     def test_pymaven_raise_exception_on_non_exitent_settings(self):
         with self.assertRaises(FileNotFoundError):

@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-# pyutilities = {editable = true, path = "."}
+pyutilities = {editable = true, path = "."}
 
 [dev-packages]
 mock = "*"
@@ -14,6 +14,7 @@ pytest-cov = "*"
 pytest-mock = "*"
 mypy = "*"
 types-six = "*"
+types-mock = "*"
 types-requests = "*"
 types-PyYAML = "*"
 flake8 = "*"

@@ -5,23 +5,24 @@
     Unit tests for ConfigurationXls class.
 
     Created:  Gusev Dmitrii, XX.12.2018
-    Modified: Gusev Dmitrii, 10.01.2021
+    Modified: Gusev Dmitrii, 12.10.2022
 """
 
 import unittest
-from pyutilities.config import ConfigurationXls, ConfigError
-from tests.pyutils_test_helper import get_test_logger
+from pyutilities.config.configuration import ConfigurationXls, ConfigError
 
-XLSX_CONFIG_FILE = "tests/configs/xlsx_config.xlsx"  # xlsx format (Excel 2010)
-XLS_CONFIG_FILE = "tests/configs/xls_config.xls"  # xls format (old Excel)
+XLSX_CONFIG_FILE = "test_configs/xlsx_config.xlsx"  # xlsx format (Excel 2010)
+XLS_CONFIG_FILE = "test_configs/xls_config.xls"  # xls format (old Excel)
 CONFIG_SHEET = "config_sheet"
 
 
 # todo: add more test cases!!!
 class ConfigurationTest(unittest.TestCase):
+
     @classmethod
     def setUpClass(cls):
-        cls.log = get_test_logger(__name__)
+        # method just for the demo purpose
+        pass
 
     def setUp(self):
         # init config before each test, don't merge with environment

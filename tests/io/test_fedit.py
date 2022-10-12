@@ -2,34 +2,35 @@
 # coding=utf-8
 
 """
-
     Unit tests for fedit utility.
 
     Created:  Gusev Dmitrii, 26.09.2018
-    Modified: Dmitrii Gusev, 10.01.2021
-
+    Modified: Dmitrii Gusev, 12.10.2022
 """
 
 import unittest
-from tests.pyutils_test_helper import get_test_logger
 
 
 # todo: implement unit tests for fedit utility
 class FEditTest(unittest.TestCase):
+
     def setUp(self):
-        print("FEditTest.setUp()")
+        # method just for the demo purpose
+        pass
 
     def tearDown(self):
-        print("FEditTest.tearDown()")
+        # method just for the demo purpose
+        pass
 
     @classmethod
     def setUpClass(cls):
-        cls.log = get_test_logger(__name__)
-        cls.log.debug("setUpClass() is working.")
+        # method just for the demo purpose
+        pass
 
     @classmethod
     def tearDownClass(cls):
-        cls.log.debug("tearDownClass() is working.")
+        # method just for the demo purpose
+        pass
 
     def test(self):
         # todo: implement unit test
