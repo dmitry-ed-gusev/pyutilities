@@ -1,20 +1,17 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 """
-
     Some useful/convenient functions related to GIT.
 
-    13.05.2019 Module is in DRAFT state.
-
     Created:  Dmitrii Gusev, 03.05.2019
-    Modified: Dmitrii Gusev, 08.12.2021
-
+    Modified: Dmitrii Gusev, 12.12.2022
 """
 
 from subprocess import Popen
-from pyutilities.pylog import init_logger, myself
+from pyutilities.utils.utilities import myself
 from pyutilities.exception import PyUtilitiesException
+from 
 
 # useful constants
 GIT_EXECUTABLE = "git"
