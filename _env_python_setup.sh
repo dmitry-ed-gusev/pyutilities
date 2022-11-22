@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 ###############################################################################
 #
 #   General python environment setup/reset script. Script can be used to 
@@ -11,7 +12,7 @@
 #            environment (pipenv shell).
 #
 #   Created:  Dmitrii Gusev, 09.10.2022
-#   Modified:
+#   Modified: Dmitrii Gusev, 22.11.2022
 #
 ###############################################################################
 

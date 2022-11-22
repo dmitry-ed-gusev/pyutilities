@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 ###############################################################################
 #
 #   Development environment setup script. Script can be used to re-create
@@ -8,7 +9,7 @@
 #            environment (pipenv shell).
 #
 #   Created:  Dmitrii Gusev, 09.10.2022
-#   Modified:
+#   Modified: Dmitrii Gusev, 22.11.2022
 #
 ###############################################################################
 

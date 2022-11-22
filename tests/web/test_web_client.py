@@ -15,8 +15,8 @@ from requests.exceptions import HTTPError
 from pyutilities.web.web_client import WebClient
 
 # HTTP request parameters (should be added to the URL)
-http_request_params1 = {'zzz': 'ccc'}
-http_request_params2 = {'a': 'bbb', 'c': 'ddd'}
+http_request_params1 = {"zzz": "ccc"}
+http_request_params2 = {"a": "bbb", "c": "ddd"}
 
 # HTTP content types
 HTTP_CONTENT_TEXT = "plain/text"
@@ -135,7 +135,12 @@ def test_webclient_http_ok_codes(webclient, mocked_responses, status, body, cont
     url_without_params = "http://example.com/api/1/foobar"  # URL without parameters
     # WebClient HTTP methods for testing
     webclient_http_methods = [
-        webclient.get, webclient.post, webclient.put, webclient.delete, webclient.head, webclient.options
+        webclient.get,
+        webclient.post,
+        webclient.put,
+        webclient.delete,
+        webclient.head,
+        webclient.options,
     ]
 
     for method in webclient_http_methods:  # iterate and check each method
@@ -144,7 +149,7 @@ def test_webclient_http_ok_codes(webclient, mocked_responses, status, body, cont
         # then
         assert response.status_code == status
         assert response.text == body
-        assert response.headers['Content-Type'] == content_type
+        assert response.headers["Content-Type"] == content_type
 
 
 @pytest.mark.parametrize("status, body, content_type, params", testdata_http_err_codes_without_retries)
@@ -162,7 +167,12 @@ def test_webclient_http_fail_codes(webclient, mocked_responses, status, body, co
     url_without_params = "http://example.com/api/1/foobar"  # URL without parameters
     # WebClient HTTP methods for testing
     webclient_http_methods = [
-        webclient.get, webclient.post, webclient.put, webclient.delete, webclient.head, webclient.options
+        webclient.get,
+        webclient.post,
+        webclient.put,
+        webclient.delete,
+        webclient.head,
+        webclient.options,
     ]
 
     for method in webclient_http_methods:  # iterate and check each method
@@ -182,8 +192,12 @@ def test_webclient_retry_on_fail(webclient, mocked_responses, status, body, cont
     url_with_params = "http://example.com/api/1/foobar?a=bbb&c=ddd"
 
     http_mocked_responses = [  # mocked HTTP responses
-        mocked_responses.get, mocked_responses.post, mocked_responses.put, mocked_responses.delete,
-        mocked_responses.head, mocked_responses.options
+        mocked_responses.get,
+        mocked_responses.post,
+        mocked_responses.put,
+        mocked_responses.delete,
+        mocked_responses.head,
+        mocked_responses.options,
     ]
 
     responses = []
@@ -191,16 +205,23 @@ def test_webclient_retry_on_fail(webclient, mocked_responses, status, body, cont
 
         for counter in range(5):  # add responses for one method
             if counter < 4:  # responses with status == 500
-                responses.append(mocked_response(url_with_params, body=body, status=status,
-                                                 content_type=content_type))
+                responses.append(
+                    mocked_response(url_with_params, body=body, status=status, content_type=content_type)
+                )
             elif counter == 4:  # the latest response with status == 200
-                responses.append(mocked_response(url_with_params, body="OK", status=200,
-                                                 content_type=content_type))
+                responses.append(
+                    mocked_response(url_with_params, body="OK", status=200, content_type=content_type)
+                )
 
     url_without_params = "http://example.com/api/1/foobar"  # URL without parameters
     # WebClient HTTP methods for testing
     webclient_http_methods = [
-        webclient.get, webclient.post, webclient.put, webclient.delete, webclient.head, webclient.options
+        webclient.get,
+        webclient.post,
+        webclient.put,
+        webclient.delete,
+        webclient.head,
+        webclient.options,
     ]
 
     for method in webclient_http_methods:  # iterate and check each method
@@ -209,7 +230,7 @@ def test_webclient_retry_on_fail(webclient, mocked_responses, status, body, cont
         # then
         assert response.status_code == 200
         assert response.text == "OK"
-        assert response.headers['Content-Type'] == content_type
+        assert response.headers["Content-Type"] == content_type
 
     # assert all mocked responses were hit
     for response in responses:

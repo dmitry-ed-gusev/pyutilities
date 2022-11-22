@@ -41,16 +41,26 @@ def check_str(check_type, source_str, test_str):
 parser = argparse.ArgumentParser(description="File editing tool: replace inline values.")
 
 # add mandatory arguments to parser
-parser.add_argument("-f", "--file", dest="infile", action="store",
-                    required=True, help="file to change inline")
-parser.add_argument("-s", "--sourceStr", dest="sourceStr", action="store",
-                    required=True, help="source string for change")
-parser.add_argument("-d", "--destStr", dest="destStr", action="store",
-                    required=True, help="target string for change")
+parser.add_argument(
+    "-f", "--file", dest="infile", action="store", required=True, help="file to change inline"
+)
+parser.add_argument(
+    "-s", "--sourceStr", dest="sourceStr", action="store", required=True, help="source string for change"
+)
+parser.add_argument(
+    "-d", "--destStr", dest="destStr", action="store", required=True, help="target string for change"
+)
 
 # add optional arguments to parser
-parser.add_argument("-t", "--type", dest="edit_type", action="store", choices=CHECK_TYPES,
-                    default=CHECK_TYPE_STARTS, help="type of inline edit",)
+parser.add_argument(
+    "-t",
+    "--type",
+    dest="edit_type",
+    action="store",
+    choices=CHECK_TYPES,
+    default=CHECK_TYPE_STARTS,
+    help="type of inline edit",
+)
 
 # parse cmd line parameters
 args = parser.parse_args()
@@ -64,4 +74,6 @@ for line in fileinput.input(files=[args.infile], inplace=True, backup=".original
         sys.stderr.write("Found: {}\n".format(args.sourceStr))
         print(args.destStr)
     else:
-        print(line,)
+        print(
+            line,
+        )

@@ -11,17 +11,15 @@
         - ???
 
     Created:  Gusev Dmitrii, 10.10.2022
-    Modified: Dmitrii Gusev, 12.10.2022
+    Modified: Dmitrii Gusev, 22.11.2022
 """
 
 import os
 import csv
 import logging
 import inspect
-import hashlib
 import threading
-from pathlib import Path
-from typing import Dict, List, Tuple, Any
+from typing import Dict, List, Tuple
 from pyutilities.exception import PyUtilitiesException
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
@@ -59,8 +57,6 @@ def threadsafe_function(fn):
         lock.acquire()
         try:
             r = fn(*args, **kwargs)
-        # except Exception as e:
-        #     raise e
         finally:
             lock.release()
         return r
@@ -73,9 +69,9 @@ def debug_benchmark(func):
     import time
 
     def wrapper(*args, **kwargs):
-        t = time.clock()
+        t = time.process_time()
         res = func(*args, **kwargs)
-        log.debug(f"Function [{func.__name__}] executed in [{time.clock() - t}] second(s).")
+        log.debug(f"Function [{func.__name__}] executed in [{time.process_time() - t}] second(s).")
         return res
 
     return wrapper
@@ -119,12 +115,12 @@ def build_variations_list() -> list:
 
 def add_kv_2_dict(dicts_list: List[Dict[str, str]], kv: Tuple[str, str]):
     """Add specified key-value pair to all dictionaries in the provided dicts list."""
-    log.debug(f'add_kv_2_dict(): adding key:value [{kv}] to dicts list.')
+    log.debug(f"add_kv_2_dict(): adding key:value [{kv}] to dicts list.")
 
     if not dicts_list:
-        raise ValueError('Provided empty dictionaries list!')
+        raise ValueError("Provided empty dictionaries list!")
     if not kv:
-        raise ValueError('Provided empty key-value pair!')
+        raise ValueError("Provided empty key-value pair!")
 
     for dictionary in dicts_list:
         dictionary[kv[0]] = kv[1]
@@ -132,18 +128,18 @@ def add_kv_2_dict(dicts_list: List[Dict[str, str]], kv: Tuple[str, str]):
 
 def dict_2_csv(dicts_list: List[Dict[str, str]], filename: str, overwrite_file: bool = False):
     """Saving the provided dictionary to the CSV file. If parameter overwrite_file = True -
-        the existing file will be overwritten, otherwise existing file will raise an exception.
+    the existing file will be overwritten, otherwise existing file will raise an exception.
     """
-    log.debug(f'dict_2_csv(): saving the dictionaries list to CSV: [{filename}].')
+    log.debug(f"dict_2_csv(): saving the dictionaries list to CSV: [{filename}].")
 
     if not dicts_list or not filename:  # I - fail-fast check
-        raise ValueError(f'Provided empty dictionaries list: [{not dicts_list}] or filename: [{filename}]!')
+        raise ValueError(f"Provided empty dictionaries list: [{not dicts_list}] or filename: [{filename}]!")
 
     if os.path.exists(filename) and not overwrite_file:  # II - file exists and we don't want to overwrite it
         raise PyUtilitiesException(f"File [{filename}] exists but overwrite is [{overwrite_file}]!")
 
     keys = dicts_list[0].keys()
-    with open(filename, 'w', newline='') as output_file:
+    with open(filename, "w", newline="") as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(dicts_list)

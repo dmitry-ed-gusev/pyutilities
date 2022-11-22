@@ -18,7 +18,6 @@ CONFIG_SHEET = "config_sheet"
 
 # todo: add more test cases!!!
 class ConfigurationTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         # method just for the demo purpose

@@ -19,7 +19,6 @@ CONFIG_MODULE_MOCK_OS = "pyutilities.config.configuration.os"
 
 
 class ConfigurationTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         # method just for the demo purpose

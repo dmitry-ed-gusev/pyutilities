@@ -13,7 +13,6 @@ from pyutilities.commands.pygit import PyGit
 
 
 class PyGitTest(unittest.TestCase):
-
     def setUp(self):
         self.pygit = PyGit("http://stash.server.com/scm")
 

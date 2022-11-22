@@ -13,19 +13,17 @@
         - (HTTP status codes) https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
     Created:  Dmitrii Gusev, 10.10.2022
-    Modified: Dmitrii Gusev, 12.10.2022
+    Modified: Dmitrii Gusev, 22.11.2022
 """
 
 import logging
-import shutil
 import requests
-from pathlib import Path
 from requests import Response
 from requests.adapters import HTTPAdapter, Retry
 from fake_useragent import UserAgent
-from typing import Dict, Tuple, List, AnyStr, Any
+from typing import Dict, Tuple, List
 
-from pyutilities.utils.utilities import threadsafe_function
+from pyutilities.utils.common_utils import threadsafe_function
 from pyutilities.exception import PyUtilitiesException
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
@@ -36,6 +34,17 @@ log.debug(f"Logging for module {__name__} is configured.")
 HTTP_DEFAULT_TIMEOUT = 20  # default HTTP requests timeout (seconds)
 HTTP_DEFAULT_BACKOFF = 1  # default back off factor (it is better to not touch this value!)
 HTTP_DEFAUT_RETRIES = 4  # default retries num for HTTP requests (+1 for the original request!)
+
+
+# todo: see sample here: https://github.com/psf/requests/issues/4233
+def expanded_raise_for_status(response, exclude_statuses: List[int] | None):
+    """Expanded version of requests.raise_for_status() method. Raises exception only if
+    exclude statuses list is not empty and contains the provided response status."""
+
+    # if response code is not in the exclusion list - call raise_for_status()
+    if not exclude_statuses or response.status_code not in exclude_statuses:
+        log.debug(f"Response status: {response.status_code}. Raising for status...")
+        response.raise_for_status()
 
 
 class TimeoutHTTPAdapter(HTTPAdapter):
@@ -56,9 +65,9 @@ class TimeoutHTTPAdapter(HTTPAdapter):
         return super().send(request, **kwargs)
 
 
-class WebClient():
+class WebClient:
     """Simple WebClient class (class based on the [requests] module).
-        If user_agent specified - use it, if not - generate it randomly.
+    If user_agent specified - use it, if not - generate it randomly.
     """
 
     # class (not instance!) variable - when we create multiple instances of this class - we need
@@ -71,15 +80,25 @@ class WebClient():
 
     @threadsafe_function
     def __update_user_agent_info(self):
+        """Thread-safe update of the locally cached fake UserAgent data."""
         if not WebClient.__user_agent_info_updated:
             log.info("Fake User Agent -> cached info updating...")
             WebClient.__ua.update()
             WebClient.__user_agent_info_updated = True
 
-    def __init__(self, headers: Dict[str, str] = None, cookies: Dict[str, str] = None, auth=None,
-                 user_agent: str = "", allow_redirects: bool = True, redirects_count: int = 0,
-                 timeout: int = HTTP_DEFAULT_TIMEOUT, retries: int = HTTP_DEFAUT_RETRIES,
-                 update_user_agents_info: bool = False) -> None:
+    def __init__(
+        self,
+        headers: Dict[str, str] | None = None,
+        cookies: Dict[str, str] | None = None,
+        auth=None,
+        user_agent: str = "",
+        allow_redirects: bool = True,
+        redirects_count: int = 0,
+        timeout: int = HTTP_DEFAULT_TIMEOUT,
+        retries: int = HTTP_DEFAUT_RETRIES,
+        update_user_agents_info: bool = False,
+        dont_raise_for: List[int] | None = None,
+    ) -> None:
         log.debug("Initializing WebClient() instance.")
 
         if update_user_agents_info:
@@ -91,19 +110,26 @@ class WebClient():
 
         # setup requests hooks - raise HTTPError for error HTTP status codes 4xx, 5xx, except
         # the statuses specified in status_forcelist parameter of the Retry strategy
-        def assert_status_hook(response, *args, **kwargs): response.raise_for_status()
+
+        # todo: option I -> raise for all error status codes (4xx, 5xx) except statuses from
+        # todo:   [status_forcelist] list
+        # def assert_status_hook(response, *args, **kwargs): response.raise_for_status()
+
+        # todo: option II: -> raise for all error status codes (4xx, 5xx) except statuses from
+        # todo:   [status_forcelist] list and [dont_raise_for] list
+        def assert_status_hook(response, *args, **kwargs):
+            expanded_raise_for_status(response, dont_raise_for)
+
         self.__session.hooks["response"] = [assert_status_hook]
 
         # setup retries strategy for the session - see mounting it below
         retry_strategy = Retry(  # create retry strategy
             total=retries,  # total # of retries, see HTTP codes that will be retried -> status_forcelist
             backoff_factor=HTTP_DEFAULT_BACKOFF,  # backoff: 1 -> [0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256] sec
-
             # for these HTTP error status codes will be applied the Retry startegy, in case the retry limit
             # will be reached without success - TooMaxRetries(?) issue will be raised, otherwise the
             # success status/response (1xx, 2xx, 3xx) will be returned.
             status_forcelist=[429, 500, 502, 503, 504],  # statuses for retry
-
             # use 'allowed_methods' instead of 'method_whitelist' (deprecated and will be removed in v2.0)
             allowed_methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "PATCH"],
         )
@@ -127,18 +153,22 @@ class WebClient():
         if auth:  # add authorization to session
             self.__session.auth = auth
 
-        log.debug("WebClient() instance initialized OK. Configuration:\n"
-                  f"Headers: {self.__session.headers}\n"
-                  f"Cookies: {self.__session.cookies}\n")
+        log.debug(
+            "WebClient() instance initialized OK. Configuration:\n"
+            f"Headers: {self.__session.headers}\n"
+            f"Cookies: {self.__session.cookies}\n"
+        )
 
-    def get(self, url: str, params: Dict[str, str] = None) -> Response:
+    def get(self, url: str, params: Dict[str, str] | None = None) -> Response:
         """Perform HTTP GET request with retry (if necessary).
         :param params: request parameters -> will be added to the URL
         """
         log.debug(f"WebClient.get(): {url}. Params: {params}.")
         return self.__session.get(url, params=params, allow_redirects=self.__allow_redirects)
 
-    def post(self, url: str, data: Dict[str, str] = None, params: Dict[str, str] = None) -> Response:
+    def post(
+        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+    ) -> Response:
         """Perform HTTP POST request with retry (if necessary).
         :param data: request data -> will be added to the request body (HTTP POST)
         :param params: request parameters -> will be added to the URL
@@ -146,7 +176,9 @@ class WebClient():
         log.debug(f"WebClient.post(): {url}. Params: {params}. Data: {data}.")
         return self.__session.post(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
-    def put(self, url: str, data: Dict[str, str] = None, params: Dict[str, str] = None) -> Response:
+    def put(
+        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+    ) -> Response:
         """Perform HTTP PUT request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
@@ -154,7 +186,9 @@ class WebClient():
         log.debug(f"WebClient.put(): {url}. Params: {params}. Data: {data}.")
         return self.__session.put(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
-    def delete(self, url: str, data: Dict[str, str] = None, params: Dict[str, str] = None) -> Response:
+    def delete(
+        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+    ) -> Response:
         """Perform HTTP DELETE request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
@@ -162,7 +196,9 @@ class WebClient():
         log.debug(f"WebClient.delete(): {url}. Params: {params}. Data: {data}.")
         return self.__session.delete(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
-    def head(self, url: str, data: Dict[str, str] = None, params: Dict[str, str] = None) -> Response:
+    def head(
+        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+    ) -> Response:
         """Perform HTTP HEAD request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
@@ -170,7 +206,9 @@ class WebClient():
         log.debug(f"WebClient.head(): {url}. Params: {params}. Data: {data}.")
         return self.__session.head(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
-    def options(self, url: str, data: Dict[str, str] = None, params: Dict[str, str] = None) -> Response:
+    def options(
+        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+    ) -> Response:
         """Perform HTTP OPTIONS request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
@@ -204,7 +242,7 @@ class WebClient():
 #     :param url: url to request
 #     :param request_params: reuqest parameters (will be added to the request URL - for the GET request)
 #     :param retry_count: number of retries. 0 -> no retries (one request), less than 0 -> no requests at all,
-#                         greater than 0 -> (retry_count + 1) - such number of requests (one original 
+#                         greater than 0 -> (retry_count + 1) - such number of requests (one original
 #                         request + # of retries)
 #     :return: HTML output with data (text/str)
 #     """
@@ -243,7 +281,7 @@ class WebClient():
 #     :param url: url to request
 #     :param request_params: reuqest parameters (will be added to the body of the POST request)
 #     :param retry_count: number of retries. 0 -> no retries (one request), less than 0 -> no requests at all,
-#                         greater than 0 -> (retry_count + 1) - such number of requests (one original 
+#                         greater than 0 -> (retry_count + 1) - such number of requests (one original
 #                         request + # of retries)
 #     :return: HTML output with data (text/str)
 #     """
@@ -319,16 +357,16 @@ class WebClient():
 #     return local_path
 
 
-def process_url(url: str, postfix: str = '', format_values: Tuple[str] = None) -> str:
-    log.debug(f'Processing URL [{url}] with postfix [{postfix}] and format values [{format_values}].')
+def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = None) -> str:
+    log.debug(f"Processing URL [{url}] with postfix [{postfix}] and format values [{format_values}].")
 
     if not url:
-        raise ScraperException('Provided empty URL for processing!')
+        raise PyUtilitiesException("Provided empty URL for processing!")
 
     processed_url: str = url
     if postfix:  # if postfix - add it to the URL string
-        if not processed_url.endswith('/'):
-            processed_url += '/'
+        if not processed_url.endswith("/"):
+            processed_url += "/"
         processed_url += postfix
 
     if format_values:  # if there are values - format URL string with them
@@ -337,11 +375,14 @@ def process_url(url: str, postfix: str = '', format_values: Tuple[str] = None) -
     return processed_url
 
 
-def process_urls(urls: Dict[str, str], postfix: str = '', format_values: Tuple[str] = None) -> Dict[str, str]:
-    log.debug('Processing urls dictionary.')
+def process_urls(
+    urls: Dict[str, str], postfix: str = "", format_values: Tuple[str] | None = None
+) -> Dict[str, str]:
+
+    log.debug("Processing urls dictionary.")
 
     if not urls:
-        raise ScraperException('Provided empty URLs dictionary for processing!')
+        raise PyUtilitiesException("Provided empty URLs dictionary for processing!")
 
     processed: Dict[str, str] = dict()
     for key in urls:

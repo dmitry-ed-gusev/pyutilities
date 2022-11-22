@@ -12,13 +12,12 @@ import os
 import unittest
 from pyutilities.commands.pymaven import PyMaven
 
-MVN_SPECIAL_SETTINGS = "mvn_settings_empty.xml"
+MVN_SPECIAL_SETTINGS = "tests/commands/mvn_settings_empty.xml"
 MVN_SPECIAL_SETTINGS_NON_EXISTING = "non-existing-mvn-settings.xml"
 MVN_DEFAULT_CMD = cmd = ["mvn", "clean", "install"]
 
 
 class PyMavenTest(unittest.TestCase):
-
     def setUp(self):
         self.pymaven = PyMaven()
         self.pymaven_with_settings = PyMaven(MVN_SPECIAL_SETTINGS)

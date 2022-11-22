@@ -2,22 +2,21 @@
 # -*- coding: utf-8 -*-
 
 """
-    Unit tests for utils module from [pyutilities] library. Covers most of methods in a module.
+    Unit tests for io_utilities module.
 
-    Created:  Gusev Dmitrii, 2017
-    Modified: Gusev Dmitrii, 12.10.2022
+    Created:  Dmitrii Gusev, 12.10.2022
+    Modified:
 """
 
 import unittest
 from mock import patch, mock_open
-from pyutilities.utils.utilities import parse_yaml, filter_str, list_files, _list_files
+from pyutilities.io.io_utils import read_yaml, list_files, _list_files
+
+MOCK_OPEN_METHOD = "pyutilities.io.io_utils.open"
+MOCK_WALK_METHOD = "pyutilities.io.io_utils.walk"
 
 
-MOCK_OPEN_METHOD = "pyutilities.utils.open"
-MOCK_WALK_METHOD = "pyutilities.utils.walk"
-
-
-class ConfigurationTest(unittest.TestCase):
+class IOUtilsTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -30,22 +29,22 @@ class ConfigurationTest(unittest.TestCase):
         pass
 
     def test_parse_yaml(self):
-        # with patch(MOCK_OPEN_METHOD, mock_open(read_data='name: value'), create=True):
-        with patch("pyutilities.utils.open", mock_open(read_data="name: value"), create=True):
-            result = parse_yaml("foo_ok.file")
+        # with patch("pyutilities.utils.open", mock_open(read_data="name: value"), create=True):
+        with patch(MOCK_OPEN_METHOD, mock_open(read_data='name: value'), create=True):
+            result = read_yaml("foo_ok.file")
             print("!!!", result)
             self.assertEqual("value", result["name"])
 
     def test_parse_yaml_ioerror(self):
         with self.assertRaises(IOError):
             with patch(MOCK_OPEN_METHOD, mock_open(read_data="name:\tvalue"), create=True):
-                parse_yaml("foo_ioerror.file")
+                read_yaml("foo_ioerror.file")
 
     def test_parse_yaml_empty_paths(self):
         for path in ["", "   "]:
             with self.assertRaises(IOError):
                 with patch(MOCK_OPEN_METHOD, mock_open(read_data="n: v"), create=True):
-                    parse_yaml(path)
+                    read_yaml(path)
 
     def test_list_files_invalid_paths(self):
         for path in ["", "    ", "not-existing-path", "__init__.py"]:  # the last one - existing python file
@@ -60,13 +59,3 @@ class ConfigurationTest(unittest.TestCase):
         _list_files("zzz", files, True)
         self.assertEqual(1, len(files))
         self.assertEqual("/path/file1", files[0])
-
-    def test_filter_str_for_empty(self):
-        for string in ["", "    ", None]:
-            self.assertEqual(string, filter_str(string))
-
-    def test_filter_str_for_string(self):
-        self.assertEqual("45, .555", filter_str("+45, *@.555"))
-        self.assertEqual("улица  Правды. 11,", filter_str("улица + =Правды. 11,"))
-        self.assertEqual("3-5-7", filter_str("3-5-7"))
-        self.assertEqual("zzzz. , fgh ", filter_str("zzzz. ??, fgh *"))

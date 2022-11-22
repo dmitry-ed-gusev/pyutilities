@@ -5,7 +5,7 @@
     IO Utilities module.
 
     Created:  Dmitrii Gusev, 04.04.2017
-    Modified: Dmitrii Gusev, 11.10.2022
+    Modified: Dmitrii Gusev, 22.11.2022
 """
 
 import os
@@ -64,7 +64,7 @@ def list_files(path, out_to_console=False):
 
 def str_2_file(filename: str, content: str, overwrite_file: bool = False):
     """Write string/text content to the provided file."""
-    log.debug(f'str_2_file(): saving content to file: [{filename}].')
+    log.debug(f"str_2_file(): saving content to file: [{filename}].")
 
     if os.path.exists(filename) and not overwrite_file:  # file exists and we don't want to overwrite it
         raise PyUtilitiesException(f"File [{filename}] exists but overwrite is [{overwrite_file}]!")
@@ -82,14 +82,14 @@ def str_2_file(filename: str, content: str, overwrite_file: bool = False):
 
 def file_2_str(filename: str) -> str:
     """Read content from the provided file as string/text."""
-    log.debug(f'file_2_str(): reading content from file: [{filename}].')
+    log.debug(f"file_2_str(): reading content from file: [{filename}].")
 
     if not filename:  # fail-fast behaviour (empty path)
         raise PyUtilitiesException("Specified empty file path!")
     if not os.path.exists(os.path.dirname(filename)):  # fail-fast behaviour (non-existent path)
         raise PyUtilitiesException(f"Specified path [{filename}] doesn't exist!")
 
-    with open(filename, mode='r') as infile:
+    with open(filename, mode="r") as infile:
         return infile.read()
 
 

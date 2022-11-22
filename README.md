@@ -9,23 +9,20 @@ Useful utilities/experimantal modules/research in python 3.x. Some of the module
 
 ## Versions history
 
-**0.14.0**  
-
+**0.13.3**  
 - updated build mechanism with pipenv, instead of virtualenv and requirements.txt file
-- added several packages:
-  - eeee
-  - ddd
-- ffff
 
 **0.13.1**  
 Updated library dependencies. Added openpyxl as support of xlsx format was removed from
 xlrd library. Updated unit tests. Minor fixes / refactorings. Doc updates. Removed windows batch script.
 
-**0.12.0**
-Significant update for library. Many changes were done and sometimes tested :).
+**0.12.0**  
+Significant update for library. Many changes were done and sometimes tested :).  
+
 Changes that were done:
 
-- added pylog.py module, for logging purposes (convenience mostly). Method setup_logging() was moved here (from utils.py).
+- added pylog.py module, for logging purposes (convenience mostly). Method setup_logging() was moved here
+  (from utils.py).
 - method setup_logging() now is able to initialize logger by name and return it
 - added deprecation of direct execution to utils.py
 - added module strings.py for various convenient methods for strings (with unit tests)

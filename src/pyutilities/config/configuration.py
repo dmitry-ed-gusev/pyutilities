@@ -19,7 +19,7 @@ import xlrd  # reading excel files (old Excel - xls)
 import openpyxl  # reading excel files (Excel 2010 - xlsx)
 
 from string import Template
-from pyutilities.utils import parse_yaml
+from pyutilities.io.io_utils import read_yaml
 
 YAML_EXTENSION_1 = ".yml"
 YAML_EXTENSION_2 = ".yaml"
@@ -41,11 +41,9 @@ class Configuration(object):
         self.log = logging.getLogger(__name__)
         self.log.addHandler(logging.NullHandler())
         self.log.debug("Initializing Configuration() instance...")
-        self.log.debug(
-            "Load configuration:\n\tpath -> {}\n\tdict -> {}\n\toverride config -> {}\n\tmerge env -> {}".format(
-                path_to_config, dict_to_merge, is_override_config, is_merge_env
-            )
-        )
+        self.log.debug(f"Load configuration:\n\tpath -> {path_to_config}"
+                       f"\n\tdict -> {dict_to_merge}\n\toverride config -> {is_override_config}"
+                       f"\n\tmerge env -> {is_merge_env}")
 
         # init internal dictionary
         self.config_dict = {}
@@ -103,9 +101,9 @@ class Configuration(object):
         if os.path.isfile(path) and (path.endswith(YAML_EXTENSION_1) or path.endswith(YAML_EXTENSION_2)):
             self.log.debug("Provided path [{}] is a YAML file. Loading.".format(path))
             try:
-                self.merge_dict(parse_yaml(path))
+                self.merge_dict(read_yaml(path))
             except ConfigError as ex:
-                raise ConfigError("ERROR while merging file %s to configuration.\n%s" % (path, ex.message))
+                raise ConfigError("ERROR while merging file %s to configuration.\n%s" % (path, ex))
 
         # loading from directory (all YAML files)
         elif os.path.isdir(path):
@@ -117,10 +115,10 @@ class Configuration(object):
                 ):
                     self.log.debug("Loading configuration from [{}].".format(some_file))
                     try:
-                        self.merge_dict(parse_yaml(file_path))
+                        self.merge_dict(read_yaml(file_path))
                     except ConfigError as ex:
                         raise ConfigError(
-                            "ERROR while merging file %s to configuration.\n%s" % (file_path, ex.message)
+                            "ERROR while merging file %s to configuration.\n%s" % (file_path, ex)
                         )
 
         # unknown file/dir type
@@ -132,7 +130,7 @@ class Configuration(object):
             self.log.info("Merging environment variables is switched ON.")
             self.merge_env()
 
-    # todo: possible bug: if merge dict with multi-level keys (a.b.c), these keys can't be accessed by get() method!
+    # todo: possible bug: if merge dict with multi-level keys (a.b.c), these keys can't be accessed by get()!
     def merge_dict(self, new_dict):
         """Adds another dictionary (respecting nested sub-dictionaries) to config.
         If there are same keys in both dictionaries, raise ConfigError (no overwrites!)
@@ -189,10 +187,10 @@ class Configuration(object):
         try:
             result = self.__get_value(key, self.config_dict)
             return result
-        except KeyError as err:
+        except KeyError:
             if default is not None:
                 return default
-            raise ConfigError("Configuration entry [{}] not found".format(key))
+            raise ConfigError(f"Configuration entry [{key}] not found!")
 
     def set(self, key, value):
         """Sets config value, creating all the nested levels if necessary
@@ -209,7 +207,8 @@ class Configuration(object):
         values[keys[0]] = value
 
     def resolve_and_set(self, key, value):
-        """Performs template substitution in "value" using mapping from config (only top-level), then sets it in config
+        """Performs template substitution in "value" using mapping from config (only top-level), then sets
+        it in config.
         :param key: key to assign value to (could be multi-level)
         :type key: str
         :param value: value with substitution patterns e.g. "system-$env" (see string.Template)
@@ -220,7 +219,8 @@ class Configuration(object):
         self.set(key, resolved)
 
     def __get_value(self, key, values):
-        """Internal method for using in "get", recursively search for dictionaries by key parts and retrieves value
+        """Internal method for using in "get", recursively search for dictionaries by key parts
+        and retrieves value.
         :type key: str
         :param values: dictionary to search in
         :type values: dict
@@ -252,6 +252,7 @@ class Configuration(object):
 
 class ConfigError(Exception):
     """Invalid configuration error"""
+    pass
 
 
 # numbers of name/value columns in excel config sheet

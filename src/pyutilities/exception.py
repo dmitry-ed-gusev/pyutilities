@@ -1,13 +1,11 @@
-#!/usr/bin/env python
-# coding=utf-8
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 
 """
-
     Internal exception for pyutilities library.
 
     Created:  Dmitrii Gusev, 17.05.2019
-    Modified: Dmitrii Gusev, 11.10.2022
-
+    Modified: Dmitrii Gusev, 22.11.2022
 """
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
@@ -15,6 +13,7 @@ from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
 class PyUtilitiesException(Exception):
     """Custom Scraper exception for various internal exceptions."""
+
     pass
 
 

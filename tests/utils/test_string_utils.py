@@ -5,12 +5,13 @@
     Unit tests for strings module.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 12.10.2022
+    Modified: Dmitrii Gusev, 22.11.2022
 """
 
 import pytest
 import unittest
-import pyutilities.utils.strings as pystr
+from pyutilities.utils.string_utils import filter_str
+import pyutilities.utils.string_utils as pystr
 
 # common constants for testing
 EMPTY_STRINGS = ["", "     ", None, "", "  "]
@@ -63,16 +64,46 @@ class StringsTest(unittest.TestCase):
         for k, v in NON_EMPTY_STRINGS.items():
             self.assertEqual(k, pystr.trim_to_empty(v), "Must be equals!")
 
+    def test_filter_str_for_empty(self):
+        for string in ["", "    ", None]:
+            self.assertEqual(string, filter_str(string))
 
-@pytest.mark.parametrize("url, postfix, format_params, expected", [
-        ('http://myurl/', '123456', None, 'http://myurl/123456'),
-        ('http://myurl', '123456', None, 'http://myurl/123456'),
-        ('http://myurl{}/suburl/', '', ('xxx',), 'http://myurlxxx/suburl/'),
-        ('http://myurl{}/suburl/', '', ('xxx', 'zzz'), 'http://myurlxxx/suburl/'),
-        ('http://myurl{}/suburl{}/{}', '', ('aaa', 'bbb', 'ccc',), 'http://myurlaaa/suburlbbb/ccc'),
-        ('http://myurl{}/suburl{}/{}', '', ('aaa', 'bbb', 'ccc', 'www'), 'http://myurlaaa/suburlbbb/ccc'),
-        ('http://myurl{}/suburl{}/{}', '2', ('_a', '_b', '_c',), 'http://myurl_a/suburl_b/_c/2'),
-    ]
+    def test_filter_str_for_string(self):
+        self.assertEqual("45, .555", filter_str("+45, *@.555"))
+        self.assertEqual("улица  Правды. 11,", filter_str("улица + =Правды. 11,"))
+        self.assertEqual("3-5-7", filter_str("3-5-7"))
+        self.assertEqual("zzzz. , fgh ", filter_str("zzzz. ??, fgh *"))
+
+
+@pytest.mark.parametrize(
+    "url, postfix, format_params, expected",
+    [
+        ("http://myurl/", "123456", None, "http://myurl/123456"),
+        ("http://myurl", "123456", None, "http://myurl/123456"),
+        ("http://myurl{}/suburl/", "", ("xxx",), "http://myurlxxx/suburl/"),
+        ("http://myurl{}/suburl/", "", ("xxx", "zzz"), "http://myurlxxx/suburl/"),
+        (
+            "http://myurl{}/suburl{}/{}",
+            "",
+            (
+                "aaa",
+                "bbb",
+                "ccc",
+            ),
+            "http://myurlaaa/suburlbbb/ccc",
+        ),
+        ("http://myurl{}/suburl{}/{}", "", ("aaa", "bbb", "ccc", "www"), "http://myurlaaa/suburlbbb/ccc"),
+        (
+            "http://myurl{}/suburl{}/{}",
+            "2",
+            (
+                "_a",
+                "_b",
+                "_c",
+            ),
+            "http://myurl_a/suburl_b/_c/2",
+        ),
+    ],
 )
 def test_process_url(url, postfix, format_params, expected):
     assert pystr.process_url(url, postfix, format_params) == expected

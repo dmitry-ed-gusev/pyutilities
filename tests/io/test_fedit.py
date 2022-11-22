@@ -13,7 +13,6 @@ import unittest
 
 # todo: implement unit tests for fedit utility
 class FEditTest(unittest.TestCase):
-
     def setUp(self):
         # method just for the demo purpose
         pass
