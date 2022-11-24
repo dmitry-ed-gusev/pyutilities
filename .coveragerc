@@ -17,7 +17,7 @@ data_file = .coverage/.coverage
 omit =
         *__init__*
         *temp*
-        *tests/*
+        */tests/*
 
 [report]
 show_missing = True

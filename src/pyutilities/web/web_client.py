@@ -149,7 +149,10 @@ class WebClient:
             self.__session.max_redirects = redirects_count
         if not user_agent:  # set User Agent header
             user_agent = WebClient.__ua.random
-        self.__session.headers.update({"user-agent": user_agent})  # header may be "User-Agent"
+
+        # header may be "User-Agent" or "user-agent" (usually camel case)
+        self.__session.headers.update({"User-Agent": f"{user_agent}"})
+
         if auth:  # add authorization to session
             self.__session.auth = auth
 

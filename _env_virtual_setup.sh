@@ -65,7 +65,7 @@ sleep 5
 
 # - check for vulnerabilities and show dependencies graph
 printf "\nChecking virtual environment for vulnerabilities.\n"
-pipenv check
+# pipenv check
 pipenv graph
 
 # - outdated packages report

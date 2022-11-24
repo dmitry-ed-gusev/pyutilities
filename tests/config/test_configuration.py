@@ -1,11 +1,11 @@
 #!/usr/bin/env python
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 """
     Unit tests for Configuration class.
 
     Created:  Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 12.10.2022
+    Modified: Gusev Dmitrii, 24.11.2022
 """
 
 import os
@@ -13,9 +13,12 @@ import unittest
 from mock import patch
 from pyutilities.config.configuration import Configuration, ConfigError
 
-CONFIG_PATH = "test_configs"
-CONFIG_MODULE_MOCK_YAML = "pyutilities.config.configuration.parse_yaml"
+CONFIG_PATH = "tests/config/test_configs"
+CONFIG_MODULE_MOCK_YAML = "pyutilities.config.configuration.read_yaml"
 CONFIG_MODULE_MOCK_OS = "pyutilities.config.configuration.os"
+
+KEY1 = "section1.key1"
+KEY2 = "section2.key3"
 
 
 class ConfigurationTest(unittest.TestCase):
@@ -24,13 +27,14 @@ class ConfigurationTest(unittest.TestCase):
         # method just for the demo purpose
         pass
 
-    def setUp(self):
+    def setUp(self) -> None:
         # init config instance before each test, don't merge with environment
-        self.config = Configuration(is_merge_env=False)
+        self.config: Configuration = Configuration(is_merge_env=False)
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         # dereference config instance after each test
-        self.config = None
+        # self.config = None
+        pass
 
     def test_load_invalid_path(self):
         for invalid_path in ["", "", "   ", "    ", "non-exist path"]:
@@ -39,8 +43,8 @@ class ConfigurationTest(unittest.TestCase):
 
     def test_merge_config_files(self):
         self.config.load(CONFIG_PATH)  # <- load all yaml configs from specified location
-        self.assertEqual(self.config.get("section1.key1"), "value1")
-        self.assertEqual(self.config.get("section2.key3"), "value3")
+        self.assertEqual(self.config.get(KEY1), "value1")
+        self.assertEqual(self.config.get(KEY2), "value3")
 
     def test_merge_env_variables(self):
         os.environ["simple_key"] = "env_value"
@@ -53,8 +57,8 @@ class ConfigurationTest(unittest.TestCase):
     def test_merge_dict_single_on_init(self):
         dict_to_merge = {"a": "b", "c": "d", "aa.bb": "eee"}
         config = Configuration(path_to_config=CONFIG_PATH, dict_to_merge=dict_to_merge, is_merge_env=True)
-        self.assertEqual(config.get("section1.key1"), "value1")
-        self.assertEqual(config.get("section2.key3"), "value3")
+        self.assertEqual(config.get(KEY1), "value1")
+        self.assertEqual(config.get(KEY2), "value3")
         self.assertEqual(config.get("a"), "b")
         self.assertEqual(config.get("c"), "d")
         self.assertEqual(config.get("aa.bb"), "eee")
@@ -65,8 +69,8 @@ class ConfigurationTest(unittest.TestCase):
         config = Configuration(
             path_to_config=CONFIG_PATH, dict_to_merge=dict_list_to_merge, is_merge_env=True
         )
-        self.assertEqual(config.get("section1.key1"), "value1")
-        self.assertEqual(config.get("section2.key3"), "value3")
+        self.assertEqual(config.get(KEY1), "value1")
+        self.assertEqual(config.get(KEY2), "value3")
         self.assertEqual(config.get("a"), "b")
         self.assertEqual(config.get("c"), "d")
         self.assertEqual(config.get("aa.bb"), "eee")

@@ -6,11 +6,11 @@
     to module String in java library Apache Commons).
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 22.11.2022
+    Modified: Dmitrii Gusev, 24.11.2022
 """
 
 import logging
-from typing import Tuple, Dict
+from typing import Tuple, Dict, AnyStr
 from pyutilities.exception import PyUtilitiesException
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
@@ -21,7 +21,7 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 
-def is_str_empty(string: str | None) -> bool:
+def is_str_empty(string: AnyStr | None) -> bool:
     """Check is string empty/NoNe or not.
     :param string:
     :return:

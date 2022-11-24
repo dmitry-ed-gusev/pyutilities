@@ -6,13 +6,12 @@
     Functions are incapsulated in PyMaven class.
 
     Created:  Dmitrii Gusev, 02.05.2019
-    Modified: Dmitrii Gusev, 22.11.2022
+    Modified: Dmitrii Gusev, 24.11.2022
 """
 
 import os
 import platform
 import logging
-import pyutilities.utils.string_utils as string_utils
 
 from subprocess import Popen
 from pyutilities.utils.common_utils import myself
@@ -32,8 +31,9 @@ class PyMaven:
         self.__mvn_exec = self.get_mvn_executable()
         log.info(f"Selected maven executable [{self.__mvn_exec}].")
 
+        self.__mvn_settings: str | None
         # init special maven settings - calculate path
-        if not string_utils.is_str_empty(mvn_settings):
+        if mvn_settings:
             abs_settings_path = os.path.abspath(mvn_settings)
             if not os.path.exists(abs_settings_path):  # fail-fast for non-existent settings
                 raise FileNotFoundError

@@ -5,7 +5,7 @@
     Unit tests for the HTTP client.
 
     Created:  Dmitrii Gusev, 12.10.2022
-    Modified:
+    Modified: Dmitrii Gusev, 24.11.2022
 """
 
 import pytest
@@ -103,12 +103,11 @@ testdata_http_err_codes_with_retries = [
 ]
 
 
-# WebClient fixture (resource under test)
+# WebClient fixture (software under test - SUT)
 @pytest.fixture()
 def webclient():
-    print("- setup fixture -")
+    # yield WebClient(update_user_agents_info=True)
     yield WebClient()
-    print("- teardown fixture -")
 
 
 # responses fixture for the pytest (integration)

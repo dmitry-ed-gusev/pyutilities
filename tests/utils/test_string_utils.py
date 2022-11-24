@@ -19,7 +19,6 @@ NON_EMPTY_STRINGS = {"str1": "   str1", "str2": "str2    ", "str3": "   str3    
 
 
 class StringsTest(unittest.TestCase):
-
     def setUp(self):
         # method just for the demo purpose
         pass

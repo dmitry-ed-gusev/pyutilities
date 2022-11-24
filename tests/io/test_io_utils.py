@@ -17,7 +17,6 @@ MOCK_WALK_METHOD = "pyutilities.io.io_utils.walk"
 
 
 class IOUtilsTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         # method just for the demo purpose
@@ -30,7 +29,7 @@ class IOUtilsTest(unittest.TestCase):
 
     def test_parse_yaml(self):
         # with patch("pyutilities.utils.open", mock_open(read_data="name: value"), create=True):
-        with patch(MOCK_OPEN_METHOD, mock_open(read_data='name: value'), create=True):
+        with patch(MOCK_OPEN_METHOD, mock_open(read_data="name: value"), create=True):
             result = read_yaml("foo_ok.file")
             print("!!!", result)
             self.assertEqual("value", result["name"])

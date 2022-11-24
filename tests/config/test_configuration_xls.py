@@ -1,18 +1,18 @@
 #!/usr/bin/env python
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 """
     Unit tests for ConfigurationXls class.
 
     Created:  Gusev Dmitrii, XX.12.2018
-    Modified: Gusev Dmitrii, 12.10.2022
+    Modified: Gusev Dmitrii, 24.11.2022
 """
 
 import unittest
 from pyutilities.config.configuration import ConfigurationXls, ConfigError
 
-XLSX_CONFIG_FILE = "test_configs/xlsx_config.xlsx"  # xlsx format (Excel 2010)
-XLS_CONFIG_FILE = "test_configs/xls_config.xls"  # xls format (old Excel)
+XLSX_CONFIG_FILE = "tests/config/test_configs/xlsx_config.xlsx"  # xlsx format (Excel 2010)
+XLS_CONFIG_FILE = "tests/config/test_configs/xls_config.xls"  # xls format (old Excel)
 CONFIG_SHEET = "config_sheet"
 
 

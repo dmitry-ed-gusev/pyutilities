@@ -48,27 +48,28 @@ rm -r ${DIST_DIR} || printf "%s doesn't exist!\n" ${DIST_DIR}
 # todo: do we need this clean/update for build?
 # todo: we can use key --outdated - ?
 printf "\nCleaning pipenv cache and update dependencies.\n"
-pipenv clean ${VERBOSE}
-pipenv update ${VERBOSE}
+# todo: enable below lines
+# pipenv clean ${VERBOSE}
+# pipenv update ${VERBOSE}
 
 # -- run pytest with pytest-cov (see pytest.ini/setup.cfg - additional parameters)
 printf "\nExecuting tests.\n"
 pipenv run pytest tests/
 
 # -- run mypy - types checker
-printf "\nExecuting mypy.\n"
+printf "\n\nExecuting [mypy] types checker\n\n"
 pipenv run mypy src/
 pipenv run mypy tests/
 
-# -- run black code formatter
-printf "\nExecuting black code formatter.\n"
-pipenv run black src/ ${VERBOSE} --line-length 110
-pipenv run black tests/ ${VERBOSE} --line-length 110
-
 # -- run flake8 for checking code formatting
-printf "\nExecuting flake8.\n"
+printf "\n\nExecuting [flake8] code format checker\n\n"
 pipenv run flake8 src/
 pipenv run flake8 tests/
+
+# -- run black code formatter
+printf "\n\nExecuting [black] automatic code formatter.\n"
+pipenv run black src/ ${VERBOSE} --line-length 110
+pipenv run black tests/ ${VERBOSE} --line-length 110
 
 # -- build library distribution (binary whl and source (tar.gz)
 printf "\nBuilding distribution for [PyUtilities] library.\n"

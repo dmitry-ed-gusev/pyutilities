@@ -12,7 +12,6 @@ import unittest
 
 
 class ConfigurationTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(cls):
         # method just for the demo purpose

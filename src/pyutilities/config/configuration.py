@@ -1,16 +1,18 @@
 #!/usr/bin/env python
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 """
-    Utility class for holding configuration. Can merge configuration with environment variables.
-    Can load configuration from YAML files. See docstring for Configuration class.
+    Utility class for holding configuration.
+    Key properties:
+        - ability to merge configuration with environment variables
+        - ability to load configuration from YAML files
+    For more data - see docstring for Configuration class.
 
-    18.11.2018
-    Added child config class that is able to load config (as dictionary) from xls file (from specified sheet).
+    18.11.2018 Added config class that is able to load config from xls file.
+    24.11.2022 Various refactorings, added some typing.
 
     Created:  Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 12.10.2022
-
+    Modified: Gusev Dmitrii, 24.11.2022
 """
 
 import os
@@ -41,9 +43,11 @@ class Configuration(object):
         self.log = logging.getLogger(__name__)
         self.log.addHandler(logging.NullHandler())
         self.log.debug("Initializing Configuration() instance...")
-        self.log.debug(f"Load configuration:\n\tpath -> {path_to_config}"
-                       f"\n\tdict -> {dict_to_merge}\n\toverride config -> {is_override_config}"
-                       f"\n\tmerge env -> {is_merge_env}")
+        self.log.debug(
+            f"Load configuration:\n\tpath -> {path_to_config}"
+            f"\n\tdict -> {dict_to_merge}\n\toverride config -> {is_override_config}"
+            f"\n\tmerge env -> {is_merge_env}"
+        )
 
         # init internal dictionary
         self.config_dict = {}
@@ -83,7 +87,7 @@ class Configuration(object):
                 if value:
                     self.set(key, value)
 
-    def load(self, path, is_merge_env=True):
+    def load(self, path: str | None, is_merge_env=True):
         """Parses YAML file(s) from the given directory/file to add content into this configuration instance
         :param is_merge_env: merge parameters with environment (True) or not (False)
         :param path: directory/file to load files from
@@ -252,6 +256,7 @@ class Configuration(object):
 
 class ConfigError(Exception):
     """Invalid configuration error"""
+
     pass
 
 
