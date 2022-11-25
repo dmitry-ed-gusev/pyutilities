@@ -13,7 +13,7 @@
         - (HTTP status codes) https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
 
     Created:  Dmitrii Gusev, 10.10.2022
-    Modified: Dmitrii Gusev, 22.11.2022
+    Modified: Dmitrii Gusev, 25.11.2022
 """
 
 import logging
@@ -27,9 +27,8 @@ from pyutilities.utils.common_utils import threadsafe_function
 from pyutilities.exception import PyUtilitiesException
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
-# init module logger
 log = logging.getLogger(__name__)
-log.debug(f"Logging for module {__name__} is configured.")
+log.addHandler(logging.NullHandler())
 
 HTTP_DEFAULT_TIMEOUT = 20  # default HTTP requests timeout (seconds)
 HTTP_DEFAULT_BACKOFF = 1  # default back off factor (it is better to not touch this value!)

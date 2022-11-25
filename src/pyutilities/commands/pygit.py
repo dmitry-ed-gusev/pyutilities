@@ -5,13 +5,14 @@
     Some useful/convenient functions related to GIT.
 
     Created:  Dmitrii Gusev, 03.05.2019
-    Modified: Dmitrii Gusev, 14.10.2022
+    Modified: Dmitrii Gusev, 25.11.2022
 """
 
 import logging
 from subprocess import Popen
 from pyutilities.utils.common_utils import myself
 from pyutilities.exception import PyUtilitiesException
+from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
@@ -101,4 +102,4 @@ class GitException(Exception):
 
 
 if __name__ == "__main__":
-    print("pyutilities.pygit: Don't try to execute library as a standalone app!")
+    print(MSG_MODULE_ISNT_RUNNABLE)

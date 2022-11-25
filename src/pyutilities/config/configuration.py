@@ -12,7 +12,7 @@
     24.11.2022 Various refactorings, added some typing.
 
     Created:  Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 24.11.2022
+    Modified: Gusev Dmitrii, 25.11.2022
 """
 
 import os
@@ -22,6 +22,7 @@ import openpyxl  # reading excel files (Excel 2010 - xlsx)
 
 from string import Template
 from pyutilities.io.io_utils import read_yaml
+from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
 YAML_EXTENSION_1 = ".yml"
 YAML_EXTENSION_2 = ".yaml"
@@ -103,11 +104,9 @@ class Configuration(object):
         # todo: extract two methods - load from file/load from dir + refactor unit tests
         # if provided path to single file - load it, otherwise - load from directory
         if os.path.isfile(path) and (path.endswith(YAML_EXTENSION_1) or path.endswith(YAML_EXTENSION_2)):
-            self.log.debug("Provided path [{}] is a YAML file. Loading.".format(path))
-            try:
-                self.merge_dict(read_yaml(path))
-            except ConfigError as ex:
-                raise ConfigError("ERROR while merging file %s to configuration.\n%s" % (path, ex))
+            self.log.debug("Provided path [{}] is a YAML file.".format(path))
+            self.log.debug("Loading configuration from [{}].".format(path))
+            self.merge_dict(read_yaml(path))
 
         # loading from directory (all YAML files)
         elif os.path.isdir(path):
@@ -118,12 +117,7 @@ class Configuration(object):
                     some_file.endswith(YAML_EXTENSION_1) or some_file.endswith(YAML_EXTENSION_2)
                 ):
                     self.log.debug("Loading configuration from [{}].".format(some_file))
-                    try:
-                        self.merge_dict(read_yaml(file_path))
-                    except ConfigError as ex:
-                        raise ConfigError(
-                            "ERROR while merging file %s to configuration.\n%s" % (file_path, ex)
-                        )
+                    self.merge_dict(read_yaml(file_path))
 
         # unknown file/dir type
         else:
@@ -148,7 +142,6 @@ class Configuration(object):
             self.config_dict = result
         else:
             self.config_dict.update(new_dict)
-        return
 
     def __add_entity__(self, dict1, dict2, current_key=""):
         """Adds second dictionary to the first (processing nested dicts recursively)
@@ -350,4 +343,4 @@ class ConfigurationXls(Configuration):
 
 
 if __name__ == "__main__":
-    print("pyutilities.config: Don't try to execute library as a standalone app!")
+    print(MSG_MODULE_ISNT_RUNNABLE)

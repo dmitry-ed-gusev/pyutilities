@@ -6,7 +6,7 @@
     Functions are incapsulated in PyMaven class.
 
     Created:  Dmitrii Gusev, 02.05.2019
-    Modified: Dmitrii Gusev, 24.11.2022
+    Modified: Dmitrii Gusev, 25.11.2022
 """
 
 import os
@@ -16,6 +16,7 @@ import logging
 from subprocess import Popen
 from pyutilities.utils.common_utils import myself
 from pyutilities.exception import PyUtilitiesException
+from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
@@ -94,3 +95,7 @@ class PyMaven:
                 raise PyUtilitiesException(f"Process returned non zero exit code [{process.returncode}]!")
         except AttributeError as se:
             log.error(f"Error downloading sources for repo [{location}]! {se}")
+
+
+if __name__ == "__main__":
+    print(MSG_MODULE_ISNT_RUNNABLE)

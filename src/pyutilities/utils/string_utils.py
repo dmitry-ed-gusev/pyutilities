@@ -6,11 +6,11 @@
     to module String in java library Apache Commons).
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 24.11.2022
+    Modified: Dmitrii Gusev, 25.11.2022
 """
 
 import logging
-from typing import Tuple, Dict, AnyStr
+from typing import Tuple, Dict
 from pyutilities.exception import PyUtilitiesException
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
@@ -21,37 +21,20 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 
-def is_str_empty(string: AnyStr | None) -> bool:
-    """Check is string empty/NoNe or not.
-    :param string:
-    :return:
-    """
-    if string is None or not string or not string.strip():  # check for whitespaces string
-        return True
+def trim_to_none(string: str | None) -> str | None:
+    """Trim the provided string to None (if empty) or just strip whitespaces."""
+    if string and string.strip():
+        return string.strip()
 
-    return False  # all checks passed
+    return None
 
 
-def trim_to_none(string: str):
-    """Trim the provided string to None (if empty) or just strip whitespaces.
-    :param string:
-    :return:
-    """
-    if is_str_empty(string):  # check for empty string
-        return None
+def trim_to_empty(string: str | None) -> str:
+    """Trim the provided string to empty string ('' or "") or just strip whitespaces."""
+    if string and string.strip():
+        return string.strip()
 
-    return string.strip()  # strip and return
-
-
-def trim_to_empty(string: str) -> str:
-    """Trim the provided string to empty string (''/"") or just strip whitespaces.
-    :param string:
-    :return:
-    """
-    if is_str_empty(string):  # check for empty string
-        return ""
-
-    return string.strip()
+    return ""
 
 
 def filter_str(string):  # todo: fix filtering for non-cyrillic symbols too (add them)
@@ -110,7 +93,7 @@ def get_last_part_of_the_url(url: str) -> str:
     if not url:  # fail-fast behaviour
         raise PyUtilitiesException("Specified empty URL!")
 
-    return url[url.rfind("/") + 1:]
+    return url[url.rfind("/") + 1 :]
 
 
 if __name__ == "__main__":
