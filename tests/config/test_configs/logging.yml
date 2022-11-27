@@ -1,0 +1,33 @@
+###############################################################################
+#
+#   Logging config for tests with one console appender.
+#
+#   Created:  Dmitrii Gusev, 20.05.2019
+#   Modified:
+#
+###############################################################################
+
+version: 1
+disable_existing_loggers: False  # allows to get logger on modules level
+formatters:
+    simple:
+        format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+handlers:
+    console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: simple
+        stream: ext://sys.stdout
+
+loggers:
+    pygit:
+        level: DEBUG
+        #handlers: [console]
+    pymaven:
+        level: DEBUG
+
+# root logger
+root:
+    level: DEBUG
+    handlers: [console]

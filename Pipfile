@@ -1,0 +1,35 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+pyutilities = {editable = true, path = "."}
+
+[dev-packages]
+mock = "*"
+nose2 = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-mock = "*"
+mypy = "*"
+types-six = "*"
+types-mock = "*"
+types-paramiko = "*"
+types-requests = "*"
+types-PyYAML = "*"
+flake8 = "*"
+black = "*"
+pre-commit = "*"
+twine = "*"
+build = "*"
+ipykernel = "*"
+responses = "*"
+sphinx = "*"
+hypothesis = "*"
+
+[requires]
+python_version = "3.10"
+
+[pipenv]
+allow_prereleases = true
