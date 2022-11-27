@@ -9,7 +9,7 @@
 #            environment (pipenv shell).
 #
 #   Created:  Dmitrii Gusev, 09.10.2022
-#   Modified: Dmitrii Gusev, 22.11.2022
+#   Modified: Dmitrii Gusev, 27.11.2022
 #
 ###############################################################################
 
@@ -65,9 +65,11 @@ sleep 5
 
 # - check for vulnerabilities and show dependencies graph
 printf "\nChecking virtual environment for vulnerabilities.\n"
-# pipenv check
+pipenv check
 pipenv graph
 
 # - outdated packages report
 printf "\n\nOutdated packages list (pip list):\n"
 pipenv run pip list --outdated
+
+printf "\n\n"

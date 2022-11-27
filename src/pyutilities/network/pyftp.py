@@ -8,10 +8,11 @@
         - ???
 
     Created:  Dmitrii Gusev, 22.11.2022
-    Modified:
+    Modified: Dmitrii Gusev, 27.11.2022
 """
 
 import paramiko
+from pyutilities.logging import init_logging
 
 
 def sft_process():
@@ -43,3 +44,12 @@ def sft_process():
 
 def ftp_process():
     pass
+
+
+def pyftp():
+    print("pyftp running... not implemented yet!")
+
+
+if __name__ == "__main__":
+    init_logging()
+    pyftp()

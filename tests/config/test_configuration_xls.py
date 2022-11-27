@@ -5,7 +5,7 @@
     Unit tests for ConfigurationXls class.
 
     Created:  Gusev Dmitrii, XX.12.2018
-    Modified: Gusev Dmitrii, 24.11.2022
+    Modified: Gusev Dmitrii, 27.11.2022
 """
 
 import unittest

@@ -7,7 +7,7 @@
 #       - https://pytest-cov.readthedocs.io/en/latest/index.html
 #
 #   Created:  Dmitrii Gusev, 09.10.2022
-#   Modified:
+#   Modified: Dmitrii Gusev, 27.11.2022
 #
 ###############################################################################
 
@@ -16,8 +16,9 @@ branch = True
 data_file = .coverage/.coverage
 omit =
         *__init__*
-        *temp*
+        */temp/*
         */tests/*
+        */.vscode/*
 
 [report]
 show_missing = True

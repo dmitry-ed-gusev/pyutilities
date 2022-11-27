@@ -186,10 +186,10 @@
         },
         "fake-useragent": {
             "hashes": [
-                "sha256:2bc361f03a7f7ca68c5be2863d33067f8c56a7076d129d3a5c930377551acf5a",
-                "sha256:59a16d8cd109dadeef3375a27818d6cc9511fc3ec430fe564b8490cbec3ea861"
+                "sha256:b473a8faa9a94014b7ea8783ca36ea2c119e33a9eee1becd2e44398428b0367f",
+                "sha256:f2a3ff23137b834c4fe1dfad177cfb304ce938c71775d0ff86da3fa5a9c84e0b"
             ],
-            "version": "==1.0.1"
+            "version": "==1.1.0"
         },
         "idna": {
             "hashes": [
@@ -753,11 +753,11 @@
         },
         "hypothesis": {
             "hashes": [
-                "sha256:89d9aa676dac7275755371d42d65fc81366ff0e0289ab525aa2bb3dcf7c98b9f",
-                "sha256:c2ffa10c94ff1a4a12f4ff515d78a4a3060a7c5b9968331d7b2707576a29570d"
+                "sha256:8738b9b38c2b2c214d965b07f29312047b970541d848cb97d2a58f79fd61fbe6",
+                "sha256:b5747497b2b352335e4dc51f1b113cfc90c49ffd174f2036f173edf8799e123a"
             ],
             "index": "pypi",
-            "version": "==6.58.0"
+            "version": "==6.58.1"
         },
         "identify": {
             "hashes": [
@@ -1616,11 +1616,11 @@
         },
         "zipp": {
             "hashes": [
-                "sha256:4fcb6f278987a6605757302a6e40e896257570d11c51628968ccb2a47e80c6c1",
-                "sha256:7a7262fd930bd3e36c50b9a64897aec3fafff3dfdeec9623ae22b40e93f99bb8"
+                "sha256:83a28fcb75844b5c0cdaf5aa4003c2d728c77e05f5aeabe8e95e56727005fbaa",
+                "sha256:a7a22e05929290a67401440b39690ae6563279bced5f314609d9d03798f56766"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==3.10.0"
+            "version": "==3.11.0"
         }
     }
 }

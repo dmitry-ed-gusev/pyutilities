@@ -31,7 +31,6 @@ class IOUtilsTest(unittest.TestCase):
         # with patch("pyutilities.utils.open", mock_open(read_data="name: value"), create=True):
         with patch(MOCK_OPEN_METHOD, mock_open(read_data="name: value"), create=True):
             result = read_yaml("foo_ok.file")
-            print("!!!", result)
             self.assertEqual("value", result["name"])
 
     def test_parse_yaml_ioerror(self):

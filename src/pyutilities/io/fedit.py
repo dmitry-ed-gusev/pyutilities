@@ -5,7 +5,7 @@
     Inplace/inline file editing utility. Executable from cmd line.
 
     Created:  Gusev Dmitrii, 13.04.2017
-    Modified: Gusev Dmitrii, 11.10.2022
+    Modified: Gusev Dmitrii, 27.11.2022
 """
 
 # todo: implement: add line mode (if not found needed line)
@@ -13,6 +13,7 @@
 import sys
 import fileinput
 import argparse
+from pyutilities.logging import init_logging
 
 # - string checking types
 CHECK_TYPE_STARTS = "starts"
@@ -21,7 +22,7 @@ CHECK_TYPE_CONTAINS = "contains"
 CHECK_TYPES = (CHECK_TYPE_STARTS, CHECK_TYPE_ENDS, CHECK_TYPE_CONTAINS)
 
 
-def check_str(check_type, source_str, test_str):
+def check_str(args, check_type, source_str, test_str):
     """
     Check relation between string and test string, according to test type
     :param check_type: type of matching
@@ -37,43 +38,47 @@ def check_str(check_type, source_str, test_str):
         return test_str in source_str
 
 
-# create arguments parser
-parser = argparse.ArgumentParser(description="File editing tool: replace inline values.")
+def fedit():
+    # create arguments parser
+    parser = argparse.ArgumentParser(description="File editing tool: replace inline values.")
 
-# add mandatory arguments to parser
-parser.add_argument(
-    "-f", "--file", dest="infile", action="store", required=True, help="file to change inline"
-)
-parser.add_argument(
-    "-s", "--sourceStr", dest="sourceStr", action="store", required=True, help="source string for change"
-)
-parser.add_argument(
-    "-d", "--destStr", dest="destStr", action="store", required=True, help="target string for change"
-)
+    # add mandatory arguments to parser
+    parser.add_argument(
+        "-f", "--file", dest="infile", action="store", required=True, help="file to change inline"
+    )
+    parser.add_argument(
+        "-s", "--sourceStr", dest="sourceStr", action="store", required=True, help="source string for change"
+    )
+    parser.add_argument(
+        "-d", "--destStr", dest="destStr", action="store", required=True, help="target string for change"
+    )
 
-# add optional arguments to parser
-parser.add_argument(
-    "-t",
-    "--type",
-    dest="edit_type",
-    action="store",
-    choices=CHECK_TYPES,
-    default=CHECK_TYPE_STARTS,
-    help="type of inline edit",
-)
+    # add optional arguments to parser
+    parser.add_argument(
+        "-t",
+        "--type",
+        dest="edit_type",
+        action="store",
+        choices=CHECK_TYPES,
+        default=CHECK_TYPE_STARTS,
+        help="type of inline edit",
+    )
 
-# parse cmd line parameters
-args = parser.parse_args()
+    # parse cmd line parameters
+    args = parser.parse_args()
 
-# inplace file processing
-# todo: refactor edit logic into function
-# todo: add some checks - file existence, etc
-for line in fileinput.input(files=[args.infile], inplace=True, backup=".original"):
-    # if we found string - we will replace it
-    if check_str(args.edit_type, line, args.sourceStr):
-        sys.stderr.write("Found: {}\n".format(args.sourceStr))
-        print(args.destStr)
-    else:
-        print(
-            line,
-        )
+    # inplace file processing
+    # todo: refactor edit logic into function
+    # todo: add some checks - file existence, etc
+    for line in fileinput.input(files=[args.infile], inplace=True, backup=".original"):
+        # if we found string - we will replace it
+        if check_str(args, args.edit_type, line, args.sourceStr):
+            sys.stderr.write("Found: {}\n".format(args.sourceStr))
+            print(args.destStr)
+        else:
+            print(line)
+
+
+if __name__ == "__main__":
+    init_logging()
+    fedit()

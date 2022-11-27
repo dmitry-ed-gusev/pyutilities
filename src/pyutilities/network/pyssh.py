@@ -10,5 +10,16 @@
         - (paramiko) https://github.com/paramiko/paramiko
 
     Created:  Dmitrii Gusev, 22.11.2022
-    Modified:
+    Modified: Dmitrii Gusev, 27.11.2022
 """
+
+from pyutilities.logging import init_logging
+
+
+def pyssh():
+    print("pyssh running... not implemented yet!")
+
+
+if __name__ == "__main__":
+    init_logging()
+    pyssh()
