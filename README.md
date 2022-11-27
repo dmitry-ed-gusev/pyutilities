@@ -9,6 +9,10 @@ Useful utilities/experimantal modules/research in python 3.10+. Contains a lot o
 
 ## Versions history
 
+### 1.0.1
+
+- Minor fixes for the major release 1.0.0
+
 ### 1.0.0
 
 - total refactpring of exisiting modules and scripts
