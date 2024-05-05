@@ -12,11 +12,21 @@ import pytest
 import unittest
 from hypothesis import given
 from hypothesis.strategies import characters, text
-from pyutilities.utils.string_utils import trim_to_none, trim_to_empty, filter_str, process_url
+from pyutilities.utils.string_utils import (
+    trim_to_none,
+    trim_to_empty,
+    filter_str,
+    process_url,
+)
 
 # common constants for testing
 EMPTY_STRINGS = ["", "     ", None, "", "  "]
-NON_EMPTY_STRINGS = {"str1": "   str1", "str2": "str2    ", "str3": "   str3     ", "str4": "str4"}
+NON_EMPTY_STRINGS = {
+    "str1": "   str1",
+    "str2": "str2    ",
+    "str3": "   str3     ",
+    "str4": "str4",
+}
 
 
 class StringsTest(unittest.TestCase):
@@ -83,7 +93,12 @@ class StringsTest(unittest.TestCase):
             ),
             "http://myurlaaa/suburlbbb/ccc",
         ),
-        ("http://myurl{}/suburl{}/{}", "", ("aaa", "bbb", "ccc", "www"), "http://myurlaaa/suburlbbb/ccc"),
+        (
+            "http://myurl{}/suburl{}/{}",
+            "",
+            ("aaa", "bbb", "ccc", "www"),
+            "http://myurlaaa/suburlbbb/ccc",
+        ),
         (
             "http://myurl{}/suburl{}/{}",
             "2",

@@ -8,7 +8,7 @@
 #   Warning: script must be executed from shell, not from the virtual environment (pipenv or similar).
 #
 #   Created:  Dmitrii Gusev, 09.10.2022
-#   Modified: Dmitrii Gusev, 03.05.2024
+#   Modified: Dmitrii Gusev, 05.05.2024
 #
 #   cspell:ignore ipykernel, ipykernels, ipython, pyutilities, kernelspec
 #
@@ -60,29 +60,30 @@ printf "\n\n *** Deleting virtual environment and clearing pipenv caches *** \n\
 pipenv --rm ${VERBOSE} || printf "No virtual environment found for the project!\n"
 pipenv --clear ${VERBOSE} # clearing pipenv caches
 
-# -- IV. Run pipenv clean
-printf "\n\n *** Performing clean for pipenv environment. *** \n\n"
-pipenv clean ${VERBOSE} # uninstalls all packages not specified in Pipfile.lock
-
-# -- V. Cleaning build and distribution folders (deleting them)
+# -- IV. Cleaning build and distribution folders (deleting them)
 printf "\n\n *** Clearing temporary directories. *** \n\n"
 printf "\t\nDeleting [%s]...\n" ${BUILD_DIR}
 rm -r ${BUILD_DIR} || printf "%s doesn't exist!\n" ${BUILD_DIR}
 printf "\t\nDeleting [%s]...\n" ${DIST_DIR}
 rm -r ${DIST_DIR} || printf "%s doesn't exist!\n" ${DIST_DIR}
 
-# -- VI. Removing Pipfile.lock (in order to re-generate it)
+# -- V. Removing Pipfile.lock (in order to re-generate it)
 printf "\n\n *** Removing Pipfile.lock *** \n\n"
 rm Pipfile.lock || printf "Pipfile.lock doesn't exist!\n"
 sleep 3
 
-# -- VII. Install all packages from Pipfile (default + dev packages). In case the installation failed (for
+# -- VI. Install all packages from Pipfile (default + dev packages). In case the installation failed (for
 # --      example if hash is wrong/invalid) - we remove Pipfile.lock and execute installation cmd once more.
 # --      Note: both command in {} (curly braces) are executed together in case first command fails!
+printf "\n\n *** Installing and updating all dependencies. *** \n\n"
 pipenv install --dev --clear ${VERBOSE} || { rm Pipfile.lock && pipenv install --dev --clear "${VERBOSE}"; }
 pipenv update --outdated ${VERBOSE} || printf "Packages check is done!\n\n"  # list of outdated packages
 pipenv update --dev --clear ${VERBOSE} # runs lock, then sync
 sleep 3
+
+# -- VII. Run pipenv clean
+printf "\n\n *** Performing clean for pipenv environment. *** \n\n"
+pipenv clean ${VERBOSE} # uninstalls all packages not specified in Pipfile.lock
 
 # -- VIII. Install local ipykernel
 printf "\n\n *** Installing local ipykernel + check it. *** \n\n"
@@ -93,13 +94,13 @@ printf "\n\n *** Here is a list of locally installed ipykernels: *** \n\n"
 jupyter kernelspec list
 sleep 5
 
-# - check for vulnerabilities and show dependencies graph
+# -- X. Check for vulnerabilities and show dependencies graph
 printf "\n\n *** Checking virtual environment for vulnerabilities. *** \n\n"
-pipenv check || printf "There are some issues, check logs...\n"
+{ pipenv check; sleep 5; } || printf "There are some issues, check logs...\n"
 pipenv graph
 sleep 5
 
-# - outdated packages report
+# -- XI. Shows outdated packages report
 printf "\n\n *** Outdated packages list (pip list) *** \n\n"
 pipenv run pip list --outdated
 sleep 5

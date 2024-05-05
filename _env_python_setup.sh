@@ -4,8 +4,8 @@
 #
 #   General python environment setup/reset script. Script can be used to re-create python general/global
 #   environment from 'scratch' or to get rid of some 'garbage' packages - unnecessary installed modules.
-#   After the cleanup, script installs the following basic libraries: virtualenv, pipenv, jupyter, pytest,
-#   pipx, poetry (using pipx).
+#   After the cleanup, script globally installs the following basic libraries: virtualenv, pipenv, jupyter,
+#   pytest, pipx, poetry (using pipx) with ensurepath and bash autocomplete options.
 #
 #   This script works under following environments:
 #       - MacOS, 10.14+ (ok, tested)
@@ -15,7 +15,7 @@
 #   Warning: script MUST be executed from shell, not from the virtual environment (pipenv or any other).
 #
 #   Created:  Dmitrii Gusev, 30.01.2022
-#   Modified: Dmitrii Gusev, 03.05.2024
+#   Modified: Dmitrii Gusev, 05.05.2024
 #
 #   cspell:ignore pipx, virtualenv, virtualenvs, ensurepath, argcomplete
 #

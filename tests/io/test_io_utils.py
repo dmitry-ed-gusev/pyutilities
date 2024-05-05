@@ -35,7 +35,9 @@ class IOUtilsTest(unittest.TestCase):
 
     def test_parse_yaml_ioerror(self):
         with self.assertRaises(IOError):
-            with patch(MOCK_OPEN_METHOD, mock_open(read_data="name:\tvalue"), create=True):
+            with patch(
+                MOCK_OPEN_METHOD, mock_open(read_data="name:\tvalue"), create=True
+            ):
                 read_yaml("foo_ioerror.file")
 
     def test_parse_yaml_empty_paths(self):
@@ -45,7 +47,12 @@ class IOUtilsTest(unittest.TestCase):
                     read_yaml(path)
 
     def test_list_files_invalid_paths(self):
-        for path in ["", "    ", "not-existing-path", "__init__.py"]:  # the last one - existing python file
+        for path in [
+            "",
+            "    ",
+            "not-existing-path",
+            "__init__.py",
+        ]:  # the last one - existing python file
             with self.assertRaises(IOError):
                 list_files(path)
 

@@ -34,7 +34,7 @@ def _list_files(path, files_buffer, out_to_console=False):
     """
     # print "STDOUT encoding ->", sys.stdout.encoding  # <- just a debug output
     # todo: line for python 2 -> for (dirpath, dirnames, filenames) in walk(unicode(path)):
-    for (dirpath, dirnames, filenames) in walk(path):
+    for dirpath, dirnames, filenames in walk(path):
         for filename in filenames:
             abs_path = dirpath + "/" + filename
             if out_to_console:  # debug output
@@ -66,8 +66,12 @@ def str_2_file(filename: str, content: str, overwrite_file: bool = False):
     """Write string/text content to the provided file."""
     log.debug(f"str_2_file(): saving content to file: [{filename}].")
 
-    if os.path.exists(filename) and not overwrite_file:  # file exists and we don't want to overwrite it
-        raise PyUtilitiesException(f"File [{filename}] exists but overwrite is [{overwrite_file}]!")
+    if (
+        os.path.exists(filename) and not overwrite_file
+    ):  # file exists and we don't want to overwrite it
+        raise PyUtilitiesException(
+            f"File [{filename}] exists but overwrite is [{overwrite_file}]!"
+        )
 
     if not os.path.exists(os.path.dirname(filename)):  # create a dir for file
         try:
@@ -86,7 +90,9 @@ def file_2_str(filename: str) -> str:
 
     if not filename:  # fail-fast behaviour (empty path)
         raise PyUtilitiesException("Specified empty file path!")
-    if not os.path.exists(os.path.dirname(filename)):  # fail-fast behaviour (non-existent path)
+    if not os.path.exists(
+        os.path.dirname(filename)
+    ):  # fail-fast behaviour (non-existent path)
         raise PyUtilitiesException(f"Specified path [{filename}] doesn't exist!")
 
     with open(filename, mode="r") as infile:

@@ -31,8 +31,12 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 HTTP_DEFAULT_TIMEOUT = 20  # default HTTP requests timeout (seconds)
-HTTP_DEFAULT_BACKOFF = 1  # default back off factor (it is better to not touch this value!)
-HTTP_DEFAUT_RETRIES = 4  # default retries num for HTTP requests (+1 for the original request!)
+HTTP_DEFAULT_BACKOFF = (
+    1  # default back off factor (it is better to not touch this value!)
+)
+HTTP_DEFAUT_RETRIES = (
+    4  # default retries num for HTTP requests (+1 for the original request!)
+)
 
 
 # todo: see sample here: https://github.com/psf/requests/issues/4233
@@ -130,7 +134,16 @@ class WebClient:
             # success status/response (1xx, 2xx, 3xx) will be returned.
             status_forcelist=[429, 500, 502, 503, 504],  # statuses for retry
             # use 'allowed_methods' instead of 'method_whitelist' (deprecated and will be removed in v2.0)
-            allowed_methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "PATCH"],
+            allowed_methods=[
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "HEAD",
+                "OPTIONS",
+                "TRACE",
+                "PATCH",
+            ],
         )
 
         # create TimeoutHTTPAdapter (based on HTTPAdapter) and mount it to prefixes
@@ -166,57 +179,84 @@ class WebClient:
         :param params: request parameters -> will be added to the URL
         """
         log.debug(f"WebClient.get(): {url}. Params: {params}.")
-        return self.__session.get(url, params=params, allow_redirects=self.__allow_redirects)
+        return self.__session.get(
+            url, params=params, allow_redirects=self.__allow_redirects
+        )
 
     def post(
-        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+        self,
+        url: str,
+        data: Dict[str, str] | None = None,
+        params: Dict[str, str] | None = None,
     ) -> Response:
         """Perform HTTP POST request with retry (if necessary).
         :param data: request data -> will be added to the request body (HTTP POST)
         :param params: request parameters -> will be added to the URL
         """
         log.debug(f"WebClient.post(): {url}. Params: {params}. Data: {data}.")
-        return self.__session.post(url, data=data, params=params, allow_redirects=self.__allow_redirects)
+        return self.__session.post(
+            url, data=data, params=params, allow_redirects=self.__allow_redirects
+        )
 
     def put(
-        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+        self,
+        url: str,
+        data: Dict[str, str] | None = None,
+        params: Dict[str, str] | None = None,
     ) -> Response:
         """Perform HTTP PUT request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
         """
         log.debug(f"WebClient.put(): {url}. Params: {params}. Data: {data}.")
-        return self.__session.put(url, data=data, params=params, allow_redirects=self.__allow_redirects)
+        return self.__session.put(
+            url, data=data, params=params, allow_redirects=self.__allow_redirects
+        )
 
     def delete(
-        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+        self,
+        url: str,
+        data: Dict[str, str] | None = None,
+        params: Dict[str, str] | None = None,
     ) -> Response:
         """Perform HTTP DELETE request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
         """
         log.debug(f"WebClient.delete(): {url}. Params: {params}. Data: {data}.")
-        return self.__session.delete(url, data=data, params=params, allow_redirects=self.__allow_redirects)
+        return self.__session.delete(
+            url, data=data, params=params, allow_redirects=self.__allow_redirects
+        )
 
     def head(
-        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+        self,
+        url: str,
+        data: Dict[str, str] | None = None,
+        params: Dict[str, str] | None = None,
     ) -> Response:
         """Perform HTTP HEAD request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
         """
         log.debug(f"WebClient.head(): {url}. Params: {params}. Data: {data}.")
-        return self.__session.head(url, data=data, params=params, allow_redirects=self.__allow_redirects)
+        return self.__session.head(
+            url, data=data, params=params, allow_redirects=self.__allow_redirects
+        )
 
     def options(
-        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+        self,
+        url: str,
+        data: Dict[str, str] | None = None,
+        params: Dict[str, str] | None = None,
     ) -> Response:
         """Perform HTTP OPTIONS request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
         """
         log.debug(f"WebClient.options(): {url}. Params: {params}. Data: {data}.")
-        return self.__session.options(url, data=data, params=params, allow_redirects=self.__allow_redirects)
+        return self.__session.options(
+            url, data=data, params=params, allow_redirects=self.__allow_redirects
+        )
 
     # def get_text_2_files(self, urls: Dict[str, str], dir: str, allow_redicrects: bool,
     #                      fail_on_error: bool) -> None:
@@ -359,8 +399,12 @@ class WebClient:
 #     return local_path
 
 
-def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = None) -> str:
-    log.debug(f"Processing URL [{url}] with postfix [{postfix}] and format values [{format_values}].")
+def process_url(
+    url: str, postfix: str = "", format_values: Tuple[str] | None = None
+) -> str:
+    log.debug(
+        f"Processing URL [{url}] with postfix [{postfix}] and format values [{format_values}]."
+    )
 
     if not url:
         raise PyUtilitiesException("Provided empty URL for processing!")

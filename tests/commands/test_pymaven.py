@@ -38,14 +38,26 @@ class PyMavenTest(unittest.TestCase):
 
     def test_pymaven_raise_exception_on_non_exitent_settings(self):
         with self.assertRaises(FileNotFoundError):
-            self.pymaven_with_non_existing_settings = PyMaven(MVN_SPECIAL_SETTINGS_NON_EXISTING)
+            self.pymaven_with_non_existing_settings = PyMaven(
+                MVN_SPECIAL_SETTINGS_NON_EXISTING
+            )
 
     def test_append_mvn_settings_empty_settings(self):
         expected = ["mvn", "clean", "install"]
         # test itself
-        self.assertListEqual(expected, self.pymaven.append_mvn_settings(MVN_DEFAULT_CMD))
+        self.assertListEqual(
+            expected, self.pymaven.append_mvn_settings(MVN_DEFAULT_CMD)
+        )
 
     def test_append_mvn_settings_non_empty_settings(self):
-        expected = ["mvn", "clean", "install", "-s", os.path.abspath(MVN_SPECIAL_SETTINGS)]
+        expected = [
+            "mvn",
+            "clean",
+            "install",
+            "-s",
+            os.path.abspath(MVN_SPECIAL_SETTINGS),
+        ]
         # test itself
-        self.assertListEqual(expected, self.pymaven_with_settings.append_mvn_settings(MVN_DEFAULT_CMD))
+        self.assertListEqual(
+            expected, self.pymaven_with_settings.append_mvn_settings(MVN_DEFAULT_CMD)
+        )

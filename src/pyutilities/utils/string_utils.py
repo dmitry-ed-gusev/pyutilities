@@ -50,12 +50,19 @@ def filter_str(string):  # todo: fix filtering for non-cyrillic symbols too (add
     return "".join(
         char
         for char in string
-        if char.isalnum() or char.isspace() or char in SPECIAL_SYMBOLS or char in CYRILLIC_SYMBOLS
+        if char.isalnum()
+        or char.isspace()
+        or char in SPECIAL_SYMBOLS
+        or char in CYRILLIC_SYMBOLS
     )
 
 
-def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = None) -> str:
-    log.debug(f"Processing URL [{url}] with postfix [{postfix}] and format values [{format_values}].")
+def process_url(
+    url: str, postfix: str = "", format_values: Tuple[str] | None = None
+) -> str:
+    log.debug(
+        f"Processing URL [{url}] with postfix [{postfix}] and format values [{format_values}]."
+    )
 
     if not url:
         raise PyUtilitiesException("Provided empty URL for processing!")
