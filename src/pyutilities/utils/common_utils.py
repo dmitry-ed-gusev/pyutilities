@@ -14,14 +14,15 @@
     Modified: Dmitrii Gusev, 22.11.2022
 """
 
-import os
 import csv
-import logging
 import inspect
+import logging
+import os
 import threading
 from typing import Dict, List, Tuple
-from pyutilities.exception import PyUtilitiesException
+
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
+from pyutilities.exception import PyUtilitiesException
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
 # don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
@@ -71,9 +72,7 @@ def debug_benchmark(func):
     def wrapper(*args, **kwargs):
         t = time.process_time()
         res = func(*args, **kwargs)
-        log.debug(
-            f"Function [{func.__name__}] executed in [{time.process_time() - t}] second(s)."
-        )
+        log.debug(f"Function [{func.__name__}] executed in [{time.process_time() - t}] second(s).")
         return res
 
     return wrapper
@@ -110,9 +109,7 @@ def build_variations_list() -> list:
         for letter2 in RUS_CHARS + ENG_CHARS + NUM_CHARS:
             result.append(letter1 + letter2)  # add value to resulting list
             for spec_symbol in SPEC_CHARS:
-                result.append(
-                    letter1 + spec_symbol + letter2
-                )  # add value to resulting list
+                result.append(letter1 + spec_symbol + letter2)  # add value to resulting list
 
     return result
 
@@ -130,25 +127,17 @@ def add_kv_2_dict(dicts_list: List[Dict[str, str]], kv: Tuple[str, str]):
         dictionary[kv[0]] = kv[1]
 
 
-def dict_2_csv(
-    dicts_list: List[Dict[str, str]], filename: str, overwrite_file: bool = False
-):
+def dict_2_csv(dicts_list: List[Dict[str, str]], filename: str, overwrite_file: bool = False):
     """Saving the provided dictionary to the CSV file. If parameter overwrite_file = True -
     the existing file will be overwritten, otherwise existing file will raise an exception.
     """
     log.debug(f"dict_2_csv(): saving the dictionaries list to CSV: [{filename}].")
 
     if not dicts_list or not filename:  # I - fail-fast check
-        raise ValueError(
-            f"Provided empty dictionaries list: [{not dicts_list}] or filename: [{filename}]!"
-        )
+        raise ValueError(f"Provided empty dictionaries list: [{not dicts_list}] or filename: [{filename}]!")
 
-    if (
-        os.path.exists(filename) and not overwrite_file
-    ):  # II - file exists and we don't want to overwrite it
-        raise PyUtilitiesException(
-            f"File [{filename}] exists but overwrite is [{overwrite_file}]!"
-        )
+    if os.path.exists(filename) and not overwrite_file:  # II - file exists and we don't want to overwrite it
+        raise PyUtilitiesException(f"File [{filename}] exists but overwrite is [{overwrite_file}]!")
 
     keys = dicts_list[0].keys()
     with open(filename, "w", newline="") as output_file:

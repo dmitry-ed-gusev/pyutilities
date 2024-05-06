@@ -9,11 +9,10 @@
 """
 
 import unittest
-from pyutilities.config.configuration import ConfigurationXls, ConfigError
 
-XLSX_CONFIG_FILE = (
-    "tests/config/test_configs/xlsx_config.xlsx"  # xlsx format (Excel 2010)
-)
+from pyutilities.config.configuration import ConfigError, ConfigurationXls
+
+XLSX_CONFIG_FILE = "tests/config/test_configs/xlsx_config.xlsx"  # xlsx format (Excel 2010)
 XLS_CONFIG_FILE = "tests/config/test_configs/xls_config.xls"  # xls format (old Excel)
 CONFIG_SHEET = "config_sheet"
 
@@ -68,18 +67,14 @@ class ConfigurationTest(unittest.TestCase):
         self.assertEqual(config_xls.get("name1xlsx"), "value1")
 
     def test_init_dict_to_merge_is_nonempty_dict_xls(self):
-        config_xls = ConfigurationXls(
-            XLS_CONFIG_FILE, CONFIG_SHEET, dict_to_merge={"a": "b", "c": "d"}
-        )
+        config_xls = ConfigurationXls(XLS_CONFIG_FILE, CONFIG_SHEET, dict_to_merge={"a": "b", "c": "d"})
         self.assertEqual(config_xls.get("name2xls"), "value2")
         self.assertEqual(config_xls.get("name1xls"), "value1")
         self.assertEqual(config_xls.get("a"), "b")
         self.assertEqual(config_xls.get("c"), "d")
 
     def test_init_dict_to_merge_is_nonempty_dict_xlsx(self):
-        config_xls = ConfigurationXls(
-            XLSX_CONFIG_FILE, CONFIG_SHEET, dict_to_merge={"a": "b", "c": "d"}
-        )
+        config_xls = ConfigurationXls(XLSX_CONFIG_FILE, CONFIG_SHEET, dict_to_merge={"a": "b", "c": "d"})
         self.assertEqual(config_xls.get("name2xlsx"), "value2")
         self.assertEqual(config_xls.get("name1xlsx"), "value1")
         self.assertEqual(config_xls.get("a"), "b")

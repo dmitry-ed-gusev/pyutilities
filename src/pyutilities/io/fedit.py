@@ -10,9 +10,10 @@
 
 # todo: implement: add line mode (if not found needed line)
 
-import sys
-import fileinput
 import argparse
+import fileinput
+import sys
+
 from pyutilities.logging import init_logging
 
 # - string checking types
@@ -40,9 +41,7 @@ def check_str(args, check_type, source_str, test_str):
 
 def fedit():
     # create arguments parser
-    parser = argparse.ArgumentParser(
-        description="File editing tool: replace inline values."
-    )
+    parser = argparse.ArgumentParser(description="File editing tool: replace inline values.")
 
     # add mandatory arguments to parser
     parser.add_argument(

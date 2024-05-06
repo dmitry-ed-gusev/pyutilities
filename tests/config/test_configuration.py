@@ -10,8 +10,10 @@
 
 import os
 import unittest
+
 from mock import patch
-from pyutilities.config.configuration import Configuration, ConfigError
+
+from pyutilities.config.configuration import ConfigError, Configuration
 
 CONFIG_PATH = "tests/config/test_configs"
 CONFIG_MODULE_MOCK_YAML = "pyutilities.config.configuration.read_yaml"
@@ -42,9 +44,7 @@ class ConfigurationTest(unittest.TestCase):
                 self.config.load(invalid_path)
 
     def test_merge_config_files(self):
-        self.config.load(
-            CONFIG_PATH
-        )  # <- load all yaml configs from specified location
+        self.config.load(CONFIG_PATH)  # <- load all yaml configs from specified location
         self.assertEqual(self.config.get(KEY1), "value1")
         self.assertEqual(self.config.get(KEY2), "value3")
 
@@ -58,9 +58,7 @@ class ConfigurationTest(unittest.TestCase):
     # todo: add more test cases here
     def test_merge_dict_single_on_init(self):
         dict_to_merge = {"a": "b", "c": "d", "aa.bb": "eee"}
-        config = Configuration(
-            path_to_config=CONFIG_PATH, dict_to_merge=dict_to_merge, is_merge_env=True
-        )
+        config = Configuration(path_to_config=CONFIG_PATH, dict_to_merge=dict_to_merge, is_merge_env=True)
         self.assertEqual(config.get(KEY1), "value1")
         self.assertEqual(config.get(KEY2), "value3")
         self.assertEqual(config.get("a"), "b")
@@ -165,9 +163,7 @@ class ConfigurationTest(unittest.TestCase):
         self.assertEqual(config.get("key"), "value")
 
     @patch(CONFIG_MODULE_MOCK_YAML)
-    @patch(
-        CONFIG_MODULE_MOCK_OS
-    )  # name for patch should be equals to import in real module!
+    @patch(CONFIG_MODULE_MOCK_OS)  # name for patch should be equals to import in real module!
     def test_init_with_dict_dont_override(self, mock_os, mock_parse_yaml):
         # set returned results for mocks
         mock_os.exists.return_value = True

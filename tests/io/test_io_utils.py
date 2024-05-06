@@ -9,8 +9,10 @@
 """
 
 import unittest
-from mock import patch, mock_open
-from pyutilities.io.io_utils import read_yaml, list_files, _list_files
+
+from mock import mock_open, patch
+
+from pyutilities.io.io_utils import _list_files, list_files, read_yaml
 
 MOCK_OPEN_METHOD = "pyutilities.io.io_utils.open"
 MOCK_WALK_METHOD = "pyutilities.io.io_utils.walk"
@@ -35,9 +37,7 @@ class IOUtilsTest(unittest.TestCase):
 
     def test_parse_yaml_ioerror(self):
         with self.assertRaises(IOError):
-            with patch(
-                MOCK_OPEN_METHOD, mock_open(read_data="name:\tvalue"), create=True
-            ):
+            with patch(MOCK_OPEN_METHOD, mock_open(read_data="name:\tvalue"), create=True):
                 read_yaml("foo_ioerror.file")
 
     def test_parse_yaml_empty_paths(self):

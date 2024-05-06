@@ -7,7 +7,7 @@
 #   system shell) and from the pipenv environment as well (pipenv shell).
 #
 #   Created:  Dmitrii Gusev, 30.11.2021
-#   Modified: Dmitrii Gusev, 05.05.2024
+#   Modified: Dmitrii Gusev, 06.05.2024
 #
 #   cspell:ignore pyutilities, isort
 #
@@ -45,8 +45,8 @@ pipenv update --dev --clear ${VERBOSE} # run lock, then sync
 
 # -- III. Executing [black] code formatter
 printf "\n\n *** Executing [black] automatic code formatter *** \n\n"
-pipenv run black src/ ${VERBOSE}
-pipenv run black tests/ ${VERBOSE}
+pipenv run black src/ ${VERBOSE} --config .black
+pipenv run black tests/ ${VERBOSE} --config .black
 sleep 3
 
 # -- IV. Executing [mypy] types checker
@@ -63,7 +63,7 @@ sleep 3
 
 # -- VI. Executing [isort] utility (imports sorting)
 printf "\n\n *** Executing [isort] utility *** \n\n"
-isort --atomic .
+pipenv run isort --atomic .
 sleep 3
 
 # -- VII. Executing pytest with pytest-cov (see config - pytest.ini/setup.cfg)

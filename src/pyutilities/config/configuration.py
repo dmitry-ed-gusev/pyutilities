@@ -15,14 +15,15 @@
     Modified: Gusev Dmitrii, 25.11.2022
 """
 
-import os
 import logging
-import xlrd  # reading excel files (old Excel - xls)
-import openpyxl  # reading excel files (Excel 2010 - xlsx)
-
+import os
 from string import Template
-from pyutilities.io.io_utils import read_yaml
+
+import openpyxl  # reading excel files (Excel 2010 - xlsx)
+import xlrd  # reading excel files (old Excel - xls)
+
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
+from pyutilities.io.io_utils import read_yaml
 
 YAML_EXTENSION_1 = ".yml"
 YAML_EXTENSION_2 = ".yaml"
@@ -59,9 +60,7 @@ class Configuration(object):
         # init internal dictionary
         self.config_dict = {}
 
-        if (
-            path_to_config and path_to_config.strip()
-        ):  # if provided file path - try to load config
+        if path_to_config and path_to_config.strip():  # if provided file path - try to load config
             self.log.debug("Loading config from [{}].".format(path_to_config))
             self.load(path_to_config, is_merge_env)
 
@@ -69,24 +68,18 @@ class Configuration(object):
             self.log.debug("Dictionary for merge isn't empty: {}".format(dict_to_merge))
             if isinstance(dict_to_merge, dict):  # provided single dictionary
                 self.log.debug(
-                    "Merging with provided single dictionary. Override: [{}].".format(
-                        is_override_config
-                    )
+                    "Merging with provided single dictionary. Override: [{}].".format(is_override_config)
                 )
                 self.append_dict(dict_to_merge, is_override_config)
             elif isinstance(dict_to_merge, list):  # provided list of dictionaries
                 self.log.debug(
-                    "Merging with provided list of dictionaries. Override: [{}].".format(
-                        is_override_config
-                    )
+                    "Merging with provided list of dictionaries. Override: [{}].".format(is_override_config)
                 )
                 for dictionary in dict_to_merge:
                     self.append_dict(dictionary, is_override_config)
             else:
                 raise ConfigError(
-                    "Provided unknown type [{}] of dictionary for merge!".format(
-                        type(dict_to_merge)
-                    )
+                    "Provided unknown type [{}] of dictionary for merge!".format(type(dict_to_merge))
                 )
         self.log.info("Configuration loaded successfully.")
 
@@ -108,11 +101,7 @@ class Configuration(object):
         :param path: directory/file to load files from
         :type path: str
         """
-        self.log.debug(
-            "load() is working. Path [{}], is_merge_env [{}].".format(
-                path, is_merge_env
-            )
-        )
+        self.log.debug("load() is working. Path [{}], is_merge_env [{}].".format(path, is_merge_env))
         # fail-fast checks
         if not path or not path.strip():
             raise ConfigError("Provided empty path for config loading!")
@@ -121,25 +110,18 @@ class Configuration(object):
 
         # todo: extract two methods - load from file/load from dir + refactor unit tests
         # if provided path to single file - load it, otherwise - load from directory
-        if os.path.isfile(path) and (
-            path.endswith(YAML_EXTENSION_1) or path.endswith(YAML_EXTENSION_2)
-        ):
+        if os.path.isfile(path) and (path.endswith(YAML_EXTENSION_1) or path.endswith(YAML_EXTENSION_2)):
             self.log.debug("Provided path [{}] is a YAML file.".format(path))
             self.log.debug("Loading configuration from [{}].".format(path))
             self.merge_dict(read_yaml(path))
 
         # loading from directory (all YAML files)
         elif os.path.isdir(path):
-            self.log.debug(
-                "Provided path [{}] is a directory. Loading all YAML files.".format(
-                    path
-                )
-            )
+            self.log.debug("Provided path [{}] is a directory. Loading all YAML files.".format(path))
             for some_file in os.listdir(path):
                 file_path = os.path.join(path, some_file)
                 if os.path.isfile(file_path) and (
-                    some_file.endswith(YAML_EXTENSION_1)
-                    or some_file.endswith(YAML_EXTENSION_2)
+                    some_file.endswith(YAML_EXTENSION_1) or some_file.endswith(YAML_EXTENSION_2)
                 ):
                     self.log.debug("Loading configuration from [{}].".format(some_file))
                     self.merge_dict(read_yaml(file_path))
@@ -160,9 +142,7 @@ class Configuration(object):
         :param new_dict: dictionary to be added
         :type new_dict: dict
         """
-        self.log.debug(
-            "merge_dict() is working. Dictionary to merge [{}].".format(new_dict)
-        )
+        self.log.debug("merge_dict() is working. Dictionary to merge [{}].".format(new_dict))
         dict1 = self.config_dict
         if len(dict1) != 0:
             result = self.__add_entity__(dict1, new_dict)
@@ -186,15 +166,12 @@ class Configuration(object):
                     sep = "."
                     if current_key == "":
                         sep = ""
-                    self.__add_entity__(
-                        dict1[key], dict2[key], "%s%s%s" % (current_key, sep, key)
-                    )
+                    self.__add_entity__(dict1[key], dict2[key], "%s%s%s" % (current_key, sep, key))
                 else:
                     dict1[key] = dict2[key]
         else:
             raise ConfigError(
-                "Attempt of overwriting old value %s with new %s to the key %s"
-                % (dict1, dict2, current_key)
+                "Attempt of overwriting old value %s with new %s to the key %s" % (dict1, dict2, current_key)
             )
         return dict1
 
@@ -305,9 +282,7 @@ class ConfigurationXls(Configuration):
         # init class instance logger
         self.log = logging.getLogger(__name__)
         self.log.addHandler(logging.NullHandler())
-        self.log.debug(
-            "Initializing ConfigurationXls() instance..."
-        )  # <- INFO level changed to DEBUG
+        self.log.debug("Initializing ConfigurationXls() instance...")  # <- INFO level changed to DEBUG
 
         # load config (dictionary) from xls file
         xls_dict = self.load_dict_from_xls(path_to_xls, config_sheet_name)
@@ -316,20 +291,14 @@ class ConfigurationXls(Configuration):
         dictionary = []
         if dict_to_merge is None:  # dictionary for merge doesn't provided
             dictionary = xls_dict
-        elif isinstance(
-            dict_to_merge, dict
-        ):  # provided dictionary for merge is dictionary
+        elif isinstance(dict_to_merge, dict):  # provided dictionary for merge is dictionary
             dictionary.append(dict_to_merge)
             dictionary.append(xls_dict)
-        elif isinstance(
-            dict_to_merge, list
-        ):  # provided dictionary for merge is a list of dictionaries
+        elif isinstance(dict_to_merge, list):  # provided dictionary for merge is a list of dictionaries
             dictionary = dict_to_merge
             dictionary.append(xls_dict)
         else:  # provided invalid type of dictionary for merge
-            raise ConfigError(
-                "Invalid dictionary to merge type: {}!".format(type(dict_to_merge))
-            )
+            raise ConfigError("Invalid dictionary to merge type: {}!".format(type(dict_to_merge)))
 
         # init instance with superclass constructor
         super(ConfigurationXls, self).__init__(
@@ -341,9 +310,7 @@ class ConfigurationXls(Configuration):
 
     def load_dict_from_xls(self, path_to_xls, config_sheet_name):
         self.log.debug("load_dict_from_xls() is working.")
-        self.log.debug(
-            "Excel file [{}], config sheet [{}].".format(path_to_xls, config_sheet_name)
-        )
+        self.log.debug("Excel file [{}], config sheet [{}].".format(path_to_xls, config_sheet_name))
 
         # some preliminary checks (fast-fail)
         if not path_to_xls or not path_to_xls.strip():
@@ -355,48 +322,28 @@ class ConfigurationXls(Configuration):
 
         # loading xls/xlsx workbook
         if path_to_xls.endswith("xls"):  # load from excel file - format xls
-            excel_book = xlrd.open_workbook(
-                path_to_xls, encoding_override=DEFAULT_ENCODING
-            )
+            excel_book = xlrd.open_workbook(path_to_xls, encoding_override=DEFAULT_ENCODING)
             excel_sheet = excel_book.sheet_by_name(config_sheet_name)
-            self.log.debug(
-                "Loaded XLS config. Found [{}] row(s). Loading.".format(
-                    excel_sheet.nrows
-                )
-            )
+            self.log.debug("Loaded XLS config. Found [{}] row(s). Loading.".format(excel_sheet.nrows))
             # loading dictionary from xls file
             for rownumber in range(excel_sheet.nrows):
                 name = excel_sheet.cell_value(rownumber, NAMES_COLUMN)
                 value = excel_sheet.cell_value(rownumber, VALUES_COLUMN)
-                self.log.debug(
-                    "XLS: loaded config parameter: {} = {}".format(name, value)
-                )
+                self.log.debug("XLS: loaded config parameter: {} = {}".format(name, value))
                 dictionary[name] = value
 
         elif path_to_xls.endswith("xlsx"):  # load from excel file - format xlsx
             excel_book = openpyxl.load_workbook(path_to_xls)  # workbook
             excel_sheet = excel_book[config_sheet_name]  # specified sheet by name
-            self.log.debug(
-                "Loaded XSLX config. Found [{}] row(s). Loading.".format(
-                    excel_sheet.max_row
-                )
-            )
+            self.log.debug("Loaded XSLX config. Found [{}] row(s). Loading.".format(excel_sheet.max_row))
             for rownumber in range(excel_sheet.max_row):
-                name = excel_sheet.cell(
-                    row=rownumber + 1, column=NAMES_COLUMN + 1
-                ).value
-                value = excel_sheet.cell(
-                    row=rownumber + 1, column=VALUES_COLUMN + 1
-                ).value
-                self.log.debug(
-                    "XLSX: loaded config parameter: {} = {}".format(name, value)
-                )
+                name = excel_sheet.cell(row=rownumber + 1, column=NAMES_COLUMN + 1).value
+                value = excel_sheet.cell(row=rownumber + 1, column=VALUES_COLUMN + 1).value
+                self.log.debug("XLSX: loaded config parameter: {} = {}".format(name, value))
                 dictionary[name] = value
 
         else:  # unknown extension of excel file - raise an issue
-            raise ConfigError(
-                "Provided unknown excel file extension [%s]!" % path_to_xls
-            )
+            raise ConfigError("Provided unknown excel file extension [%s]!" % path_to_xls)
 
         self.log.info("Loaded dictionary from xls config:\n\t{}".format(dictionary))
         return dictionary

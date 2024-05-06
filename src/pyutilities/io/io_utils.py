@@ -8,14 +8,16 @@
     Modified: Dmitrii Gusev, 22.11.2022
 """
 
-import os
-import sys
-import yaml
 import errno
 import logging
+import os
+import sys
 from os import walk
-from pyutilities.exception import PyUtilitiesException
+
+import yaml
+
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
+from pyutilities.exception import PyUtilitiesException
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
 # don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
@@ -66,12 +68,8 @@ def str_2_file(filename: str, content: str, overwrite_file: bool = False):
     """Write string/text content to the provided file."""
     log.debug(f"str_2_file(): saving content to file: [{filename}].")
 
-    if (
-        os.path.exists(filename) and not overwrite_file
-    ):  # file exists and we don't want to overwrite it
-        raise PyUtilitiesException(
-            f"File [{filename}] exists but overwrite is [{overwrite_file}]!"
-        )
+    if os.path.exists(filename) and not overwrite_file:  # file exists and we don't want to overwrite it
+        raise PyUtilitiesException(f"File [{filename}] exists but overwrite is [{overwrite_file}]!")
 
     if not os.path.exists(os.path.dirname(filename)):  # create a dir for file
         try:
@@ -90,9 +88,7 @@ def file_2_str(filename: str) -> str:
 
     if not filename:  # fail-fast behaviour (empty path)
         raise PyUtilitiesException("Specified empty file path!")
-    if not os.path.exists(
-        os.path.dirname(filename)
-    ):  # fail-fast behaviour (non-existent path)
+    if not os.path.exists(os.path.dirname(filename)):  # fail-fast behaviour (non-existent path)
         raise PyUtilitiesException(f"Specified path [{filename}] doesn't exist!")
 
     with open(filename, mode="r") as infile:
