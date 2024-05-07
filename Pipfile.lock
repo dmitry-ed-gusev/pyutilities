@@ -1135,22 +1135,6 @@
             "markers": "python_version >= '3.7'",
             "version": "==3.1.4"
         },
-        "jsonschema": {
-            "hashes": [
-                "sha256:5b22d434a45935119af990552c862e5d6d564e8f6601206b305a61fdf661a2b7",
-                "sha256:ff4cfd6b1367a40e7bc6411caec72effadd3db0bbe5017de188f2d6108335802"
-            ],
-            "markers": "python_version >= '3.8'",
-            "version": "==4.22.0"
-        },
-        "jsonschema-specifications": {
-            "hashes": [
-                "sha256:48a76787b3e70f5ed53f1160d2b81f586e4ca6d1548c5de7085d1682674764cc",
-                "sha256:87e4fdf3a94858b8a2ba2778d9ba57d8a9cafca7c7489c46ba0d30a8bc6a9c3c"
-            ],
-            "markers": "python_version >= '3.8'",
-            "version": "==2023.12.1"
-        },
         "jupyter-client": {
             "hashes": [
                 "sha256:3b7bd22f058434e3b9a7ea4b1500ed47de2713872288c0d511d19926f99b459f",
