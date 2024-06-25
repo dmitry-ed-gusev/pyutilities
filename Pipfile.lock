@@ -516,11 +516,11 @@
         },
         "astroid": {
             "hashes": [
-                "sha256:8ead48e31b92b2e217b6c9733a21afafe479d52d6e164dd25fb1a770c7c3cf94",
-                "sha256:e8a0083b4bb28fcffb6207a3bfc9e5d0a68be951dd7e336d5dcf639c682388c0"
+                "sha256:16ee8ca5c75ac828783028cc1f967777f0e507c6886a295ad143e0f405b975a2",
+                "sha256:f7f829f8506ade59f1b3c6c93d8fac5b1ebc721685fa9af23e9794daf1d450a3"
             ],
             "markers": "python_full_version >= '3.8.0'",
-            "version": "==3.2.2"
+            "version": "==3.2.0"
         },
         "asttokens": {
             "hashes": [
@@ -1337,12 +1337,12 @@
         },
         "nose2": {
             "hashes": [
-                "sha256:36770f519df5becd3cbfe0bee4abbfbf9b9f6b4eb4e03361d282b7efcfc4f0df",
-                "sha256:564450c0c4f1602dfe171902ceb4726cc56658af7a620ae1826f1ffc86b09a86"
+                "sha256:29e581efcef01a1aba391e817b121a681e9841b3299c1110bba8b1cd1d4074bf",
+                "sha256:50cd5f5d025dcf4b6b7c8ada9849ba9a5ffb544fc46f8740da1059502c4b7f92"
             ],
             "index": "pypi",
             "markers": "python_version >= '3.8'",
-            "version": "==0.15.1"
+            "version": "==0.14.2"
         },
         "packaging": {
             "hashes": [
