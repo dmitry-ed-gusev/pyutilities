@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 # coding=utf-8
 
+# cspell:ignore fedit infile
+
 """
     Inplace/inline file editing utility. Executable from cmd line.
 
     Created:  Gusev Dmitrii, 13.04.2017
-    Modified: Gusev Dmitrii, 27.11.2022
+    Modified: Gusev Dmitrii, 25.06.2024
 """
 
 # todo: implement: add line mode (if not found needed line)
 
+import sys
 import argparse
 import fileinput
-import sys
 
 from pyutilities.logging import init_logging
 
@@ -31,6 +33,7 @@ def check_str(args, check_type, source_str, test_str):
     :param test_str: testing string
     :return:
     """
+
     if check_type == CHECK_TYPE_STARTS:
         return source_str.startswith(test_str)
     elif args.edit_type == CHECK_TYPE_ENDS:
@@ -40,6 +43,8 @@ def check_str(args, check_type, source_str, test_str):
 
 
 def fedit():
+    """Main module function."""
+
     # create arguments parser
     parser = argparse.ArgumentParser(description="File editing tool: replace inline values.")
 

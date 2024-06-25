@@ -8,19 +8,24 @@
     Modified: Gusev Dmitrii, 22.11.2022
 """
 
-import unittest
+from itertools import count
+from pyutilities.utils.common_utils import singleton
 
 
-class ConfigurationTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        # method just for the demo purpose
-        pass
+def test_singleton():
 
-    @classmethod
-    def tearDownClass(cls):
-        # method just for the demo purpose
-        pass
+    @singleton
+    class Obj(object):
+        _ids = count(0)
 
-    def test(self):
-        pass
+        def __init__(self):
+            self.id = next(self._ids)
+
+        def get_id(self):
+            return self.id
+
+    instance1 = Obj()
+    instance2 = Obj()
+
+    assert instance1 == instance2
+    assert instance1.id == instance2.id

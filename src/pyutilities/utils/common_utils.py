@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# cspell:ignore isnt АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ getinstance threadsafe
+
 """
     Common utilities module.
 
@@ -8,17 +10,17 @@
         - (datetime) https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
         - (list of dicts to csv)
           https://stackoverflow.com/questions/3086973/how-do-i-convert-this-list-of-dictionaries-to-a-csv-file
-        - ???
 
     Created:  Gusev Dmitrii, 10.10.2022
-    Modified: Dmitrii Gusev, 22.11.2022
+    Modified: Dmitrii Gusev, 25.06.2024
 """
 
+import os
 import csv
 import inspect
 import logging
-import os
 import threading
+
 from typing import Dict, List, Tuple
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
@@ -52,6 +54,7 @@ def singleton(class_):
 
 def threadsafe_function(fn):
     """Decorator making sure that the decorated function is thread safe."""
+
     lock = threading.Lock()
 
     def new(*args, **kwargs):
@@ -67,6 +70,7 @@ def threadsafe_function(fn):
 
 def debug_benchmark(func):
     """This decorator logs the given function execution time."""
+
     import time
 
     def wrapper(*args, **kwargs):
@@ -90,18 +94,20 @@ def debug_function_name(func):
     return wrapper
 
 
-# handy utility function/lambda for getting name of executing function from inside the function
-# myself = lambda: inspect.stack()[1][3]
 def myself():
+    """
+    Handy utility function/lambda for getting name of executing function from inside
+    the function. Can be rewritten as lambda: myself = lambda: inspect.stack()[1][3]
+    """
+
     return inspect.stack()[1][3]
 
 
-# todo: 1. perform the pre-build of the variations and store them in the scraper db
-# todo: 2. re-build variations when necessary
 def build_variations_list() -> list:
     """Build list of possible variations of symbols for search.
     :return: list of variations
     """
+
     log.debug("build_variations_list(): processing.")
 
     result = list()  # resulting list
@@ -116,6 +122,7 @@ def build_variations_list() -> list:
 
 def add_kv_2_dict(dicts_list: List[Dict[str, str]], kv: Tuple[str, str]):
     """Add specified key-value pair to all dictionaries in the provided dicts list."""
+
     log.debug(f"add_kv_2_dict(): adding key:value [{kv}] to dicts list.")
 
     if not dicts_list:
@@ -128,9 +135,11 @@ def add_kv_2_dict(dicts_list: List[Dict[str, str]], kv: Tuple[str, str]):
 
 
 def dict_2_csv(dicts_list: List[Dict[str, str]], filename: str, overwrite_file: bool = False):
-    """Saving the provided dictionary to the CSV file. If parameter overwrite_file = True -
+    """
+    Saving the provided dictionary to the CSV file. If parameter overwrite_file = True -
     the existing file will be overwritten, otherwise existing file will raise an exception.
     """
+
     log.debug(f"dict_2_csv(): saving the dictionaries list to CSV: [{filename}].")
 
     if not dicts_list or not filename:  # I - fail-fast check

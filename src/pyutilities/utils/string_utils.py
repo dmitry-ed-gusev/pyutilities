@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# cspell:ignore isnt абвгдеёжзийклмнопрстуфхцчшщъыьэюя
+
 """
     Some useful/convenient string functions (sometimes - similar
     to module String in java library Apache Commons).
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 25.11.2022
+    Modified: Dmitrii Gusev, 25.06.2024
 """
 
 import logging
@@ -15,8 +17,10 @@ from typing import Dict, Tuple
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.exception import PyUtilitiesException
 
+# useful module defaults
 SPECIAL_SYMBOLS = ".,/-№"
 CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
+LATIN_SYMBOLS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
@@ -24,6 +28,7 @@ log.addHandler(logging.NullHandler())
 
 def trim_to_none(string: str | None) -> str | None:
     """Trim the provided string to None (if empty) or just strip whitespaces."""
+
     if string and string.strip():
         return string.strip()
 
@@ -32,26 +37,33 @@ def trim_to_none(string: str | None) -> str | None:
 
 def trim_to_empty(string: str | None) -> str:
     """Trim the provided string to empty string ('' or "") or just strip whitespaces."""
+
     if string and string.strip():
         return string.strip()
 
     return ""
 
 
-def filter_str(string):  # todo: fix filtering for non-cyrillic symbols too (add them)
+def filter_str(string):
     """
     Filter out all symbols from string except letters, numbers, spaces, commas.
     By default, decode input string in unicode (utf-8).
     :param string:
     :return:
     """
+
     if not string or not string.strip():  # if empty, return 'as is'
         return string
-    # filter out all, except symbols, spaces, or comma
+
+    # filter out all, except symbols/letters, spaces, or comma
     return "".join(
         char
         for char in string
-        if char.isalnum() or char.isspace() or char in SPECIAL_SYMBOLS or char in CYRILLIC_SYMBOLS
+        if char.isalnum()
+        or char.isspace()
+        or char in SPECIAL_SYMBOLS
+        or char in CYRILLIC_SYMBOLS
+        or char in LATIN_SYMBOLS
     )
 
 

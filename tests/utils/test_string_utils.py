@@ -5,21 +5,15 @@
     Unit tests for strings module.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 06.05.2024
+    Modified: Dmitrii Gusev, 25.06.2024
 """
 
-import unittest
-
 import pytest
+
 from hypothesis import given
 from hypothesis.strategies import characters, text
 
-from pyutilities.utils.string_utils import (
-    filter_str,
-    process_url,
-    trim_to_empty,
-    trim_to_none,
-)
+from pyutilities.utils.string_utils import filter_str, process_url, trim_to_empty, trim_to_none
 
 # common constants for testing
 EMPTY_STRINGS = ["", "     ", None, "", "  "]
@@ -31,51 +25,36 @@ NON_EMPTY_STRINGS = {
 }
 
 
-class StringsTest(unittest.TestCase):
-    def setUp(self):
-        # method just for the demo purpose
-        pass
+def test_trim_to_none_with_empty_strings():
+    for s in EMPTY_STRINGS:
+        assert trim_to_none(s) is None, "Must be NoNe!"
 
-    def tearDown(self):
-        # method just for the demo purpose
-        pass
 
-    @classmethod
-    def setUpClass(cls):
-        # method just for the demo purpose
-        pass
+def test_trim_to_none_with_non_empty_strings():
+    for k, v in NON_EMPTY_STRINGS.items():
+        assert k == trim_to_none(v), "Must be equals!"
 
-    @classmethod
-    def tearDownClass(cls):
-        # method just for the demo purpose
-        pass
 
-    def test_trim_to_none_with_empty_strings(self):
-        for s in EMPTY_STRINGS:
-            self.assertIsNone(trim_to_none(s), "Must be NoNe!")
+def test_trim_to_empty_with_empty_strings():
+    for s in EMPTY_STRINGS:
+        assert "" == trim_to_empty(s), "Must be an empty string!"
 
-    def test_trim_to_none_with_non_empty_strings(self):
-        for k, v in NON_EMPTY_STRINGS.items():
-            self.assertEqual(k, trim_to_none(v), "Must be equals!")
 
-    def test_trim_to_empty_with_empty_strings(self):
-        for s in EMPTY_STRINGS:
-            self.assertEqual("", trim_to_empty(s), "Must be an empty string!")
-            self.assertEqual("", trim_to_empty(s), "Must be an empty string!")
+def test_trim_to_empty_with_non_empty_strings():
+    for k, v in NON_EMPTY_STRINGS.items():
+        assert k == trim_to_empty(v), "Must be equals!"
 
-    def test_trim_to_empty_with_non_empty_strings(self):
-        for k, v in NON_EMPTY_STRINGS.items():
-            self.assertEqual(k, trim_to_empty(v), "Must be equals!")
 
-    def test_filter_str_for_empty(self):
-        for string in ["", "    ", None]:
-            self.assertEqual(string, filter_str(string))
+def test_filter_str_for_empty():
+    for s in EMPTY_STRINGS:
+        assert s == filter_str(s)
 
-    def test_filter_str_for_string(self):
-        self.assertEqual("45, .555", filter_str("+45, *@.555"))
-        self.assertEqual("улица  Правды. 11,", filter_str("улица + =Правды. 11,"))
-        self.assertEqual("3-5-7", filter_str("3-5-7"))
-        self.assertEqual("zzzz. , fgh ", filter_str("zzzz. ??, fgh *"))
+
+def test_filter_str_for_non_empty_strings():
+    assert "45, .555" == filter_str("+45, *@.555")
+    assert "улица  Правды. 11," == filter_str("улица + =Правды. 11,")
+    assert "3-5-7" == filter_str("3-5-7")
+    assert "zzzz. , fgh " == filter_str("zzzz. ??, fgh *")
 
 
 @pytest.mark.parametrize(
@@ -117,8 +96,7 @@ def test_process_url(url, postfix, format_params, expected):
     assert process_url(url, postfix, format_params) == expected
 
 
-# TODO: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.text
-# TODO: https://en.wikipedia.org/wiki/Unicode_character_property
+# see info here: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.text
 @given(text(alphabet=characters(blacklist_categories=["Cc", "Zs", "Zl", "Zp"]), min_size=1, max_size=100))
 def test_trim_to_none_with_meaningful_symbols(text):
     assert trim_to_none(text) == text

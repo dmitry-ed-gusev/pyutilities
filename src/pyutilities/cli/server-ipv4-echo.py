@@ -20,12 +20,12 @@ import socket
 from argparse import ArgumentParser
 
 # Useful constants
-DEFAULT_ENCODING = 'utf-8'
+DEFAULT_ENCODING = "utf-8"
 BLOCK_SIZE = 8192  # Block size is set to 8192 because thats usually the max header size
 
 
-def serve(server_host='0.0.0.0', server_port=3246, server_verbosity=1):
-    """ Method that performs the main duty. """
+def serve(server_host="0.0.0.0", server_port=3246, server_verbosity=1):
+    """Method that performs the main duty."""
 
     try:
 
@@ -66,17 +66,17 @@ def serve(server_host='0.0.0.0', server_port=3246, server_verbosity=1):
                 else:
                     data = connection.recv(max(0, bytes_left))
 
-                if not 'header' in request:
+                if not "header" in request:
                     request = build_request(data)
-                    header_length = len(request['raw']) - len(request['body'])
+                    header_length = len(request["raw"]) - len(request["body"])
                     body_length_read = BLOCK_SIZE - header_length
-                    if 'content-length' in request['header']:
-                        bytes_left = int(request['header']['content-length']) - body_length_read
+                    if "content-length" in request["header"]:
+                        bytes_left = int(request["header"]["content-length"]) - body_length_read
                     else:
                         bytes_left = 0
                 else:
-                    request['raw'] += data
-                    request['body'] += data.decode(DEFAULT_ENCODING, 'ignore')
+                    request["raw"] += data
+                    request["body"] += data.decode(DEFAULT_ENCODING, "ignore")
                     bytes_left -= BLOCK_SIZE
 
             # request timestamp
@@ -84,10 +84,10 @@ def serve(server_host='0.0.0.0', server_port=3246, server_verbosity=1):
 
             # print to the current console tech info about the request
             if server_verbosity > 0:
-                print(' - '.join([client_address[0], request_time, request['header']['request-line']]))
+                print(" - ".join([client_address[0], request_time, request["header"]["request-line"]]))
 
             # build the response to the client
-            raw_decoded = request['raw'].decode(DEFAULT_ENCODING, 'ignore')
+            raw_decoded = request["raw"].decode(DEFAULT_ENCODING, "ignore")
             response = "HTTP/1.1 200 OK\nAccess-Control-Allow-Origin: *\n\n{}".format(raw_decoded)
 
             # in case of the MAX verbosity - print response to the current console
@@ -110,7 +110,7 @@ def serve(server_host='0.0.0.0', server_port=3246, server_verbosity=1):
 
 
 def do_serve():
-    """ Main method pf the script. """
+    """Main method pf the script."""
 
     # get parsed args
     args = parse_args()
@@ -120,25 +120,21 @@ def do_serve():
 
 
 def build_request(first_chunk):
-    """ Building request object from received data. """
+    """Building request object from received data."""
 
-    lines = first_chunk.decode(DEFAULT_ENCODING, 'ignore').split('\r\n')
-    h = {'request-line': lines[0]}
+    lines = first_chunk.decode(DEFAULT_ENCODING, "ignore").split("\r\n")
+    h = {"request-line": lines[0]}
     i = 1
-    while i < len(lines[1:]) and lines[i] != '':
-        k, v = lines[i].split(': ')
+    while i < len(lines[1:]) and lines[i] != "":
+        k, v = lines[i].split(": ")
         h.update({k.lower(): v})
         i += 1
-    r = {
-        "header": h,
-        "raw": first_chunk,
-        "body": lines[-1]
-    }
+    r = {"header": h, "raw": first_chunk, "body": lines[-1]}
     return r
 
 
 def get_verbosity(verbose, quiet):
-    """ Building verbosity level. """
+    """Building verbosity level."""
 
     if quiet:  # quiet mode - overrides verbose
         return 0
@@ -148,18 +144,18 @@ def get_verbosity(verbose, quiet):
 
 
 def parse_args():
-    """ Parsing cmd line arguments and  """
+    """Parsing cmd line arguments and"""
 
     # configure cmd line arguments parser
     parser = ArgumentParser(description="Server that returns any http request made to it")
-    parser.add_argument('-b', '--bind', default='localhost', help='host to bind to')
-    parser.add_argument('-p', '--port', default=3246, type=int, help='port to listen on')
-    parser.add_argument('-v', '--verbose', action='store_true', help='print all requests to terminal')
-    parser.add_argument('-q', '--quiet', action='store_true', help='silence all output (overrides --verbose)')
+    parser.add_argument("-b", "--bind", default="localhost", help="host to bind to")
+    parser.add_argument("-p", "--port", default=3246, type=int, help="port to listen on")
+    parser.add_argument("-v", "--verbose", action="store_true", help="print all requests to terminal")
+    parser.add_argument("-q", "--quiet", action="store_true", help="silence all output (overrides --verbose)")
 
     # parse cmd line arguments and return parsed
     return parser.parse_args()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     do_serve()

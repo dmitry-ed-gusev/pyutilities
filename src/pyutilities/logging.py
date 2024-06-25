@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# cspell:ignore levelname
+
 """
     Logging config for cmd line utilities.
 
     Created:  Dmitrii Gusev, 27.11.2022
-    Modified:
+    Modified: Dmitrii Gusev, 25.06.2024
 """
 
 import logging
@@ -77,9 +79,12 @@ LOGGING_CONFIG = {
 
 
 def init_logging():
+
     # create logs directory
     os.makedirs(str(logs_dir), exist_ok=True)
+
     # init logging
     logging.config.dictConfig(LOGGING_CONFIG)
+
     # log message about initialized logger
     logging.getLogger(__name__).debug("Initialized logging.")

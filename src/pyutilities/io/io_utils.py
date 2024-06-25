@@ -59,7 +59,7 @@ def list_files(path, out_to_console=False):
         raise IOError("Can't list files in empty path!")
     if not os.path.exists(path) or not os.path.isdir(path):  # fail-fast #2
         raise IOError("Path [{}] doesn't exist or not a directory!".format(path))
-    files = []
+    files = []  # type: ignore
     _list_files(path, files, out_to_console)
     return files
 
