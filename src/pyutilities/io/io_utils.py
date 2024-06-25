@@ -8,14 +8,16 @@
     Modified: Dmitrii Gusev, 22.11.2022
 """
 
-import os
-import sys
-import yaml
 import errno
 import logging
+import os
+import sys
 from os import walk
-from pyutilities.exception import PyUtilitiesException
+
+import yaml
+
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
+from pyutilities.exception import PyUtilitiesException
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
 # don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
@@ -34,7 +36,7 @@ def _list_files(path, files_buffer, out_to_console=False):
     """
     # print "STDOUT encoding ->", sys.stdout.encoding  # <- just a debug output
     # todo: line for python 2 -> for (dirpath, dirnames, filenames) in walk(unicode(path)):
-    for (dirpath, dirnames, filenames) in walk(path):
+    for dirpath, dirnames, filenames in walk(path):
         for filename in filenames:
             abs_path = dirpath + "/" + filename
             if out_to_console:  # debug output

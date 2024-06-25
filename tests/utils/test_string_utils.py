@@ -5,18 +5,30 @@
     Unit tests for strings module.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 25.11.2022
+    Modified: Dmitrii Gusev, 06.05.2024
 """
 
-import pytest
 import unittest
+
+import pytest
 from hypothesis import given
 from hypothesis.strategies import characters, text
-from pyutilities.utils.string_utils import trim_to_none, trim_to_empty, filter_str, process_url
+
+from pyutilities.utils.string_utils import (
+    filter_str,
+    process_url,
+    trim_to_empty,
+    trim_to_none,
+)
 
 # common constants for testing
 EMPTY_STRINGS = ["", "     ", None, "", "  "]
-NON_EMPTY_STRINGS = {"str1": "   str1", "str2": "str2    ", "str3": "   str3     ", "str4": "str4"}
+NON_EMPTY_STRINGS = {
+    "str1": "   str1",
+    "str2": "str2    ",
+    "str3": "   str3     ",
+    "str4": "str4",
+}
 
 
 class StringsTest(unittest.TestCase):
@@ -83,7 +95,12 @@ class StringsTest(unittest.TestCase):
             ),
             "http://myurlaaa/suburlbbb/ccc",
         ),
-        ("http://myurl{}/suburl{}/{}", "", ("aaa", "bbb", "ccc", "www"), "http://myurlaaa/suburlbbb/ccc"),
+        (
+            "http://myurl{}/suburl{}/{}",
+            "",
+            ("aaa", "bbb", "ccc", "www"),
+            "http://myurlaaa/suburlbbb/ccc",
+        ),
         (
             "http://myurl{}/suburl{}/{}",
             "2",
@@ -100,73 +117,23 @@ def test_process_url(url, postfix, format_params, expected):
     assert process_url(url, postfix, format_params) == expected
 
 
-# todo: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.text
-# todo: https://en.wikipedia.org/wiki/Unicode_character_property
-@given(
-    text(
-        alphabet=characters(
-            blacklist_categories=(
-                "Cc",
-                "Zs",
-                "Zl",
-                "Zp",
-            )
-        ),
-        min_size=1,
-        max_size=100,
-    )
-)
+# TODO: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.text
+# TODO: https://en.wikipedia.org/wiki/Unicode_character_property
+@given(text(alphabet=characters(blacklist_categories=["Cc", "Zs", "Zl", "Zp"]), min_size=1, max_size=100))
 def test_trim_to_none_with_meaningful_symbols(text):
     assert trim_to_none(text) == text
 
 
-@given(
-    text(
-        alphabet=characters(
-            whitelist_categories=(
-                "Zs",
-                "Zl",
-                "Zp",
-            )
-        ),
-        min_size=1,
-        max_size=100,
-    )
-)
+@given(text(alphabet=characters(whitelist_categories=["Zs", "Zl", "Zp"]), min_size=1, max_size=100))
 def test_trim_to_none_with_only_non_meaningful_symbols(text):
     assert trim_to_none(text) is None
 
 
-@given(
-    text(
-        alphabet=characters(
-            blacklist_categories=(
-                "Cc",
-                "Zs",
-                "Zl",
-                "Zp",
-            )
-        ),
-        min_size=1,
-        max_size=100,
-    )
-)
+@given(text(alphabet=characters(blacklist_categories=["Cc", "Zs", "Zl", "Zp"]), min_size=1, max_size=100))
 def test_trim_to_empty_with_meaningful_symbols(text):
     assert trim_to_empty(text) == text
 
 
-@given(
-    text(
-        alphabet=characters(
-            whitelist_categories=(
-                "Zs",
-                "Zl",
-                "Zp",
-            )
-        ),
-        min_size=1,
-        max_size=100,
-    )
-)
+@given(text(alphabet=characters(whitelist_categories=["Zs", "Zl", "Zp"]), min_size=1, max_size=100))
 def test_trim_to_empty_with_only_non_meaningful_symbols(text):
     assert trim_to_empty(text) == ""

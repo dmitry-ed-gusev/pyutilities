@@ -10,9 +10,10 @@
 
 # todo: implement: add line mode (if not found needed line)
 
-import sys
-import fileinput
 import argparse
+import fileinput
+import sys
+
 from pyutilities.logging import init_logging
 
 # - string checking types
@@ -44,13 +45,28 @@ def fedit():
 
     # add mandatory arguments to parser
     parser.add_argument(
-        "-f", "--file", dest="infile", action="store", required=True, help="file to change inline"
+        "-f",
+        "--file",
+        dest="infile",
+        action="store",
+        required=True,
+        help="file to change inline",
     )
     parser.add_argument(
-        "-s", "--sourceStr", dest="sourceStr", action="store", required=True, help="source string for change"
+        "-s",
+        "--sourceStr",
+        dest="sourceStr",
+        action="store",
+        required=True,
+        help="source string for change",
     )
     parser.add_argument(
-        "-d", "--destStr", dest="destStr", action="store", required=True, help="target string for change"
+        "-d",
+        "--destStr",
+        dest="destStr",
+        action="store",
+        required=True,
+        help="target string for change",
     )
 
     # add optional arguments to parser

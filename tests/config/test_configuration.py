@@ -10,8 +10,10 @@
 
 import os
 import unittest
+
 from mock import patch
-from pyutilities.config.configuration import Configuration, ConfigError
+
+from pyutilities.config.configuration import ConfigError, Configuration
 
 CONFIG_PATH = "tests/config/test_configs"
 CONFIG_MODULE_MOCK_YAML = "pyutilities.config.configuration.read_yaml"
@@ -67,7 +69,9 @@ class ConfigurationTest(unittest.TestCase):
     def test_merge_dict_list_on_init(self):
         dict_list_to_merge = [{"a": "b"}, {"c": "d"}, {"aa.bb": "eee"}]
         config = Configuration(
-            path_to_config=CONFIG_PATH, dict_to_merge=dict_list_to_merge, is_merge_env=True
+            path_to_config=CONFIG_PATH,
+            dict_to_merge=dict_list_to_merge,
+            is_merge_env=True,
         )
         self.assertEqual(config.get(KEY1), "value1")
         self.assertEqual(config.get(KEY2), "value3")

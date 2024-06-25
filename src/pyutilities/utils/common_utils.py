@@ -14,14 +14,15 @@
     Modified: Dmitrii Gusev, 22.11.2022
 """
 
-import os
 import csv
-import logging
 import inspect
+import logging
+import os
 import threading
 from typing import Dict, List, Tuple
-from pyutilities.exception import PyUtilitiesException
+
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
+from pyutilities.exception import PyUtilitiesException
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
 # don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!

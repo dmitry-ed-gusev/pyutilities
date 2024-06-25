@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+# coding=utf-8
 
 """
-    Unit tests for the HTTP client.
+    Unit tests for http client.
 
-    Created:  Dmitrii Gusev, 12.10.2022
-    Modified: Dmitrii Gusev, 24.11.2022
+    Created:  Dmitrii Gusev, 02.06.2021
+    Modified: Dmitrii Gusev, 02.10.2022
 """
 
 import pytest
 import responses
 from requests.exceptions import HTTPError
 from responses.registries import OrderedRegistry
-
-from pyutilities.web.web_client import WebClient
+from wfleet.scraper.utils.http_client import WebClient, process_url
 
 # HTTP request parameters (should be added to the URL)
 http_request_params1 = {"zzz": "ccc"}
@@ -104,11 +103,12 @@ testdata_http_err_codes_with_retries = [
 ]
 
 
-# WebClient fixture (software under test - SUT)
+# WebClient fixture (resource under test)
 @pytest.fixture()
 def webclient():
-    # yield WebClient(update_user_agents_info=True)
+    print("- setup fixture -")
     yield WebClient()
+    print("- teardown fixture -")
 
 
 # responses fixture for the pytest (integration)
@@ -206,21 +206,11 @@ def test_webclient_retry_on_fail(webclient, mocked_responses, status, body, cont
         for counter in range(5):  # add responses for one method
             if counter < 4:  # responses with status == 500
                 responses.append(
-                    mocked_response(
-                        url_with_params,
-                        body=body,
-                        status=status,
-                        content_type=content_type,
-                    )
+                    mocked_response(url_with_params, body=body, status=status, content_type=content_type)
                 )
             elif counter == 4:  # the latest response with status == 200
                 responses.append(
-                    mocked_response(
-                        url_with_params,
-                        body="OK",
-                        status=200,
-                        content_type=content_type,
-                    )
+                    mocked_response(url_with_params, body="OK", status=200, content_type=content_type)
                 )
 
     url_without_params = "http://example.com/api/1/foobar"  # URL without parameters
@@ -245,3 +235,37 @@ def test_webclient_retry_on_fail(webclient, mocked_responses, status, body, cont
     # assert all mocked responses were hit
     for response in responses:
         assert response.call_count == 1
+
+
+@pytest.mark.parametrize(
+    "url, postfix, format_params, expected",
+    [
+        ("http://myurl/", "123456", None, "http://myurl/123456"),
+        ("http://myurl", "123456", None, "http://myurl/123456"),
+        ("http://myurl{}/suburl/", "", ("xxx",), "http://myurlxxx/suburl/"),
+        ("http://myurl{}/suburl/", "", ("xxx", "zzz"), "http://myurlxxx/suburl/"),
+        (
+            "http://myurl{}/suburl{}/{}",
+            "",
+            (
+                "aaa",
+                "bbb",
+                "ccc",
+            ),
+            "http://myurlaaa/suburlbbb/ccc",
+        ),
+        ("http://myurl{}/suburl{}/{}", "", ("aaa", "bbb", "ccc", "www"), "http://myurlaaa/suburlbbb/ccc"),
+        (
+            "http://myurl{}/suburl{}/{}",
+            "2",
+            (
+                "_a",
+                "_b",
+                "_c",
+            ),
+            "http://myurl_a/suburl_b/_c/2",
+        ),
+    ],
+)
+def test_process_url(url, postfix, format_params, expected):
+    assert process_url(url, postfix, format_params) == expected

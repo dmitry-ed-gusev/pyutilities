@@ -10,9 +10,10 @@
 """
 
 import logging
-from typing import Tuple, Dict
-from pyutilities.exception import PyUtilitiesException
+from typing import Dict, Tuple
+
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
+from pyutilities.exception import PyUtilitiesException
 
 SPECIAL_SYMBOLS = ".,/-№"
 CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"

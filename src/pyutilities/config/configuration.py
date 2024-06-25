@@ -15,14 +15,15 @@
     Modified: Gusev Dmitrii, 25.11.2022
 """
 
-import os
 import logging
-import xlrd  # reading excel files (old Excel - xls)
-import openpyxl  # reading excel files (Excel 2010 - xlsx)
-
+import os
 from string import Template
-from pyutilities.io.io_utils import read_yaml
+
+import openpyxl  # reading excel files (Excel 2010 - xlsx)
+import xlrd  # reading excel files (old Excel - xls)
+
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
+from pyutilities.io.io_utils import read_yaml
 
 YAML_EXTENSION_1 = ".yml"
 YAML_EXTENSION_2 = ".yaml"
@@ -39,7 +40,13 @@ class Configuration(object):
     :param is_merge_env ???
     """
 
-    def __init__(self, path_to_config=None, dict_to_merge=None, is_override_config=True, is_merge_env=True):
+    def __init__(
+        self,
+        path_to_config=None,
+        dict_to_merge=None,
+        is_override_config=True,
+        is_merge_env=True,
+    ):
         # init logger
         self.log = logging.getLogger(__name__)
         self.log.addHandler(logging.NullHandler())

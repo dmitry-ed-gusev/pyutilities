@@ -9,8 +9,10 @@
 """
 
 import unittest
-from mock import patch, mock_open
-from pyutilities.io.io_utils import read_yaml, list_files, _list_files
+
+from mock import mock_open, patch
+
+from pyutilities.io.io_utils import _list_files, list_files, read_yaml
 
 MOCK_OPEN_METHOD = "pyutilities.io.io_utils.open"
 MOCK_WALK_METHOD = "pyutilities.io.io_utils.walk"
@@ -45,7 +47,12 @@ class IOUtilsTest(unittest.TestCase):
                     read_yaml(path)
 
     def test_list_files_invalid_paths(self):
-        for path in ["", "    ", "not-existing-path", "__init__.py"]:  # the last one - existing python file
+        for path in [
+            "",
+            "    ",
+            "not-existing-path",
+            "__init__.py",
+        ]:  # the last one - existing python file
             with self.assertRaises(IOError):
                 list_files(path)
 

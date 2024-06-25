@@ -1,13 +1,13 @@
 ###############################################################################
 #
-#   Configuration file .coveragerc for control of the behaviour of 
+#   Configuration file .coveragerc for control of the behaviour of the
 #   coverage.py / pytest-cov plugins.
 #   See full doc here:
 #       - https://coverage.readthedocs.io/en/latest/config.html
 #       - https://pytest-cov.readthedocs.io/en/latest/index.html
 #
 #   Created:  Dmitrii Gusev, 09.10.2022
-#   Modified: Dmitrii Gusev, 27.11.2022
+#   Modified: Dmitrii Gusev, 05.05.2024
 #
 ###############################################################################
 
@@ -27,7 +27,7 @@ precision = 2
 
 [html]
 directory = .coverage/htmlcoverage
-title = "PyUtilities: Tests Coverage Report"
+title = "PyUtilities :: Unit Tests Coverage Report"
 
 [xml]
 output = .coverage/coverage.xml
