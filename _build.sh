@@ -39,7 +39,7 @@ rm -r ${DIST_DIR} || printf "%s doesn't exist!\n" ${DIST_DIR}
 
 # -- II. Clean caches and sync + lock pipenv dependencies
 printf "\n\n *** Cleaning pipenv cache and update dependencies ***\n\n"
-pipenv clean ${VERBOSE}
+# pipenv clean ${VERBOSE}
 pipenv update --outdated ${VERBOSE} || printf "Packages check is done!\n\n"  # list of outdated packages
 pipenv update --dev --clear ${VERBOSE} # run lock, then sync
 
