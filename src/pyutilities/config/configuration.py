@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# cspell:ignore refactorings openpyxl xlrd isnt hdfs namenode
+
 """
     Utility class for holding configuration.
     Key properties:
