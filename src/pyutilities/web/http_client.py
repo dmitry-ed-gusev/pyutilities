@@ -1,19 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-    HTTP / network related utilities module for World Fleet DB Scraper.
+# cspell:ignore useragent isnt threadsafe
 
-    Useful resources:
-        - (download file) https://stackoverflow.com/questions/7243750/download-file-from-web-in-python-3
-        - (pypi - urllib3) https://pypi.org/project/urllib3/
-        - (urllib3 - docs) https://urllib3.readthedocs.io/en/stable/
-        - (docs from python) https://docs.python.org/3/howto/urllib2.html
-        - (fake User Agent) https://github.com/hellysmile/fake-useragent
-        - (HTTP status codes) https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+"""
+    HTTP client module.
 
     Created:  Dmitrii Gusev, 01.06.2021
-    Modified: Dmitrii Gusev, 02.10.2022
+    Modified: Dmitrii Gusev, 26.06.2024
 """
 
 import logging
@@ -32,13 +26,14 @@ from wfleet.scraper.utils.utilities import threadsafe_function
 
 # init module logger
 log = logging.getLogger(__name__)
+log.addHandler(logging.NullHandler())
 log.debug(f"Logging for module {__name__} is configured.")
 
 HTTP_DEFAULT_TIMEOUT = 20  # default HTTP requests timeout (seconds)
 HTTP_DEFAULT_BACKOFF = 1  # default back off factor (it is better to not touch this value!)
 HTTP_DEFAUT_RETRIES = 4  # default retries num for HTTP requests (+1 for the original request!)
 
-config = Config()  # get application config
+# config = Config()  # get application config
 
 
 class TimeoutHTTPAdapter(HTTPAdapter):
@@ -59,9 +54,10 @@ class TimeoutHTTPAdapter(HTTPAdapter):
         return super().send(request, **kwargs)
 
 
-class WebClient:
-    """Simple WebClient class (class based on the [requests] module).
-    If user_agent specified - use it, if not - generate it randomly.
+class HttpClient:
+    """
+        Simple HttpClient class, based on the [requests] module.
+        If user_agent specified - use it, if not - generate it randomly.
     """
 
     # class (not instance!) variable - when we create multiple instances of this class - we need

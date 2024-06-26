@@ -1,23 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-    General purpose universal HTTP client. Created mostly for web-scraping purposes, but can be used
-    for any purpose. It simplifies interaction with responses module.
-
-    Useful resources:
-        - (download file) https://stackoverflow.com/questions/7243750/download-file-from-web-in-python-3
-        - (pypi - urllib3) https://pypi.org/project/urllib3/
-        - (urllib3 - docs) https://urllib3.readthedocs.io/en/stable/
-        - (docs from python) https://docs.python.org/3/howto/urllib2.html
-        - (fake User Agent) https://github.com/hellysmile/fake-useragent
-        - (HTTP status codes) https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
-
-    Created:  Dmitrii Gusev, 10.10.2022
-    Modified: Dmitrii Gusev, 06.05.2022
-"""
-# cspell:ignore useragent, pyutilities, threadsafe, ISNT, forcelist
-
 import logging
 from typing import Dict, List, Tuple
 
@@ -29,13 +12,6 @@ from requests.adapters import HTTPAdapter, Retry
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.exception import PyUtilitiesException
 from pyutilities.utils.common_utils import threadsafe_function
-
-log = logging.getLogger(__name__)
-log.addHandler(logging.NullHandler())
-
-HTTP_DEFAULT_TIMEOUT = 20  # default HTTP requests timeout (seconds)
-HTTP_DEFAULT_BACKOFF = 1  # default back off factor (it is better to not touch this value!)
-HTTP_DEFAULT_RETRIES = 4  # default retries num for HTTP requests (+1 for the original request!)
 
 
 # todo: see sample here: https://github.com/psf/requests/issues/4233
