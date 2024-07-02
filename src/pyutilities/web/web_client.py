@@ -25,44 +25,7 @@ def expanded_raise_for_status(response, exclude_statuses: List[int] | None):
         response.raise_for_status()
 
 
-class TimeoutHTTPAdapter(HTTPAdapter):
-    """Timeout adapter based on the HTTPAdapter."""
-
-    def __init__(self, *args, **kwargs):
-        log.debug("Initializing TimeoutHTTPAdapter.")
-        self.timeout = HTTP_DEFAULT_TIMEOUT
-        if "timeout" in kwargs:
-            self.timeout = kwargs["timeout"]
-            del kwargs["timeout"]
-        super().__init__(*args, **kwargs)
-
-    def send(self, request, **kwargs):
-        timeout = kwargs.get("timeout")
-        if timeout is None:
-            kwargs["timeout"] = self.timeout
-        return super().send(request, **kwargs)
-
-
 class WebClient:
-    """Simple WebClient class (class based on the [requests] module).
-    If user_agent specified - use it, if not - generate it randomly.
-    """
-
-    # class (not instance!) variable - when we create multiple instances of this class - we need
-    # to update the user agents data only once (for all instances)
-    __user_agent_info_updated: bool = False
-
-    # class-level variable for storing the fake User Agent info
-    # todo: use fake User Agent without cache - see docs -> UserAgent(cache=False)
-    __ua: UserAgent = UserAgent()
-
-    @threadsafe_function
-    def __update_user_agent_info(self):
-        """Thread-safe update of the locally cached fake UserAgent data."""
-        if not WebClient.__user_agent_info_updated:
-            log.info("Fake User Agent -> cached info updating...")
-            WebClient.__ua.update()
-            WebClient.__user_agent_info_updated = True
 
     def __init__(
         self,
