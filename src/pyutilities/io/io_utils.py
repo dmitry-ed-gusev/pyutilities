@@ -5,15 +5,17 @@
     IO Utilities module.
 
     Created:  Dmitrii Gusev, 04.04.2017
-    Modified: Dmitrii Gusev, 22.11.2022
+    Modified: Dmitrii Gusev, 30.07.2024
 """
 
-import errno
-import logging
 import os
 import sys
-from os import walk
+import gzip
+import shutil
+import logging
+import errno
 
+from os import walk
 import yaml
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
@@ -109,6 +111,13 @@ def read_yaml(file_path: str):
             raise IOError(f"Config file [{file_path}] contains 'tab' character!")
         return yaml.load(cfg_file_content, Loader=yaml.FullLoader)
 
+
+def compress_file(input_file, output_file):
+  with open(input_file, 'rb') as f_in:
+    with gzip.open(output_file, 'wb') as f_out:
+      shutil.copyfileobj(f_in, f_out)
+
+compress_file('clcoding.txt', 'clcoding.txt.gz')
 
 if __name__ == "__main__":
     print(MSG_MODULE_ISNT_RUNNABLE)
