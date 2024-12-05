@@ -15,12 +15,11 @@
     Modified: Dmitrii Gusev, 25.06.2024
 """
 
-import os
 import csv
 import inspect
 import logging
+import os
 import threading
-
 from typing import Dict, List, Tuple
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE

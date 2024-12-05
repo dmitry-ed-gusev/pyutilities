@@ -45,6 +45,12 @@ pipenv update --outdated ${VERBOSE} || printf "Packages check is done!\n\n"  # l
 pipenv update --dev --clear ${VERBOSE} # run lock, then sync
 sleep 2
 
+# -- Step 8. Clear local python cache. Remove python caches and pre-compiled files (*.pyc) -
+# --         starting from the current dir. We won't copy cache into distribution folder.
+# printf "\n\n ***** Removing python caches and pre-compiled files\n"
+# find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rf || printf "Nothing to remove!\n\n"
+# sleep 2
+
 # -- III. Executing [black] code formatter
 printf "\n\n *** Executing [black] automatic code formatter *** \n\n"
 pipenv run black src/ ${VERBOSE} --config .black

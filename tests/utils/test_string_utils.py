@@ -9,12 +9,18 @@
 """
 
 import pytest
-
 from hypothesis import given
 from hypothesis.strategies import characters, text
 
-from pyutilities.utils.string_utils import filter_str, process_url, trim_to_empty, trim_to_none
-from pyutilities.utils.string_utils import is_number, iter_2_str, coalesce
+from pyutilities.utils.string_utils import (
+    coalesce,
+    filter_str,
+    is_number,
+    iter_2_str,
+    process_url,
+    trim_to_empty,
+    trim_to_none,
+)
 
 # common constants for testing
 EMPTY_STRINGS = ["", "     ", None, "", "  "]
@@ -214,7 +220,8 @@ def test_iter_2_str_duplicates():
 def test_iter_2_str_duplicates_no_braces():
     assert iter_2_str(["name", "name", "name"], braces=False) == "name"
     assert (
-        iter_2_str(["name", "name", "name", "   name", "name      ", "  name      ", " name"], braces=False) == "name"
+        iter_2_str(["name", "name", "name", "   name", "name      ", "  name      ", " name"], braces=False)
+        == "name"
     )
 
 

@@ -16,7 +16,6 @@
 
 import datetime
 import socket
-
 from argparse import ArgumentParser
 
 # Useful constants

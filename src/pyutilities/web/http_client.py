@@ -19,6 +19,7 @@ import requests
 from fake_useragent import UserAgent
 from requests import Response
 from requests.adapters import HTTPAdapter, Retry
+
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.utils.common_utils import threadsafe_function
 
@@ -76,10 +77,18 @@ class HttpClient:
             HttpClient.__ua.update()
             HttpClient.__user_agent_info_updated = True
 
-    def __init__(self, headers: Dict[str, str] | None = None, cookies: Dict[str, str] | None = None,
-                 auth=None, user_agent: str = "", allow_redirects: bool = True, redirects_count: int = 0,
-                 timeout: int = HTTP_DEFAULT_TIMEOUT, retries: int = HTTP_DEFAULT_RETRIES,
-                 update_user_agents_info: bool = False) -> None:
+    def __init__(
+        self,
+        headers: Dict[str, str] | None = None,
+        cookies: Dict[str, str] | None = None,
+        auth=None,
+        user_agent: str = "",
+        allow_redirects: bool = True,
+        redirects_count: int = 0,
+        timeout: int = HTTP_DEFAULT_TIMEOUT,
+        retries: int = HTTP_DEFAULT_RETRIES,
+        update_user_agents_info: bool = False,
+    ) -> None:
         log.debug("Initializing HttpClient instance.")
 
         if update_user_agents_info:
@@ -96,6 +105,7 @@ class HttpClient:
         # the statuses specified in status_forcelist parameter of the Retry strategy
         def assert_status_hook(response, *args, **kwargs):
             response.raise_for_status()
+
         self.__session.hooks["response"] = [assert_status_hook]
         log.debug("Session hooks installed.")
 
@@ -127,13 +137,11 @@ class HttpClient:
 
         if redirects_count > 0:  # add redirects count
             self.__session.max_redirects = redirects_count
-            
 
         if not user_agent:  # set User Agent header
             user_agent = HttpClient.__ua.random
 
         self.__session.headers.update({"user-agent": user_agent})  # header may be "User-Agent"
-        
 
         if auth:  # add authorization to session
             self.__session.auth = auth

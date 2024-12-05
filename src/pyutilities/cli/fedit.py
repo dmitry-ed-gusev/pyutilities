@@ -12,9 +12,9 @@
 
 # todo: implement: add line mode (if not found needed line)
 
-import sys
 import argparse
 import fileinput
+import sys
 
 from pyutilities.logging import init_logging
 

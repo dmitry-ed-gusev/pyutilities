@@ -12,8 +12,8 @@
 """
 
 import logging
-from typing import Dict, Tuple, Iterable
 from re import match as re_match
+from typing import Dict, Iterable, Tuple
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.exception import PyUtilitiesException
@@ -75,7 +75,7 @@ def filter_str(string):
 
 
 def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = None) -> str:
-    """ TBD """
+    """TBD"""
 
     log.debug(f"Processing URL [{url}] with postfix [{postfix}] and format values [{format_values}].")
 
@@ -97,7 +97,7 @@ def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = 
 def process_urls(
     urls: Dict[str, str], postfix: str = "", format_values: Tuple[str] | None = None
 ) -> Dict[str, str]:
-    """ TBD """
+    """TBD"""
 
     log.debug("Processing urls dictionary.")
 
@@ -112,7 +112,7 @@ def process_urls(
 
 
 def get_last_part_of_the_url(url: str) -> str:
-    """ TBD """
+    """TBD"""
 
     log.debug(f"Calculating the last right part of the URL: [{url}].")
 

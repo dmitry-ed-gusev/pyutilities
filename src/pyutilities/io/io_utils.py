@@ -8,14 +8,14 @@
     Modified: Dmitrii Gusev, 30.07.2024
 """
 
-import os
-import sys
-import gzip
-import shutil
-import logging
 import errno
-
+import gzip
+import logging
+import os
+import shutil
+import sys
 from os import walk
+
 import yaml
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
@@ -113,11 +113,12 @@ def read_yaml(file_path: str):
 
 
 def compress_file(input_file, output_file):
-  with open(input_file, 'rb') as f_in:
-    with gzip.open(output_file, 'wb') as f_out:
-      shutil.copyfileobj(f_in, f_out)
+    with open(input_file, "rb") as f_in:
+        with gzip.open(output_file, "wb") as f_out:
+            shutil.copyfileobj(f_in, f_out)
 
-compress_file('clcoding.txt', 'clcoding.txt.gz')
+
+compress_file("clcoding.txt", "clcoding.txt.gz")
 
 if __name__ == "__main__":
     print(MSG_MODULE_ISNT_RUNNABLE)
