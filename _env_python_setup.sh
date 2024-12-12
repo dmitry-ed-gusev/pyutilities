@@ -7,7 +7,8 @@
 #   General python environment setup/reset script. Script can be used to re-create python general/global
 #   environment from 'scratch' or to get rid of some 'garbage' packages - unnecessary installed modules.
 #   After the cleanup, script globally installs the following basic libraries: virtualenv, pipenv, jupyter,
-#   pytest, pipx, poetry (using pipx) with ensurepath and bash autocomplete options.
+#   jupyterlab, notebook, ipykernel, pytest, pipx, poetry, setuptools, build, twiner (using pipx) with
+#   ensurepath and bash autocomplete options.
 #
 #   This script works under following environments:
 #       - MacOS, 10.14+ (ok, tested)
@@ -17,18 +18,16 @@
 #   Warning: script MUST be executed from shell, not from the virtual environment (pipenv or any other).
 #
 #   Created:  Dmitrii Gusev, 30.01.2022
-#   Modified: Dmitrii Gusev, 05.12.2024
+#   Modified: Dmitrii Gusev, 10.12.2024
 #
 #############################################################################################################
 
-# -- safe bash scripting
+# -- safe bash scripting + encoding
 set -euf -o pipefail
-
-# -- general setup - some variables
 export LANG='en_US.UTF-8'
-TMP_FILE="req.txt" # for cygwin/mingw
 
 # -- some useful constants
+TMP_FILE="req.txt" # for cygwin/mingw
 MSG_RUN_AGAIN="\nWARNING: close the terminal and run script once again!\n"
 MSG_NO_PYTHON="\nWARNING: no installed python 3 in the system!\n"
 MSG_NO_PIP="\nWARNING: no installed pip/pip3 in the system!\n"
@@ -98,9 +97,9 @@ sleep 2
 # -- STEP II. Installing necessary core dependencies/libraries/modules
 printf "\n--- Installing (if not installed) and upgrading core dependencies to the global env ---\n\n"
 ${CMD_PIP} --no-cache-dir install virtualenv pipenv pytest jupyter jupyterlab notebook pipx \
-    setuptools build twine
+    ipykernel setuptools build twine
 ${CMD_PIP} --no-cache-dir install --upgrade virtualenv pipenv pytest jupyter jupyterlab notebook pipx \
-    setuptools build twine
+    ipykernel setuptools build twine
 printf "\nInstallation is done!\n"
 # -- execute [pipx ensurepath] + [pipx upgrade-all] - all pipx binaries to be on PATH + upgrade
 printf "\nExecuting [pipx ensurepath]...\n"

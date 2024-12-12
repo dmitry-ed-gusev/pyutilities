@@ -117,5 +117,9 @@ def convert():
         log.info(f"Done converting to file [{DOCS[key]}].")
 
 
+def main():
+    log.info("md2x processing...")
+
+
 if __name__ == "__main__":
     convert()

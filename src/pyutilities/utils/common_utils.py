@@ -8,17 +8,16 @@
 
     Useful materials:
         - (datetime) https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
-        - (list of dicts to csv)
-          https://stackoverflow.com/questions/3086973/how-do-i-convert-this-list-of-dictionaries-to-a-csv-file
+        - (list of dicts to csv) https://stackoverflow.com/questions/3086973/how-do-i-convert-this-list-of-dictionaries-to-a-csv-file
 
     Created:  Gusev Dmitrii, 10.10.2022
-    Modified: Dmitrii Gusev, 25.06.2024
+    Modified: Dmitrii Gusev, 12.12.2024
 """
 
+import os
 import csv
 import inspect
 import logging
-import os
 import threading
 from typing import Dict, List, Tuple
 
@@ -39,7 +38,7 @@ SPEC_CHARS = "-"
 
 
 def singleton(class_):
-    """Simple singleton class decorator. Use it on the class level to make class Singleton."""
+    """Decorator: singleton class decorator. Use it on the class level to make class Singleton."""
 
     instances = {}  # classes instances storage
 
@@ -52,23 +51,23 @@ def singleton(class_):
 
 
 def threadsafe_function(fn):
-    """Decorator making sure that the decorated function is thread safe."""
+    """Decorator: it is making sure that the decorated function is thread safe."""
 
-    lock = threading.Lock()
+    lock = threading.Lock()  # acquire lock
 
     def new(*args, **kwargs):
         lock.acquire()
         try:
             r = fn(*args, **kwargs)
         finally:
-            lock.release()
+            lock.release()  # release lock in any case
         return r
 
     return new
 
 
 def debug_benchmark(func):
-    """This decorator logs the given function execution time."""
+    """Decorator: logs the given function execution time."""
 
     import time
 
@@ -82,7 +81,7 @@ def debug_benchmark(func):
 
 
 def debug_function_name(func):
-    """This decorator logs the name of the decorating function."""
+    """Decorator: logs the name of the decorating function."""
 
     def wrapper(*args, **kwargs):
         log.debug(f"Function [{func.__name__}] is working.")
@@ -94,16 +93,14 @@ def debug_function_name(func):
 
 
 def myself():
-    """
-    Handy utility function/lambda for getting name of executing function from inside
-    the function. Can be rewritten as lambda: myself = lambda: inspect.stack()[1][3]
+    """Handy utility function/lambda for getting name of executing function from inside the function. Can be rewritten as lambda: myself = lambda: inspect.stack()[1][3]
     """
 
     return inspect.stack()[1][3]
 
 
 def build_variations_list() -> list:
-    """Build list of possible variations of symbols for search.
+    """Build list of possible variations of provided symbols.
     :return: list of variations
     """
 
@@ -126,6 +123,7 @@ def add_kv_2_dict(dicts_list: List[Dict[str, str]], kv: Tuple[str, str]):
 
     if not dicts_list:
         raise ValueError("Provided empty dictionaries list!")
+
     if not kv:
         raise ValueError("Provided empty key-value pair!")
 
