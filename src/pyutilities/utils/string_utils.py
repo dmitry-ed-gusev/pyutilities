@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# cspell:ignore isnt абвгдеёжзийклмнопрстуфхцчшщъыьэюя
+# cspell:ignore isnt абвгдеёжзийклмнопрстуфхцчшщъыьэюя rtype
 
 """
     Some useful/convenient string functions (sometimes - similar
@@ -18,6 +18,12 @@ from typing import Dict, Iterable, Tuple
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.exception import PyUtilitiesException
 
+# configure logger on module level. it isn't a good practice, but it's convenient.
+# ! don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
+log = logging.getLogger(__name__)
+# to avoid errors like 'no handlers' for libraries it's necessary/convenient to add NullHandler
+log.addHandler(logging.NullHandler())
+
 # useful module defaults
 SPECIAL_SYMBOLS = ".,/-№"
 CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
@@ -29,23 +35,30 @@ REGEX_FLOAT_2 = "^\\d+?\\.\\d+?$"  # original regex with fixed warnings
 REGEX_FLOAT_3 = "^[+-]?([0-9]*[.])?[0-9]+$"  # simplified regex, matches: 123/123.456/.456
 REGEX_FLOAT_4 = "^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"  # matches as previous plus: 123.
 
-log = logging.getLogger(__name__)
-log.addHandler(logging.NullHandler())
 
+def trim2none(string: str | None, debug=False) -> str | None:
+    """Trim the provided string to None (if empty) or just strip whitespaces.
+    :param string: string for trimming leading/trailing whitespaces.
+    :type string: string or None
+    :param debug: enable/disable debug output for the function, defaults to False
+    :type debug: boolean, optional
+    :return: string with trimmed leading+trailing whitespaces or None (in case input - empty string)
+    :rtype: string or None
+    """
 
-def trim_to_none(string: str | None) -> str | None:
-    """Trim the provided string to None (if empty) or just strip whitespaces."""
-
-    if string and string.strip():
-        return string.strip()
-
-    return None
+    if string and string.strip():  # string isn't empty - trimming whitespaces
+        result = string.strip()
+    else:  # string is empty - returning None
+        result = None
+    if debug:  # in case debug enabled - logging function usage
+        log.debug(f"trim2none(): input string: [{string}], result string: [{result}].")
+    return result
 
 
 def trim_to_empty(string: str | None) -> str:
     """Trim the provided string to empty string ('' or "") or just strip whitespaces."""
 
-    if string and string.strip():
+    if string and string.strip():  # string isn't empty - trimming whitespaces
         return string.strip()
 
     return ""

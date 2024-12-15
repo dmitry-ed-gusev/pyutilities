@@ -25,7 +25,7 @@ from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.exception import PyUtilitiesException
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
-# don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
+# ! don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
 log = logging.getLogger(__name__)
 # to avoid errors like 'no handlers' for libraries it's necessary/convenient to add NullHandler
 log.addHandler(logging.NullHandler())

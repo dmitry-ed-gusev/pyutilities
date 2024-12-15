@@ -5,7 +5,7 @@
     Unit tests for strings module.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 07.08.2024
+    Modified: Dmitrii Gusev, 14.12.2024
 """
 
 import pytest
@@ -19,7 +19,7 @@ from pyutilities.utils.string_utils import (
     iter_2_str,
     process_url,
     trim_to_empty,
-    trim_to_none,
+    trim2none,
 )
 
 # common constants for testing
@@ -32,14 +32,14 @@ NON_EMPTY_STRINGS = {
 }
 
 
-def test_trim_to_none_with_empty_strings():
+def test_trim2none_with_empty_strings():
     for s in EMPTY_STRINGS:
-        assert trim_to_none(s) is None, "Must be NoNe!"
+        assert trim2none(s) is None, "Must be NoNe!"
 
 
-def test_trim_to_none_with_non_empty_strings():
+def test_trim2none_with_non_empty_strings():
     for k, v in NON_EMPTY_STRINGS.items():
-        assert k == trim_to_none(v), "Must be equals!"
+        assert k == trim2none(v), "Must be equals!"
 
 
 def test_trim_to_empty_with_empty_strings():
