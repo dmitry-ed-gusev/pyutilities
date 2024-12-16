@@ -5,14 +5,14 @@
     Examples of using logging with the [pyutilities] library.
 
     Created:  Dmitrii Gusev, 13.12.2024
-    Modified: Dmitrii Gusev, 14.12.2024
+    Modified: Dmitrii Gusev, 16.12.2024
 
     cSpell:ignore mylog levelname
 """
 
 import logging
 
-from importlib import reload
+# from importlib import reload
 from pyutilities.utils.string_utils import trim2none
 
 print("\n")
@@ -29,9 +29,12 @@ print("\n")
 #       logger itself, etc.). In this case the [pyutilities] library won't log anything (same as case #0).
 logging.warning("Unformatted output with logging module (using 'root' logger)!")
 print(f"#1 -> trim result: [{trim2none('  string ', debug=True)}].")
-# 'reset' the logging module - to avoid 'side effects' on further examples
-logging.shutdown()
+
+# ! -> 'reset' the logging module - to avoid 'side effects' on further examples. Be careful - these
+# ! -> statements are changing the default logging behavior!
+# logging.shutdown()
 # reload(logging)
+
 print("\n")
 
 # 2. -- simple case - standard configuration with the 'named' logger (this doesn't initializes the 'root' #       logger and uses the standard config for the 'named' logger). No logging from the [pyutilities]
@@ -50,6 +53,7 @@ print("\n")
 #       no logging output from the [pyutilities] library.
 mylog = logging.getLogger("my_logger")
 mylog.setLevel(logging.DEBUG)
+mylog.propagate = False
 # formatter for messages
 standard_formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 # err handler for logger - stream handler for console output
@@ -77,7 +81,7 @@ print("\n")
 #       info/warn/error. Use appropriate level for your application.
 mylog = logging.getLogger("pyutilities")
 mylog.setLevel(logging.DEBUG)
-mylog.propagate = False
+mylog.propagate = False  # ! this is important, otherwise you may see doubling of the messages
 standard_formatter = logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(standard_formatter)

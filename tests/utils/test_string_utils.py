@@ -18,8 +18,8 @@ from pyutilities.utils.string_utils import (
     is_number,
     iter_2_str,
     process_url,
-    trim_to_empty,
     trim2none,
+    trim2empty,
 )
 
 # common constants for testing
@@ -42,14 +42,14 @@ def test_trim2none_with_non_empty_strings():
         assert k == trim2none(v), "Must be equals!"
 
 
-def test_trim_to_empty_with_empty_strings():
+def test_trim2empty_with_empty_strings():
     for s in EMPTY_STRINGS:
-        assert "" == trim_to_empty(s), "Must be an empty string!"
+        assert "" == trim2empty(s), "Must be an empty string!"
 
 
-def test_trim_to_empty_with_non_empty_strings():
+def test_trim2empty_with_non_empty_strings():
     for k, v in NON_EMPTY_STRINGS.items():
-        assert k == trim_to_empty(v), "Must be equals!"
+        assert k == trim2empty(v), "Must be equals!"
 
 
 def test_filter_str_for_empty():

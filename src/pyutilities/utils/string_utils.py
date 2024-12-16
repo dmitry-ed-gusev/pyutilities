@@ -4,11 +4,11 @@
 # cspell:ignore isnt абвгдеёжзийклмнопрстуфхцчшщъыьэюя rtype
 
 """
-    Some useful/convenient string functions (sometimes - similar
-    to module String in java library Apache Commons).
+    Some useful/convenient string functions (sometimes - similar to module String in java library Apache Commons). For some functions added one default parameter debug=False, as these functions may be used
+    in 'fast' executing code, where logging will just add additional complexity and decrease speed.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 07.08.2024
+    Modified: Dmitrii Gusev, 16.12.2024
 """
 
 import logging
@@ -55,24 +55,29 @@ def trim2none(string: str | None, debug=False) -> str | None:
     return result
 
 
-def trim_to_empty(string: str | None) -> str:
-    """Trim the provided string to empty string ('' or "") or just strip whitespaces."""
+def trim2empty(string: str | None, debug=False) -> str:
+    """Trim the provided string to empty string - '' or "" - (if empty) or just strip whitespaces."""
 
     if string and string.strip():  # string isn't empty - trimming whitespaces
-        return string.strip()
+        result = string.strip()
+    else:  # string is empty
+        result = ""
+    if debug:
+        log.debug(f"trim2empty(): input string: [{string}], result string: [{result}].")
+    return result
 
-    return ""
 
-
-def filter_str(string):
-    """
-    Filter out all symbols from string except letters, numbers, spaces, commas.
-    By default, decode input string in unicode (utf-8).
-    :param string:
+def filter_str(string: str | None, debug=False):
+    """Filter out all symbols from string except letters, numbers, spaces, commas. By default, decode input string in unicode (utf-8).
+    :param string: input string for filtering
+    :type string:
+    :param debug: on/off internal debug logging
+    :type debug:
     :return:
+    :rtype:
     """
 
-    if not string or not string.strip():  # if empty, return 'as is'
+    if not string or not string.strip():  # if empty, return input string 'as is'
         return string
 
     # filter out all, except symbols/letters, spaces, or comma
