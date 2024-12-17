@@ -81,7 +81,7 @@ def filter_str(string: str | None, debug=False):
         return string
 
     # filter out all, except symbols/letters, spaces, or comma
-    return "".join(
+    return "".join( 
         char
         for char in string
         if char.isalnum()

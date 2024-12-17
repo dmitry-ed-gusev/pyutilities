@@ -18,7 +18,7 @@
 #   Warning: script MUST be executed from shell, not from the virtual environment (pipenv or any other).
 #
 #   Created:  Dmitrii Gusev, 30.01.2022
-#   Modified: Dmitrii Gusev, 10.12.2024
+#   Modified: Dmitrii Gusev, 17.12.2024
 #
 #############################################################################################################
 
@@ -46,15 +46,31 @@ case "${unameOut}" in
     MINGW*)     export MACHINE=MinGW; CMD_PYTHON=python; CMD_PIP=pip;;
     *)          export MACHINE="UNKNOWN:${unameOut}"; printf "Unknown machine: %s" "${MACHINE}"; exit 1
 esac
-# - just a debug output
-printf "Machine type: [%s], using python: [%s], using pip: [%s].\n" \
+# - just a debug output about installed python
+printf "INFO: Machine type: [%s], using python: [%s], using pip: [%s].\n" \
     "${MACHINE}" "${CMD_PYTHON}" "${CMD_PIP}"
 
 # -- PRE-CHECK II. Python presence on the machine.
-printf "\nUsing python 3/pip 3 versions:\n"
+printf "\nINFO: Using python 3/pip 3 versions:\n"
+printf "\t"
 ${CMD_PYTHON} --version || { printf "%s" "${MSG_NO_PYTHON}" ; sleep 5 ; exit ; }
+printf "\t"
 ${CMD_PIP} --version || { printf "%s" "${MSG_NO_PIP}" ; sleep 5 ; exit ; }
-sleep 3
+
+# -- PRE-CHECK III. Python paths + packages paths
+# - show python paths
+printf "\nINFO: "
+${CMD_PYTHON} -m site
+printf "\n"
+
+# - show python packages dirs (global+user)
+${CMD_PYTHON} - << END
+import site
+global_pkg = site.getsitepackages()
+users_pkg = site.getusersitepackages()
+print(f"INFO:\nglobal packages path: [{global_pkg}].\nuser packages path: [{users_pkg}].")
+END
+sleep 5
 
 # -- STEP I. Upgrading pip + setuptools (main tools, just for the case)
 printf "\n--- Upgrading PIP + SETUPTOOLS (if there are updates) ---\n\n"
