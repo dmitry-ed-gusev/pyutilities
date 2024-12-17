@@ -28,6 +28,7 @@ log.addHandler(logging.NullHandler())
 SPECIAL_SYMBOLS = ".,/-№"
 CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
 LATIN_SYMBOLS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+ALL_SYMBOLS = SPECIAL_SYMBOLS + CYRILLIC_SYMBOLS + LATIN_SYMBOLS
 
 # set of regex for determining float values
 REGEX_FLOAT_1 = "^\d+?\.\d+?$"  # original regex
@@ -56,7 +57,8 @@ def trim2none(string: str | None, debug=False) -> str | None:
 
 
 def trim2empty(string: str | None, debug=False) -> str:
-    """Trim the provided string to empty string - '' or "" - (if empty) or just strip whitespaces."""
+    """Trim the provided string to empty string - '' or "" - (if empty) or just strip whitespaces.
+    """
 
     if string and string.strip():  # string isn't empty - trimming whitespaces
         result = string.strip()
@@ -68,7 +70,7 @@ def trim2empty(string: str | None, debug=False) -> str:
 
 
 def filter_str(string: str | None, debug=False):
-    """Filter out all symbols from string except letters, numbers, spaces, commas. By default, decode input string in unicode (utf-8).
+    """Filter out all unnecessary/unwanted symbols from string (clear string) except letters, numbers, spaces, commas. By default, decode input string in unicode (utf-8).
     :param string: input string for filtering
     :type string:
     :param debug: on/off internal debug logging
@@ -77,55 +79,55 @@ def filter_str(string: str | None, debug=False):
     :rtype:
     """
 
+    def accepted(char) -> bool:  # internal function
+        return char.isalnum() or char.isspace() or char in ALL_SYMBOLS
+
     if not string or not string.strip():  # if empty, return input string 'as is'
-        return string
-
-    # filter out all, except symbols/letters, spaces, or comma
-    return "".join( 
-        char
-        for char in string
-        if char.isalnum()
-        or char.isspace()
-        or char in SPECIAL_SYMBOLS
-        or char in CYRILLIC_SYMBOLS
-        or char in LATIN_SYMBOLS
-    )
+        result = string
+    else:  # string isn't empty - filter out all, except symbols/letters, spaces, or comma
+        result = "".join(char for char in string if accepted(char))
+    if debug:
+        log.debug(f"filter_str(): Filtering string: [{string}], result: [result].")
+    return result
 
 
-def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = None) -> str:
-    """TBD"""
+def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = None, debug=False) -> str:
+    """Process the provided url and update it: add postfix (if provided) and add format values (if provided).
+    :param url:
+    :param postfix:
+    :param format_values:
+    :return:
+    """
 
-    log.debug(f"Processing URL [{url}] with postfix [{postfix}] and format values [{format_values}].")
-
-    if not url:
+    if not url or not url.strip():  # provided url is empty - raise an exception
         raise PyUtilitiesException("Provided empty URL for processing!")
-
+    # processing postfix
     processed_url: str = url
-    if postfix:  # if postfix - add it to the URL string
+    if postfix and postfix.strip():  # if postfix isn't empty - add it to the URL string
         if not processed_url.endswith("/"):
             processed_url += "/"
-        processed_url += postfix
-
+        processed_url += postfix.strip()
+    # processing format values
     if format_values:  # if there are values - format URL string with them
         processed_url = processed_url.format(*format_values)
 
+    if debug:
+        log.debug(f"process_url(): URL [{url}], postfix [{postfix}], format values [{format_values}].\n\t \
+            Result: [{processed_url}].")
     return processed_url
 
 
-def process_urls(
-    urls: Dict[str, str], postfix: str = "", format_values: Tuple[str] | None = None
-) -> Dict[str, str]:
-    """TBD"""
+def process_urls(urls: Dict[str, str], postfix: str = "",
+                 format_values: Tuple[str] | None = None, debug=False) -> Dict[str, str]:
+    """Process the provided dictionary of urls with the function"""
 
-    log.debug("Processing urls dictionary.")
-
-    if not urls:
+    if debug:
+        log.debug("process_urls(): processing provided dictionary of urls.")
+    if not urls or len(urls) == 0:
         raise PyUtilitiesException("Provided empty URLs dictionary for processing!")
-
     processed: Dict[str, str] = dict()
     for key in urls:
-        processed[key] = process_url(urls[key], postfix, format_values)
-
+        processed[key] = process_url(urls[key], postfix, format_values, debug)
     return processed
 
 
@@ -197,7 +199,7 @@ def iter_2_str(values: Iterable, braces: bool = True) -> str:
     return resulting_value  # returning result
 
 
-def coalesce(*args) -> str:
+def coalesce(*args, debug=False) -> str:
     """Return first not None and not empty value from provided args list."""
 
     if not args:

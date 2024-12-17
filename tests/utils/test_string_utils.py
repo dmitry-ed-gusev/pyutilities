@@ -5,7 +5,7 @@
     Unit tests for strings module.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 14.12.2024
+    Modified: Dmitrii Gusev, 17.12.2024
 """
 
 import pytest
@@ -105,23 +105,23 @@ def test_process_url(url, postfix, format_params, expected):
 
 # see info here: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.text
 @given(text(alphabet=characters(blacklist_categories=["Cc", "Zs", "Zl", "Zp"]), min_size=1, max_size=100))
-def test_trim_to_none_with_meaningful_symbols(txt):
-    assert trim_to_none(txt) == txt
+def test_trim2none_with_meaningful_symbols(txt):
+    assert trim2none(txt) == txt
 
 
 @given(text(alphabet=characters(whitelist_categories=["Zs", "Zl", "Zp"]), min_size=1, max_size=100))
-def test_trim_to_none_with_only_non_meaningful_symbols(text):
-    assert trim_to_none(text) is None
+def test_trim2none_with_only_non_meaningful_symbols(text):
+    assert trim2none(text) is None
 
 
 @given(text(alphabet=characters(blacklist_categories=["Cc", "Zs", "Zl", "Zp"]), min_size=1, max_size=100))
-def test_trim_to_empty_with_meaningful_symbols(text):
-    assert trim_to_empty(text) == text
+def test_trimempty_with_meaningful_symbols(text):
+    assert trim2empty(text) == text
 
 
 @given(text(alphabet=characters(whitelist_categories=["Zs", "Zl", "Zp"]), min_size=1, max_size=100))
-def test_trim_to_empty_with_only_non_meaningful_symbols(text):
-    assert trim_to_empty(text) == ""
+def test_trim2empty_with_only_non_meaningful_symbols(text):
+    assert trim2empty(text) == ""
 
 
 def test_is_number_usual_values():
