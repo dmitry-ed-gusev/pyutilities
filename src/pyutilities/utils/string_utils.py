@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
+
 # -*- coding: utf-8 -*-
 
 # cspell:ignore isnt абвгдеёжзийклмнопрстуфхцчшщъыьэюя rtype
 
 """
-    Some useful/convenient string functions (sometimes - similar to module String in java library Apache Commons). For some functions added one default parameter debug=False, as these functions may be used
+    Some useful/convenient string functions (sometimes - similar to module String in java library Apache
+    Commons). For some functions added one default parameter debug=False, as these functions may be used
     in 'fast' executing code, where logging will just add additional complexity and decrease speed.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 16.12.2024
+    Modified: Dmitrii Gusev, 22.12.2024
 """
 
 import logging
@@ -101,16 +103,16 @@ def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = 
 
     if not url or not url.strip():  # provided url is empty - raise an exception
         raise PyUtilitiesException("Provided empty URL for processing!")
-    # processing postfix
+    # processing URL postfix
     processed_url: str = url
     if postfix and postfix.strip():  # if postfix isn't empty - add it to the URL string
         if not processed_url.endswith("/"):
             processed_url += "/"
         processed_url += postfix.strip()
-    # processing format values
+    # processing URL format values
     if format_values:  # if there are values - format URL string with them
         processed_url = processed_url.format(*format_values)
-
+    # debug output
     if debug:
         log.debug(f"process_url(): URL [{url}], postfix [{postfix}], format values [{format_values}].\n\t \
             Result: [{processed_url}].")
@@ -131,15 +133,21 @@ def process_urls(urls: Dict[str, str], postfix: str = "",
     return processed
 
 
-def get_last_part_of_the_url(url: str) -> str:
-    """TBD"""
+def get_str_ending(string: str, symbol: str = "/", debug: bool = False) -> str:
+    """Returns the last right part of the string after the symbol (not including the symbol itself). It is
+    most right part of the string, after the last right symbol (if there are multiple symbols).
+    """
 
-    log.debug(f"Calculating the last right part of the URL: [{url}].")
-
-    if not url:  # fail-fast behaviour
+    if not (string and string.strip()):  # fail-fast behavior - empty string, raise an exception
         raise PyUtilitiesException("Specified empty URL!")
-
-    return url[url.rfind("/") + 1 :]
+    if not (symbol and symbol.strip()):  # fast-check - empty symbol - returns the whole string
+        if debug:
+            log.debug("get_str_ending(): provided empty symbol, returning the original string.")
+        return string
+    result = string[string.rfind(symbol.strip()) + 1 :]  # processing string (string and symbol are not empty)
+    if debug:
+        log.debug(f"get_str_ending(): string: [{string}], symbol: [{symbol}], result: [{result}].")
+    return result
 
 
 def is_number(value: str):

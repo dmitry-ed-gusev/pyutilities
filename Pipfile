@@ -7,15 +7,19 @@ name = "pypi"
 pyutilities = {file = ".", editable = true}
 
 [dev-packages]
+
 # -- testing libraries
 pytest = "==8.3.4"
 pytest-env = "==1.1.5"
 pytest-cov = "==6.0.0"
 pytest-mock = "==3.14.0"
+pytest-pep8 = "==1.0.6"
+pytest-flakes = "==4.0.5"
 pytest-variables = {extras = ["hjson", "yaml", "toml"], version = "==3.1.0"}
 
 # -- testing-related libraries
 mock = "==5.1.0"
+mockito = "==1.5.3"
 nose2 = "==0.15.1"
 hypothesis = "==6.122.3"
 
@@ -32,8 +36,8 @@ types-PyYAML = "==6.0.12.20240917"
 flake8 = "==7.1.1"
 black = "==24.10.0"
 pylint = "==2.3.0"
-isort = {extras = ["requirements_deprecated_finder", "pipfile_deprecated_finder"], version = "==6.0.0b2"}
 pre-commit = "==4.0.1"
+isort = {extras = ["requirements_deprecated_finder", "pipfile_deprecated_finder"], version = "==6.0.0b2"}
 
 # -- building and publishing libraries
 # twine = "==6.0.1"

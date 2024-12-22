@@ -20,6 +20,7 @@ from pyutilities.utils.string_utils import (
     process_url,
     trim2none,
     trim2empty,
+    get_str_ending,
 )
 
 # common constants for testing
@@ -115,7 +116,7 @@ def test_trim2none_with_only_non_meaningful_symbols(text):
 
 
 @given(text(alphabet=characters(blacklist_categories=["Cc", "Zs", "Zl", "Zp"]), min_size=1, max_size=100))
-def test_trimempty_with_meaningful_symbols(text):
+def test_trim2empty_with_meaningful_symbols(text):
     assert trim2empty(text) == text
 
 
