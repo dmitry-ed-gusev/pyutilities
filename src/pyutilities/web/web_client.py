@@ -120,7 +120,10 @@ class WebClient:
         return self.__session.get(url, params=params, allow_redirects=self.__allow_redirects)
 
     def post(
-        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+        self,
+        url: str,
+        data: Dict[str, str] | None = None,
+        params: Dict[str, str] | None = None,
     ) -> Response:
         """Perform HTTP POST request with retry (if necessary).
         :param data: request data -> will be added to the request body (HTTP POST)

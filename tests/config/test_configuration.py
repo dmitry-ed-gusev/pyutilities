@@ -4,12 +4,13 @@
 """
     Unit tests for Configuration class.
 
-    Created:  Gusev Dmitrii, XX.08.2017
-    Modified: Gusev Dmitrii, 24.11.2022
+    Created:  Gusev Dmitrii, 2017
+    Modified: Gusev Dmitrii, 02.01.2024
 """
 
 import os
 import unittest
+import pytest
 
 from mock import patch
 
@@ -23,25 +24,23 @@ KEY1 = "section1.key1"
 KEY2 = "section2.key3"
 
 
-class ConfigurationTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        # method just for the demo purpose
-        pass
+@pytest.fixture
+def config():
+    return Configuration(is_merge_env=False)
 
+
+def test_load_invalid_path(config):
+    for invalid_path in ["", "", "   ", "    ", "non-exist path"]:
+        with pytest.raises(ConfigError):
+            config.load(invalid_path)
+
+
+class ConfigurationTest(unittest.TestCase):
+    
     def setUp(self) -> None:
         # init config instance before each test, don't merge with environment
         self.config: Configuration = Configuration(is_merge_env=False)
 
-    def tearDown(self) -> None:
-        # dereference config instance after each test
-        # self.config = None
-        pass
-
-    def test_load_invalid_path(self):
-        for invalid_path in ["", "", "   ", "    ", "non-exist path"]:
-            with self.assertRaises(ConfigError):
-                self.config.load(invalid_path)
 
     def test_merge_config_files(self):
         self.config.load(CONFIG_PATH)  # <- load all yaml configs from specified location

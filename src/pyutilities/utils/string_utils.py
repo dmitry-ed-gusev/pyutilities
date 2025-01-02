@@ -2,15 +2,13 @@
 
 # -*- coding: utf-8 -*-
 
-# cspell:ignore isnt абвгдеёжзийклмнопрстуфхцчшщъыьэюя rtype
-
 """
     Some useful/convenient string functions (sometimes - similar to module String in java library Apache
     Commons). For some functions added one default parameter debug=False, as these functions may be used
     in 'fast' executing code, where logging will just add additional complexity and decrease speed.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 22.12.2024
+    Modified: Dmitrii Gusev, 28.12.2024
 """
 
 import logging
@@ -39,7 +37,7 @@ REGEX_FLOAT_3 = "^[+-]?([0-9]*[.])?[0-9]+$"  # simplified regex, matches: 123/12
 REGEX_FLOAT_4 = "^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"  # matches as previous plus: 123.
 
 
-def trim2none(string: str | None, debug=False) -> str | None:
+def trim2none(string: str | None, debug: bool = False) -> str | None:
     """Trim the provided string to None (if empty) or just strip whitespaces.
     :param string: string for trimming leading/trailing whitespaces.
     :type string: string or None
@@ -54,13 +52,12 @@ def trim2none(string: str | None, debug=False) -> str | None:
     else:  # string is empty - returning None
         result = None
     if debug:  # in case debug enabled - logging function usage
-        log.debug(f"trim2none(): input string: [{string}], result string: [{result}].")
+        log.debug("trim2none(): input string: [%s], result string: [%s].", string, result)
     return result
 
 
 def trim2empty(string: str | None, debug=False) -> str:
-    """Trim the provided string to empty string - '' or "" - (if empty) or just strip whitespaces.
-    """
+    """Trim the provided string to empty string - '' or "" - (if empty) or just strip whitespaces."""
 
     if string and string.strip():  # string isn't empty - trimming whitespaces
         result = string.strip()
@@ -72,7 +69,8 @@ def trim2empty(string: str | None, debug=False) -> str:
 
 
 def filter_str(string: str | None, debug=False):
-    """Filter out all unnecessary/unwanted symbols from string (clear string) except letters, numbers, spaces, commas. By default, decode input string in unicode (utf-8).
+    """Filter out all unnecessary/unwanted symbols from string (clear string) except letters, numbers,
+        spaces, commas. By default, decode input string in unicode (utf-8).
     :param string: input string for filtering
     :type string:
     :param debug: on/off internal debug logging
@@ -82,6 +80,7 @@ def filter_str(string: str | None, debug=False):
     """
 
     def accepted(char) -> bool:  # internal function
+        """Simple internal helper function."""
         return char.isalnum() or char.isspace() or char in ALL_SYMBOLS
 
     if not string or not string.strip():  # if empty, return input string 'as is'
@@ -114,13 +113,19 @@ def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = 
         processed_url = processed_url.format(*format_values)
     # debug output
     if debug:
-        log.debug(f"process_url(): URL [{url}], postfix [{postfix}], format values [{format_values}].\n\t \
-            Result: [{processed_url}].")
+        log.debug(
+            f"process_url(): URL [{url}], postfix [{postfix}], format values [{format_values}].\n\t \
+            Result: [{processed_url}]."
+        )
     return processed_url
 
 
-def process_urls(urls: Dict[str, str], postfix: str = "",
-                 format_values: Tuple[str] | None = None, debug=False) -> Dict[str, str]:
+def process_urls(
+    urls: Dict[str, str],
+    postfix: str = "",
+    format_values: Tuple[str] | None = None,
+    debug=False,
+) -> Dict[str, str]:
     """Process the provided dictionary of urls with the function"""
 
     if debug:
@@ -150,7 +155,7 @@ def get_str_ending(string: str, symbol: str = "/", debug: bool = False) -> str:
     return result
 
 
-def is_number(value: str):
+def is_number(value: str, debug: bool = False):
     """Returns True if string is a number."""
 
     if not (value and value.strip()):  # empty value - not a number
@@ -161,7 +166,7 @@ def is_number(value: str):
     return True  # regex match returned match
 
 
-def iter_2_str(values: Iterable, braces: bool = True) -> str:
+def iter_2_str(values: Iterable, braces: bool = True, debug: bool = False) -> str:
     """Convert number of iterable values to a single string value."""
 
     if not values:  # empty iterable - return empty string value - ""
@@ -207,7 +212,7 @@ def iter_2_str(values: Iterable, braces: bool = True) -> str:
     return resulting_value  # returning result
 
 
-def coalesce(*args, debug=False) -> str:
+def coalesce(*args, debug: bool = False) -> str:
     """Return first not None and not empty value from provided args list."""
 
     if not args:

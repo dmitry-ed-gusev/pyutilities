@@ -5,7 +5,7 @@
     Common defaults for the PyUtilities.
 
     Created:  Gusev Dmitrii, 11.10.2022
-    Modified: Dmitrii Gusev, 11.10.2022
+    Modified: Dmitrii Gusev, 02.01.2025
 """
 
 # common system messages

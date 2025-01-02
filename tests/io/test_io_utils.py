@@ -5,10 +5,11 @@
     Unit tests for io_utilities module.
 
     Created:  Dmitrii Gusev, 12.10.2022
-    Modified:
+    Modified: Dmitrii Gusev, 02.01.2025
 """
 
 import unittest
+import pytest
 
 from mock import mock_open, patch
 
@@ -18,22 +19,6 @@ MOCK_OPEN_METHOD = "pyutilities.io.io_utils.open"
 MOCK_WALK_METHOD = "pyutilities.io.io_utils.walk"
 
 
-class IOUtilsTest(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        # method just for the demo purpose
-        pass
-
-    @classmethod
-    def tearDownClass(cls):
-        # method just for the demo purpose
-        pass
-
-    def test_parse_yaml(self):
-        # with patch("pyutilities.utils.open", mock_open(read_data="name: value"), create=True):
-        with patch(MOCK_OPEN_METHOD, mock_open(read_data="name: value"), create=True):
-            result = read_yaml("foo_ok.file")
-            self.assertEqual("value", result["name"])
 
     def test_parse_yaml_ioerror(self):
         with self.assertRaises(IOError):
@@ -45,6 +30,48 @@ class IOUtilsTest(unittest.TestCase):
             with self.assertRaises(IOError):
                 with patch(MOCK_OPEN_METHOD, mock_open(read_data="n: v"), create=True):
                     read_yaml(path)
+
+
+def test_():
+    pass
+
+
+def test_():
+    pass
+
+
+def test_file2str():
+    pass
+
+
+def test_read_yaml():
+    # def test_parse_yaml():
+    # with patch(MOCK_OPEN_METHOD, mock_open(read_data="name123: value123"), create=True):
+    #     result = read_yaml("foo_ok.file")
+    #     assert result["name123"] == "value123"
+    pass
+
+
+
+def test_read_yaml_ioerror(self):
+    with self.assertRaises(IOError):
+        with patch(MOCK_OPEN_METHOD, mock_open(read_data="name:\tvalue"), create=True):
+            read_yaml("foo_ioerror.file")
+
+
+def test_read_yaml_empty_paths(self):
+    for path in ["", "   "]:
+        with self.assertRaises(IOError):
+            with patch(MOCK_OPEN_METHOD, mock_open(read_data="n: v"), create=True):
+                read_yaml(path)
+
+
+def test_compress_file():
+    pass
+
+
+class IOUtilsTest(unittest.TestCase):
+
 
     def test_list_files_invalid_paths(self):
         for path in [

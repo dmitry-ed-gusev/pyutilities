@@ -118,7 +118,16 @@ class HttpClient:
             # success status/response (1xx, 2xx, 3xx) will be returned.
             status_forcelist=[429, 500, 502, 503, 504],  # statuses for retry
             # use 'allowed_methods' instead of 'method_whitelist' (deprecated and will be removed in v2.0)
-            allowed_methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "PATCH"],
+            allowed_methods=[
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "HEAD",
+                "OPTIONS",
+                "TRACE",
+                "PATCH",
+            ],
         )
 
         # create TimeoutHTTPAdapter (based on HTTPAdapter) and mount it to prefixes

@@ -69,7 +69,9 @@ class AddTableCSSClassesPostprocesor(Postprocessor):  # new postprocessor
 
     def run(self, text):
         return re.sub(
-            "<table>", '<table class="table-striped table-condensed table-hover table-bordered">', text
+            "<table>",
+            '<table class="table-striped table-condensed table-hover table-bordered">',
+            text,
         )
 
 
@@ -105,7 +107,8 @@ def convert():
         with open(key, "r", encoding=ENCODING) as input_file:
             text = input_file.read()
         html = markdown.markdown(
-            text, extensions=["sane_lists", "toc", "tables", "attr_list", MyTagsExtension()]
+            text,
+            extensions=["sane_lists", "toc", "tables", "attr_list", MyTagsExtension()],
         )
 
         # open output HTML file and there the converted from MD text

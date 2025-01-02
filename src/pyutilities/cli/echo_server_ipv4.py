@@ -83,7 +83,15 @@ def serve(server_host="0.0.0.0", server_port=3246, server_verbosity=1):
 
             # print to the current console tech info about the request
             if server_verbosity > 0:
-                print(" - ".join([client_address[0], request_time, request["header"]["request-line"]]))
+                print(
+                    " - ".join(
+                        [
+                            client_address[0],
+                            request_time,
+                            request["header"]["request-line"],
+                        ]
+                    )
+                )
 
             # build the response to the client
             raw_decoded = request["raw"].decode(DEFAULT_ENCODING, "ignore")
@@ -150,7 +158,12 @@ def parse_args():
     parser.add_argument("-b", "--bind", default="localhost", help="host to bind to")
     parser.add_argument("-p", "--port", default=3246, type=int, help="port to listen on")
     parser.add_argument("-v", "--verbose", action="store_true", help="print all requests to terminal")
-    parser.add_argument("-q", "--quiet", action="store_true", help="silence all output (overrides --verbose)")
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="silence all output (overrides --verbose)",
+    )
 
     # parse cmd line arguments and return parsed
     return parser.parse_args()

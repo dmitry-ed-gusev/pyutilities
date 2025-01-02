@@ -7,9 +7,7 @@
 #   system shell) and from the pipenv environment as well (pipenv shell).
 #
 #   Created:  Dmitrii Gusev, 30.11.2021
-#   Modified: Dmitrii Gusev, 06.05.2024
-#
-#   cspell:ignore pyutilities, isort
+#   Modified: Dmitrii Gusev, 01.01.2025
 #
 ###############################################################################
 
@@ -27,6 +25,8 @@ BUILD_DIR='build/'
 DIST_DIR='dist/'
 
 clear
+
+# -- start of the build process
 printf "Build of [PyUtilities] library is starting...\n"
 sleep 2
 
@@ -53,8 +53,8 @@ sleep 2
 
 # -- III. Executing [black] code formatter
 printf "\n\n *** Executing [black] automatic code formatter *** \n\n"
-pipenv run black src/ ${VERBOSE} --config .black
-pipenv run black tests/ ${VERBOSE} --config .black
+pipenv run black ${VERBOSE} --line-length=110 --target-version=py310  src/
+pipenv run black ${VERBOSE} --line-length=110 --target-version=py310  tests/
 sleep 2
 
 # -- IV. Executing [mypy] types checker
