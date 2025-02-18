@@ -1,42 +1,63 @@
+###############################################################################
+#
+#   Configuration for pipenv utility: Pipfile
+#
+#   Created:  Dmitrii Gusev, 2022
+#   Modified: Dmitrii Gusev, 28.12.2024
+#
+###############################################################################
+
 [[source]]
 url = "https://pypi.org/simple"
 verify_ssl = true
 name = "pypi"
 
 [packages]
-pyutilities = {editable = true, path = "."}
+pyutilities = {file = ".", editable = true}
 
 [dev-packages]
-mock = "*"
-nose2 = "*"
-pytest = "*"
-pytest-env = "*"
-pytest-cov = "*"
-pytest-mock = "*"
-pytest-variables = "*"
-'pytest-variables[hjson]' = "*"
-'pytest-variables[yaml]' = "*"
-'pytest-variables[toml]' = "*"
-mypy = "*"
-types-six = "*"
-types-mock = "*"
-types-paramiko = "*"
-types-requests = "*"
-types-markdown = "*"
-types-PyYAML = "*"
-flake8 = "*"
-black = "*"
-pylint = "*"
-pre-commit = "*"
-twine = "*"
-build = "*"
-ipykernel = "*"
-responses = "*"
-sphinx = "*"
-hypothesis = "*"
-isort = "*"
-'isort[requirements_deprecated_finder]' = "*"
-'isort[pipfile_deprecated_finder]' = "*"
+
+# -- testing libraries
+pytest = "==8.3.4"
+pytest-env = "==1.1.5"
+pytest-cov = "==6.0.0"
+pytest-mock = "==3.14.0"
+pytest-pep8 = "==1.0.6"
+pytest-flakes = "==4.0.5"
+pytest-isort = "==4.0.0"
+pytest-black = "0.6.0"
+pytest-variables = {extras = ["hjson", "yaml", "toml"], version = "==3.1.0"}
+
+# -- testing-related libraries
+mock = "==5.1.0"
+mockito = "==1.5.3"
+nose2 = "==0.15.1"
+hypothesis = "==6.123.2"
+
+# -- typing libraries
+mypy = "==1.14.0"
+types-six = "==1.17.0.20241205"
+types-mock = "==5.1.0.20240425"
+types-paramiko = "==3.5.0.20240928"
+types-requests = "==2.32.0.20241016"
+types-markdown = "==3.7.0.20241204"
+types-PyYAML = "==6.0.12.20241221"
+
+# -- code quality libraries
+flake8 = "==7.1.1"
+black = "==24.10.0"
+pylint = "==3.3.3"
+pre-commit = "==4.0.1"
+isort = {extras = ["requirements_deprecated_finder", "pipfile_deprecated_finder"], version = "==5.13.2"}
+
+# -- building and publishing libraries
+twine = "==6.0.1"
+build = "==1.2.2.post1"
+ipykernel = "6.29.5"
+
+# -- other dev libraries (documentation, etc.)
+responses = "==0.25.3"
+sphinx = "==8.1.3"
 
 [requires]
 python_version = "3.10"

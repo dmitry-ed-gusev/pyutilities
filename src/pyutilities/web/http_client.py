@@ -1,19 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-    HTTP / network related utilities module for World Fleet DB Scraper.
+# cspell:ignore useragent isnt threadsafe forcelist
 
-    Useful resources:
-        - (download file) https://stackoverflow.com/questions/7243750/download-file-from-web-in-python-3
-        - (pypi - urllib3) https://pypi.org/project/urllib3/
-        - (urllib3 - docs) https://urllib3.readthedocs.io/en/stable/
-        - (docs from python) https://docs.python.org/3/howto/urllib2.html
-        - (fake User Agent) https://github.com/hellysmile/fake-useragent
-        - (HTTP status codes) https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+"""
+    HTTP client module, based on requests module.
 
     Created:  Dmitrii Gusev, 01.06.2021
-    Modified: Dmitrii Gusev, 02.10.2022
+    Modified: Dmitrii Gusev, 02.07.2024
 """
 
 import logging
@@ -25,20 +19,19 @@ import requests
 from fake_useragent import UserAgent
 from requests import Response
 from requests.adapters import HTTPAdapter, Retry
-from wfleet.scraper.config.scraper_config import Config
-from wfleet.scraper.config.scraper_messages import MSG_MODULE_ISNT_RUNNABLE
-from wfleet.scraper.exceptions.scraper_exceptions import ScraperException
-from wfleet.scraper.utils.utilities import threadsafe_function
+
+from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
+from pyutilities.utils.common_utils import threadsafe_function
 
 # init module logger
 log = logging.getLogger(__name__)
+log.addHandler(logging.NullHandler())
 log.debug(f"Logging for module {__name__} is configured.")
 
+# useful constants for module
 HTTP_DEFAULT_TIMEOUT = 20  # default HTTP requests timeout (seconds)
 HTTP_DEFAULT_BACKOFF = 1  # default back off factor (it is better to not touch this value!)
-HTTP_DEFAUT_RETRIES = 4  # default retries num for HTTP requests (+1 for the original request!)
-
-config = Config()  # get application config
+HTTP_DEFAULT_RETRIES = 4  # default retries num for HTTP requests (+1 for the original request!)
 
 
 class TimeoutHTTPAdapter(HTTPAdapter):
@@ -59,9 +52,15 @@ class TimeoutHTTPAdapter(HTTPAdapter):
         return super().send(request, **kwargs)
 
 
-class WebClient:
-    """Simple WebClient class (class based on the [requests] module).
-    If user_agent specified - use it, if not - generate it randomly.
+class HttpClientException(Exception):
+    """Custom Http Client Exception for various internal exceptions."""
+
+    pass
+
+
+class HttpClient:
+    """Simple HttpClient class, based on the [requests] module. If user_agent specified - use it,
+    if not - generate it randomly.
     """
 
     # class (not instance!) variable - when we create multiple instances of this class - we need
@@ -69,35 +68,37 @@ class WebClient:
     __user_agent_info_updated: bool = False
 
     # class-level variable for storing the fake User Agent info
-    # todo: use fake User Agent without cache - see docs -> UserAgent(cache=False)
     __ua: UserAgent = UserAgent()
 
     @threadsafe_function
     def __update_user_agent_info(self):
-        if not WebClient.__user_agent_info_updated:
+        if not HttpClient.__user_agent_info_updated:
             log.info("Fake User Agent -> cached info updating...")
-            WebClient.__ua.update()
-            WebClient.__user_agent_info_updated = True
+            HttpClient.__ua.update()
+            HttpClient.__user_agent_info_updated = True
 
     def __init__(
         self,
-        headers: Dict[str, str] = None,
-        cookies: Dict[str, str] = None,
+        headers: Dict[str, str] | None = None,
+        cookies: Dict[str, str] | None = None,
         auth=None,
         user_agent: str = "",
         allow_redirects: bool = True,
         redirects_count: int = 0,
         timeout: int = HTTP_DEFAULT_TIMEOUT,
-        retries: int = HTTP_DEFAUT_RETRIES,
+        retries: int = HTTP_DEFAULT_RETRIES,
         update_user_agents_info: bool = False,
     ) -> None:
-        log.debug("Initializing WebClient() instance.")
+        log.debug("Initializing HttpClient instance.")
 
         if update_user_agents_info:
+            log.debug("Updating fake user agents info.")
             self.__update_user_agent_info()
 
         # init internal state - session + some other parameters
         self.__session = requests.Session()
+        log.debug("Session object created.")
+
         self.__allow_redirects = allow_redirects
 
         # setup requests hooks - raise HTTPError for error HTTP status codes 4xx, 5xx, except
@@ -106,45 +107,62 @@ class WebClient:
             response.raise_for_status()
 
         self.__session.hooks["response"] = [assert_status_hook]
+        log.debug("Session hooks installed.")
 
         # setup retries strategy for the session - see mounting it below
         retry_strategy = Retry(  # create retry strategy
             total=retries,  # total # of retries, see HTTP codes that will be retried -> status_forcelist
             backoff_factor=HTTP_DEFAULT_BACKOFF,  # backoff: 1 -> [0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256] sec
-            # for these HTTP error status codes will be applied the Retry startegy, in case the retry limit
+            # for these HTTP error status codes will be applied the Retry strategy, in case the retry limit
             # will be reached without success - TooMaxRetries(?) issue will be raised, otherwise the
             # success status/response (1xx, 2xx, 3xx) will be returned.
             status_forcelist=[429, 500, 502, 503, 504],  # statuses for retry
             # use 'allowed_methods' instead of 'method_whitelist' (deprecated and will be removed in v2.0)
-            allowed_methods=["GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE", "PATCH"],
+            allowed_methods=[
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "HEAD",
+                "OPTIONS",
+                "TRACE",
+                "PATCH",
+            ],
         )
 
         # create TimeoutHTTPAdapter (based on HTTPAdapter) and mount it to prefixes
         adapter = TimeoutHTTPAdapter(timeout=timeout, max_retries=retry_strategy)
         self.__session.mount("https://", adapter)  # mount to HTTPS (timeout+retries)
         self.__session.mount("http://", adapter)  # mount to HTTP (timeout+retries)
+        log.debug("Retry strategy + timeouts installed for Session object.")
 
         if headers and len(headers) > 0:  # add headers
             self.__session.headers.update(headers)
             log.debug("Headers are not empty, adding to the HTTP session.")
+
         if cookies and len(cookies) > 0:  # add cookies
             self.__session.cookies.update(cookies)
             log.debug("Cookies are not empty, adding to the HTTP session.")
+
         if redirects_count > 0:  # add redirects count
             self.__session.max_redirects = redirects_count
+
         if not user_agent:  # set User Agent header
-            user_agent = WebClient.__ua.random
+            user_agent = HttpClient.__ua.random
+
         self.__session.headers.update({"user-agent": user_agent})  # header may be "User-Agent"
+
         if auth:  # add authorization to session
             self.__session.auth = auth
+            log.debug()
 
         log.debug(
-            "WebClient() instance initialized OK. Configuration:\n"
-            f"Headers: {self.__session.headers}\n"
-            f"Cookies: {self.__session.cookies}\n"
+            "HttpClient instance was initialized OK with the configuration:\n"
+            f"\tHeaders: {self.__session.headers}\n"
+            f"\tCookies: {self.__session.cookies}\n"
         )
 
-    def get(self, url: str, params: Dict[str, str] = None) -> Response:
+    def get(self, url: str, params: Dict[str, str] | None = None) -> Response:
         """Perform HTTP GET request with retry (if necessary).
         :param params: request parameters -> will be added to the URL
         """

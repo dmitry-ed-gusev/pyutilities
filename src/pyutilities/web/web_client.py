@@ -1,23 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-"""
-    General purpose universal HTTP client. Created mostly for web-scraping purposes, but can be used
-    for any purpose. It simplifies interaction with responses module.
-
-    Useful resources:
-        - (download file) https://stackoverflow.com/questions/7243750/download-file-from-web-in-python-3
-        - (pypi - urllib3) https://pypi.org/project/urllib3/
-        - (urllib3 - docs) https://urllib3.readthedocs.io/en/stable/
-        - (docs from python) https://docs.python.org/3/howto/urllib2.html
-        - (fake User Agent) https://github.com/hellysmile/fake-useragent
-        - (HTTP status codes) https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
-
-    Created:  Dmitrii Gusev, 10.10.2022
-    Modified: Dmitrii Gusev, 06.05.2022
-"""
-# cspell:ignore useragent, pyutilities, threadsafe, ISNT, forcelist
-
 import logging
 from typing import Dict, List, Tuple
 
@@ -29,13 +12,6 @@ from requests.adapters import HTTPAdapter, Retry
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.exception import PyUtilitiesException
 from pyutilities.utils.common_utils import threadsafe_function
-
-log = logging.getLogger(__name__)
-log.addHandler(logging.NullHandler())
-
-HTTP_DEFAULT_TIMEOUT = 20  # default HTTP requests timeout (seconds)
-HTTP_DEFAULT_BACKOFF = 1  # default back off factor (it is better to not touch this value!)
-HTTP_DEFAULT_RETRIES = 4  # default retries num for HTTP requests (+1 for the original request!)
 
 
 # todo: see sample here: https://github.com/psf/requests/issues/4233
@@ -49,44 +25,7 @@ def expanded_raise_for_status(response, exclude_statuses: List[int] | None):
         response.raise_for_status()
 
 
-class TimeoutHTTPAdapter(HTTPAdapter):
-    """Timeout adapter based on the HTTPAdapter."""
-
-    def __init__(self, *args, **kwargs):
-        log.debug("Initializing TimeoutHTTPAdapter.")
-        self.timeout = HTTP_DEFAULT_TIMEOUT
-        if "timeout" in kwargs:
-            self.timeout = kwargs["timeout"]
-            del kwargs["timeout"]
-        super().__init__(*args, **kwargs)
-
-    def send(self, request, **kwargs):
-        timeout = kwargs.get("timeout")
-        if timeout is None:
-            kwargs["timeout"] = self.timeout
-        return super().send(request, **kwargs)
-
-
 class WebClient:
-    """Simple WebClient class (class based on the [requests] module).
-    If user_agent specified - use it, if not - generate it randomly.
-    """
-
-    # class (not instance!) variable - when we create multiple instances of this class - we need
-    # to update the user agents data only once (for all instances)
-    __user_agent_info_updated: bool = False
-
-    # class-level variable for storing the fake User Agent info
-    # todo: use fake User Agent without cache - see docs -> UserAgent(cache=False)
-    __ua: UserAgent = UserAgent()
-
-    @threadsafe_function
-    def __update_user_agent_info(self):
-        """Thread-safe update of the locally cached fake UserAgent data."""
-        if not WebClient.__user_agent_info_updated:
-            log.info("Fake User Agent -> cached info updating...")
-            WebClient.__ua.update()
-            WebClient.__user_agent_info_updated = True
 
     def __init__(
         self,
@@ -181,7 +120,10 @@ class WebClient:
         return self.__session.get(url, params=params, allow_redirects=self.__allow_redirects)
 
     def post(
-        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+        self,
+        url: str,
+        data: Dict[str, str] | None = None,
+        params: Dict[str, str] | None = None,
     ) -> Response:
         """Perform HTTP POST request with retry (if necessary).
         :param data: request data -> will be added to the request body (HTTP POST)

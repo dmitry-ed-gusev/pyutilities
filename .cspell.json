@@ -1,0 +1,42 @@
+//##############################################################################
+//
+//   cSpell Settings JSON file (whole project configuration).
+//
+//   Created:  Dmitrii Gusev, 28.12.2024
+//   Modified: Dmitrii Gusev, 02.01.2025
+//
+//##############################################################################
+
+{
+
+    // version of the setting file, always 0.2
+    "version": "0.2",
+
+    // current active spelling language
+    "language": "en",
+
+    // a list of words to be always considered correct
+    "words": [
+        "*ISNT*",
+        "nrows",
+        "infile",
+    ],
+
+    // a list of words to be always considered incorrect
+    "flagWords": [
+        "hte",
+    ],
+
+    // a list of words to be ignored (even if they are in the flagWords)
+    "ignoreWords": [
+        "pyutilities",
+        "абвгдеёжзийклмнопрстуфхцчшщъыьэюя",
+        "rtype",
+        "namenode",
+    ],
+
+    // a list of globs to specify which files are to be ignored
+    "ignorePaths": [
+    ]
+
+}

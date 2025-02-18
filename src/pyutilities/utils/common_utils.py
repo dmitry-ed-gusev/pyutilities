@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# cspell:ignore isnt АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ getinstance threadsafe
+
 """
     Common utilities module.
 
     Useful materials:
         - (datetime) https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
-        - (list of dicts to csv)
-          https://stackoverflow.com/questions/3086973/how-do-i-convert-this-list-of-dictionaries-to-a-csv-file
-        - ???
+        - (list of dicts to csv) https://stackoverflow.com/questions/3086973/how-do-i-convert-this-list-of-dictionaries-to-a-csv-file
 
     Created:  Gusev Dmitrii, 10.10.2022
-    Modified: Dmitrii Gusev, 22.11.2022
+    Modified: Dmitrii Gusev, 12.12.2024
 """
 
+import os
 import csv
 import inspect
 import logging
-import os
 import threading
 from typing import Dict, List, Tuple
 
@@ -25,7 +25,7 @@ from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.exception import PyUtilitiesException
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
-# don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
+# ! don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!
 log = logging.getLogger(__name__)
 # to avoid errors like 'no handlers' for libraries it's necessary/convenient to add NullHandler
 log.addHandler(logging.NullHandler())
@@ -38,7 +38,7 @@ SPEC_CHARS = "-"
 
 
 def singleton(class_):
-    """Simple singleton class decorator. Use it on the class level to make class Singleton."""
+    """Decorator: singleton class decorator. Use it on the class level to make class Singleton."""
 
     instances = {}  # classes instances storage
 
@@ -51,22 +51,24 @@ def singleton(class_):
 
 
 def threadsafe_function(fn):
-    """Decorator making sure that the decorated function is thread safe."""
-    lock = threading.Lock()
+    """Decorator: it is making sure that the decorated function is thread safe."""
+
+    lock = threading.Lock()  # acquire lock
 
     def new(*args, **kwargs):
         lock.acquire()
         try:
             r = fn(*args, **kwargs)
         finally:
-            lock.release()
+            lock.release()  # release lock in any case
         return r
 
     return new
 
 
 def debug_benchmark(func):
-    """This decorator logs the given function execution time."""
+    """Decorator: logs the given function execution time."""
+
     import time
 
     def wrapper(*args, **kwargs):
@@ -79,7 +81,7 @@ def debug_benchmark(func):
 
 
 def debug_function_name(func):
-    """This decorator logs the name of the decorating function."""
+    """Decorator: logs the name of the decorating function."""
 
     def wrapper(*args, **kwargs):
         log.debug(f"Function [{func.__name__}] is working.")
@@ -90,18 +92,17 @@ def debug_function_name(func):
     return wrapper
 
 
-# handy utility function/lambda for getting name of executing function from inside the function
-# myself = lambda: inspect.stack()[1][3]
 def myself():
+    """Handy utility function/lambda for getting name of executing function from inside the function. Can be rewritten as lambda: myself = lambda: inspect.stack()[1][3]"""
+
     return inspect.stack()[1][3]
 
 
-# todo: 1. perform the pre-build of the variations and store them in the scraper db
-# todo: 2. re-build variations when necessary
 def build_variations_list() -> list:
-    """Build list of possible variations of symbols for search.
+    """Build list of possible variations of provided symbols.
     :return: list of variations
     """
+
     log.debug("build_variations_list(): processing.")
 
     result = list()  # resulting list
@@ -116,10 +117,12 @@ def build_variations_list() -> list:
 
 def add_kv_2_dict(dicts_list: List[Dict[str, str]], kv: Tuple[str, str]):
     """Add specified key-value pair to all dictionaries in the provided dicts list."""
+
     log.debug(f"add_kv_2_dict(): adding key:value [{kv}] to dicts list.")
 
     if not dicts_list:
         raise ValueError("Provided empty dictionaries list!")
+
     if not kv:
         raise ValueError("Provided empty key-value pair!")
 
@@ -128,9 +131,11 @@ def add_kv_2_dict(dicts_list: List[Dict[str, str]], kv: Tuple[str, str]):
 
 
 def dict_2_csv(dicts_list: List[Dict[str, str]], filename: str, overwrite_file: bool = False):
-    """Saving the provided dictionary to the CSV file. If parameter overwrite_file = True -
+    """
+    Saving the provided dictionary to the CSV file. If parameter overwrite_file = True -
     the existing file will be overwritten, otherwise existing file will raise an exception.
     """
+
     log.debug(f"dict_2_csv(): saving the dictionaries list to CSV: [{filename}].")
 
     if not dicts_list or not filename:  # I - fail-fast check
