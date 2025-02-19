@@ -7,49 +7,21 @@
 #   system shell) and from the pipenv environment as well (pipenv shell).
 #
 #   Created:  Dmitrii Gusev, 30.11.2021
-#   Modified: Dmitrii Gusev, 01.01.2025
+#   Modified: Dmitrii Gusev, 19.02.2025
 #
 ###############################################################################
 
-# -- safe bash scripting - fail-fast pattern (google for more info)
-set -euf -o pipefail
+source _bash_lib.sh
 
-# -- set up encoding/language
-export LANG="en_US.UTF-8"
-
-# -- verbose output mode (on/off)
-VERBOSE="--verbose"
-
-# -- build directories
-BUILD_DIR='build/'
-DIST_DIR='dist/'
-
-clear
-
-# -- start of the build process
-printf "Build of [PyUtilities] library is starting...\n"
-sleep 2
+print_title "Build of [PyUtilities] library is starting..." "clear"
 
 # -- I. Clean build and distribution folders
-printf "\n\n *** Clearing temporary directories *** \n\n"
-printf "\nDeleting [%s]...\n" ${BUILD_DIR}
-rm -r ${BUILD_DIR} || printf "%s doesn't exist!\n" ${BUILD_DIR}
-printf "\nDeleting [%s]...\n" ${DIST_DIR}
-rm -r ${DIST_DIR} || printf "%s doesn't exist!\n" ${DIST_DIR}
+clean_distro_folders
 sleep 2
 
 # -- II. Clean caches and sync + lock pipenv dependencies
-printf "\n\n *** Cleaning pipenv cache and update/upgrade dependencies ***\n\n"
-pipenv clean ${VERBOSE}
-pipenv update --outdated ${VERBOSE} || printf "Packages check is done!\n\n"  # list of outdated packages
-pipenv update --dev --clear ${VERBOSE} # run lock, then sync
+pipenv_venv_clean_and_update
 sleep 2
-
-# -- Step 8. Clear local python cache. Remove python caches and pre-compiled files (*.pyc) -
-# --         starting from the current dir. We won't copy cache into distribution folder.
-# printf "\n\n ***** Removing python caches and pre-compiled files\n"
-# find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$)" | xargs rm -rf || printf "Nothing to remove!\n\n"
-# sleep 2
 
 # -- III. Executing [black] code formatter
 printf "\n\n *** Executing [black] automatic code formatter *** \n\n"

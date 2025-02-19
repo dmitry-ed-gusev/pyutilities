@@ -7,7 +7,7 @@
 #   intended for internal script usage.
 #
 #   Created:  Dmitrii Gusev, 04.01.2025
-#   Modified: Dmitrii Gusev, 20.01.2025
+#   Modified: Dmitrii Gusev, 19.02.2025
 #
 #############################################################################################################
 
@@ -41,6 +41,7 @@ export _VERBOSE="--verbose"
 # -- default distribution dirs
 export _BUILD_DIR="build/"
 export _DIST_DIR="dist/"
+
 # -- date and time (for logging purpose)
 _CURRENT_DATE=$(date +"%d-%m-%Y") || { printf "\nError while calculating system date!\n"; sleep 3; exit 1; }
 export _CURRENT_DATE
@@ -365,9 +366,10 @@ upgrade_core_python_dependencies() { # ver. 2.2.0, 11.01.2025
     printf "\n\t - done.\n"
 }
 
-clean_distro_folders() { # ver. 2.1.0, 11.01.2025
+clean_distro_folders() { # ver. 3.0.0, 19.02.2025
     #
-    # Removing (recursively) distribution directories (build + dist) in the current directory.
+    # Removing (recursively) distribution directories (build + dist) in the current directory. Also cleanup
+    # python cache and precompiled files, coverage files, etc.
 
     # - deleting standard distribution directories
     printf "\nINFO: removing the temporary distribution directories.\n"
@@ -375,6 +377,11 @@ clean_distro_folders() { # ver. 2.1.0, 11.01.2025
     rm -r ${_BUILD_DIR} || printf "%s doesn't exist!\n" "${_BUILD_DIR}"
     printf "\n\t - deleting [%s]... * \n" ${_DIST_DIR}
     rm -r ${_DIST_DIR} || printf "%s doesn't exist!\n" "${_DIST_DIR}"
+
+    # - remove python cache, precompiled python. coverage files etc.
+    printf "\nINFO: removing python caches and pre-compiled files.\n"
+    find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$|\,cover$)" | xargs rm -rf || \
+        { printf "Nothing to remove!\n\n"; }
 
     printf "\n\t - done.\n"
 }
@@ -446,18 +453,33 @@ pipenv_venv_prepare() { # ver. 1.2.0, 12.01.2025
     printf "\n\t - done.\n"
 }
 
-pipenv_venv_create() { # ver. 1.1.0, 10.01.2025
+pipenv_venv_create() { # ver. 1.2.0, 19.02.2025
     #
     # Creating virtual environment after cleanup.
 
+    printf "\nINFO: installing dependencies into pipenv virtual environment.\n"
     # - create the virtual environment - installing all dependencies
     pipenv install --dev --clear ${_VERBOSE}
-    # - list of outdated packages
+
+    printf "\nINFO: list an outdated packages and update them (if possible).\n"
+    # - list outdated packages
     pipenv update --outdated ${_VERBOSE} || printf "Packages check is done!\n\n"
     # - update outdated packages (run lock, then sync)
     pipenv update --dev --clear ${_VERBOSE}
 
     printf "\n\t - done.\n"
+}
+
+pipenv_venv_clean_and_update() { # ver. 1.0.0, 19.02.2025
+    #
+    # Cleaning the pipenv virtual environment and updating packages (if possible).
+
+    # - print info
+    printf "\nINFO: Cleaning pipenv cache and updating / upgrading dependencies."
+    # - perform actions
+    pipenv clean ${_VERBOSE}
+    pipenv update --outdated ${_VERBOSE} || printf "Packages check is done!\n\n"  # list of outdated packages
+    pipenv update --dev --clear ${_VERBOSE} # run lock, then sync
 }
 
 pipenv_venv_jupyter_kernel_install() { # ver. 1.1.0, 20.01.2025
@@ -492,21 +514,44 @@ pipenv_venv_check() { # ver. 1.1.0, 10.01.2025
     printf "\n\t - done.\n"
 }
 
-poetry_prepare_environment() {
+poetry_prepare_environment() { # ver. 1.0.0, 01.01.2025
     #
     # TBD
-    #
 
     true; # no-op for the procedure...
 
 }
 
-poetry_create_virtual_environment() {
+poetry_create_virtual_environment() { # ver. 1.0.0, 01.01.2025
     #
     # TBD
-    #
 
     true; # no-op for the procedure...
+
+}
+
+src_code_check() { # ver. 1.0.0, 19.02.2025
+    #
+    # Execute various python code checks before building the project.
+
+    true;
+
+}
+
+build_project() { # ver. 1.0.0, 19.02.2025
+    #
+    # Building the project's distro with building tool.
+
+    true;
+
+}
+
+
+pypi_publish() { # ver. 1.0.0, 01.01.2025
+    #
+    # Publishing project to pypi with twine.
+
+    true;
 
 }
 
