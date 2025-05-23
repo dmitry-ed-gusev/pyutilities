@@ -18,6 +18,7 @@ from os import walk
 
 import yaml
 
+from pyutilities.utils.string_utils import convert_bytes
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE, DEFAULT_ENCODING
 from pyutilities.exception import PyUtilitiesException
 
@@ -121,6 +122,16 @@ def compress_file(input_file, output_file):
     with open(input_file, "rb") as f_in:
         with gzip.open(output_file, "wb") as f_out:
             shutil.copyfileobj(f_in, f_out)
+
+
+def file_size(file_path: str) -> str:
+    """Function will return the file size in readable format with the highest size mark - KB/MB/GB/TB."""
+
+    if os.path.isfile(file_path):
+        file_info = os.stat(file_path)
+        return convert_bytes(file_info.st_size)
+
+    return "unknown"
 
 
 if __name__ == "__main__":
