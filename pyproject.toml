@@ -14,15 +14,16 @@
 
 # -- build system information
 [build-system]
-# requires = ["setuptools >= 78.0", "wheel >= 0.45"]
-# build-backend = "setuptools.build_meta"
-requires = ["poetry-core"]
+# requires = ["setuptools >= 78.0", "wheel >= 0.45"] - previous setup
+# build-backend = "setuptools.build_meta" - previous setup
+requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-# -- project meta-information / poetry meta info
+# -- project / poetry utility meta-information
 [project]
 name = "pyutilities"
 version = "2.0.0beta1"
+# version = attr: pyutilities.VERSION
 description = "PyUtilities :: Useful python 3.10+ utilities library for various use cases."
 authors     = [
     {name = "Dmitrii Gusev", email = "dmitry.ed.gusev@gmail.com"},
@@ -30,34 +31,49 @@ authors     = [
 license  = "MIT"
 readme   = "README.md"
 requires-python = "3.10.*"
-keywords    = ["Python Utilities", "Useful Functions", "String Utilities", "CLI FUnctions"]
+keywords    = ["Python Utilities", "Useful Functions", "String Utilities", "CLI Functions", "toolset", "library"]
 classifiers = [
     "Development Status :: 6 - Mature",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
-    "Summary :: Python Utilities -> Useful python utilities for various cases.",
+    "License :: OSI Approved :: MIT License",
+#    "Summary :: Python Utilities - useful python utilities for various cases.",
+    "Intended Audience :: Developers",
+    "Topic :: Utilities",
     "Typing :: Typed"
+]
+dependencies = [
+    "xlrd==2.0.1",
+    "xlwt==1.3.0",
+    "loguru==0.7.3",
+    "xlwings==0.33.9",
+    "pyyaml==6.0.2",
+    "openpyxl==3.1.5",
+    "urllib3==2.3.0",
+    "paramiko==3.5.1",
+    "requests==2.32.3",
+    "markdown==3.7",
+    "prettytable==3.14.0",
+    "fake-useragent==2.0.3"
 ]
 
 [project.urls]
-homepage = ""
-repository = ""
-documentation = ""
-"Bug Tracker" = ""
+homepage = "https://pypi.org/project/pyutilities"
+repository = "https://github.com/dmitry-ed-gusev/pyutilities"
+# documentation = ""
+"Bug Tracker" = "https://github.com/dmitry-ed-gusev/pyutilities/issues"
 
 # [project.scripts]
 # my_package_cli = 'my_package.console:run'
 
 [tool.poetry]
-packages = [{include = "pyutilities"}]
+packages = [{include = "src"}]
 
 #[tool.poetry.dependencies]
-#python = "^3.10"
-
-[tool.poetry.dependencies]
-xlrd = "^2.0.2"
+# python = "^3.10"
+# xlrd = "^2.0.2"
 
 # -- flake8 tool configuration
 [tool.flake8]
