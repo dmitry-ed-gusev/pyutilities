@@ -8,7 +8,7 @@
 #       - most of modules should be typed (used mypy stubs libraries)
 #
 #   Created:  Dmitrii Gusev, 30.05.2025
-#   Modified: Dmitrii Gusev, 14.07.2025
+#   Modified: Dmitrii Gusev, 15.07.2025
 #
 ####################################################################################################
 
@@ -22,7 +22,7 @@ build-backend = "poetry.core.masonry.api"
 # -- project / poetry utility meta-information
 [project]
 name = "pyutilities"
-version = "2.0.0beta1"
+version = "2.0.0-beta1"
 # version = attr: pyutilities.VERSION
 description = "PyUtilities :: Useful python 3.10+ utilities library for various use cases."
 authors     = [
@@ -30,7 +30,7 @@ authors     = [
 ]
 license  = "MIT"
 readme   = "README.md"
-requires-python = "3.10.*"
+requires-python = ">=3.10,<3.11.dev0"
 keywords    = ["Python Utilities", "Useful Functions", "String Utilities", "CLI Functions", "toolset", "library"]
 classifiers = [
     "Development Status :: 6 - Mature",
@@ -45,18 +45,18 @@ classifiers = [
     "Typing :: Typed"
 ]
 dependencies = [
-    "xlrd==2.0.1",
+    "xlrd~=2.0.1",  # allowed: >=2.0.1 <2.1.0
     "xlwt==1.3.0",
+    "xlwings~=0.33.9",  # allowed: >=0.33.9 <0.34.0
     "loguru==0.7.3",
-    "xlwings==0.33.9",
     "pyyaml==6.0.2",
     "openpyxl==3.1.5",
-    "urllib3==2.3.0",
+    "urllib3~=2.3",  # allowed: >=2.3.0 <3.0.0
     "paramiko==3.5.1",
-    "requests==2.32.3",
-    "markdown==3.7",
-    "prettytable==3.14.0",
-    "fake-useragent==2.0.3"
+    "requests~=2.32",  # allowed: >=2.32.0 <3.0.0
+    "markdown~=3.7",  # allowed: >=3.7.0 <4.0.0
+    "prettytable~=3.14",  # allowed: >=3.14.0 <4.0.0
+    "fake-useragent~=2.0"  # allowed: >=2.0.0 <3.0.0
 ]
 
 [project.urls]
@@ -69,14 +69,55 @@ repository = "https://github.com/dmitry-ed-gusev/pyutilities"
 # my_package_cli = 'my_package.console:run'
 
 [tool.poetry]
-packages = [{include = "src"}]
+packages = [{include = "pyutilities", from = "src"}]
 
-#[tool.poetry.dependencies]
-# python = "^3.10"
-# xlrd = "^2.0.2"
+[tool.poetry.group.test.dependencies] # -- poetry 'test' dependency group
+# - main pytest libraries
+pytest = "8.3.4"
+pytest-env = "1.1.5"
+pytest-cov = "6.0.0"
+pytest-mock = "3.14.0"
+pytest-pep8 = "1.0.6"
+pytest-flakes = "4.0.5"
+pytest-isort = "4.0.0"
+pytest-black = "0.6.0"
+pytest-variables = {version = "3.1.0", extras = ["hjson", "yaml", "toml"]}
 
-# -- flake8 tool configuration
-[tool.flake8]
+# - testing-related libraries
+mock = "5.1.0"
+mockito = "1.5.4"
+nose2 = "0.15.1"
+hypothesis = "6.126.0"
+
+# -- typing libraries
+mypy = "1.15.0"
+types-six = "1.17.0.20241205"
+types-mock = "5.1.0.20240425"
+types-paramiko = "3.5.0.20240928"
+types-requests = "2.32.0.20241016"
+types-markdown = "3.7.0.20241204"
+types-PyYAML = "6.0.12.20241230"
+types-flake8-bugbear = "24.12.12.20241214"
+
+# -- code quality libraries
+flake8 = "7.1.2"
+flake8-pyproject = "1.2.3"
+flake8-bandit = "4.1.1"
+flake8-bugbear = "24.12.12"
+black = "25.1.0"
+pylint = "3.3.4"
+pre-commit = "4.1.0"
+bandit = "1.8.2"
+isort = {version = "6.0.0", extras = ["requirements_deprecated_finder", "pipfile_deprecated_finder"]}
+
+# - other develop/documenting/building/publishing libraries
+#twine = "6.1.0"
+# build = "1.2.2.post1"
+# ipykernel = "6.29.5"
+responses = "0.25.6"
+sphinx = "8.1.3"
+
+[tool.flake8] # -- flake8 tool configuration
 # - list of ignored issues (E501 - too long line, F401 - ???)
 ignore = ['F401']
 # - max cognitive complexity for statements
