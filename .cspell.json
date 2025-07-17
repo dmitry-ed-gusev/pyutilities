@@ -3,7 +3,7 @@
 //   cSpell Settings JSON file (whole project configuration).
 //
 //   Created:  Dmitrii Gusev, 28.12.2024
-//   Modified: Dmitrii Gusev, 02.01.2025
+//   Modified: Dmitrii Gusev, 15.07.2025
 //
 //##############################################################################
 
@@ -33,6 +33,16 @@
         "абвгдеёжзийклмнопрстуфхцчшщъыьэюя",
         "rtype",
         "namenode",
+        "xlrd",
+        "xlwt",
+        "loguru",
+        "xlwings",
+        "pyyaml",
+        "openpyxl",
+        "urllib3",
+        "paramiko",
+        "prettytable",
+        "useragent"
     ],
 
     // a list of globs to specify which files are to be ignored
