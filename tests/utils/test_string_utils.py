@@ -5,9 +5,10 @@
     Unit tests for strings module.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 17.12.2024
+    Modified: Dmitrii Gusev, 17.07.2025
 """
 
+import math
 import pytest
 from hypothesis import given
 from hypothesis.strategies import characters, text
@@ -21,11 +22,15 @@ from pyutilities.utils.string_utils import (
     trim2none,
     trim2empty,
     get_str_ending,
-    one_of_2_str
+    one_of_2_str,
+    str_2_bool,
+    str_2_int,
+    str_2_float
 )
 
 # common constants for testing
-EMPTY_STRINGS = ["", "     ", None, "", "  "]
+EMPTY_STRINGS = ["", "     ", None, "               ", "  "]
+
 NON_EMPTY_STRINGS = {
     "str1": "   str1",
     "str2": "str2    ",
@@ -309,3 +314,41 @@ def test_one_of_2_str_both_empty_or_filled(string1, string2, expected):
                           ("", "   bbb       ", "bbb")])
 def test_one_of_2_str_just_one_filled(string1, string2, expected):
     assert one_of_2_str(string1, string2) == expected
+
+
+@pytest.mark.parametrize("string", EMPTY_STRINGS)
+def test_str_2_bool_empty_string(string):
+    assert str_2_bool(string) is False
+
+
+@pytest.mark.parametrize("string", ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh'])
+def test_str_2_bool_true(string):
+    assert str_2_bool(string) is True
+
+
+@pytest.mark.parametrize("string", EMPTY_STRINGS)
+def test_str_2_int_empty_string(string):
+    assert str_2_int(string) == 0
+
+
+@pytest.mark.parametrize("string, expected", [("10", 10), ("   111   ", 111), ("   -456", -456),
+                                              (" +98    ", 98), ("22.5 ", 22), (" -9.0   ", -9),
+                                              ("-0  ", 0), ("100,9875    ", 100), ("  001 ", 1),
+                                              ("0x000", 0), ("87a99", 0), ("asdf  ", 0)])
+def test_str_2_int(string, expected):
+    assert str_2_int(string) == expected
+
+
+@pytest.mark.parametrize("string", EMPTY_STRINGS)
+def test_str_2_float_empty_string(string):
+    assert math.isclose(str_2_float(string), 0.0, abs_tol=0)
+
+
+@pytest.mark.parametrize("string, expected", [("10,1", 10.1), ("   100  ", 100.0), ("  -98", -98),
+                                              ("", ), ("", ), ("", ),
+                                              ("", ), ("", ), ("", ),
+                                              ("", ), ("", ), ("", ),
+                                              ("", ), ("", ), ("", ),
+                                              ("", ), ("", ), ("", ),])
+def test_str_2_float(string, expected):
+    assert math.isclose(str_2_float(string), expected, abs_tol=0)

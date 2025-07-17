@@ -13,7 +13,7 @@
     "version": "0.2",
 
     // current active spelling language
-    "language": "en",
+    "language": "en, ru",
 
     // a list of words to be always considered correct
     "words": [

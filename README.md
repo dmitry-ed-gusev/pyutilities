@@ -1,16 +1,13 @@
 # Python Utilities Library
 
-(C) 2018 - 2022, Dmitrii Gusev  
-*Last update 26.06.2024*
-
-<!-- cspell:ignore fedit virtualenv openpyxl xlrd pylog pysftp pyssh pymaven pygit pyexception pypi -->
-<!-- cspell:ignore urllib -->
-
-[TOC]
+(C) 2018 - 2025, Dmitrii Gusev  
+*Last update 17.07.2025*
 
 ## Project Description
 
-Useful utilities/experimental modules/research in python 3.10+. Contains a lot of useful python functions and scripts. Some of the modules/scripts are just a research or experiments...
+Useful utilities/experimental modules/researches in python 3.10+. Contains a lot of useful python functions and scripts.
+Some of the modules/scripts are just a research or experiments.
+Project documentation is 'in progress' state :)
 
 ## CMD Line Integrations
 

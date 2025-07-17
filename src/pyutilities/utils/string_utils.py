@@ -258,11 +258,41 @@ def convert_bytes(num: float) -> str:
 
 
 def str_2_bool(string: str | None) -> bool:
+    """Convert string to bool. If empty string - return False. If string is not empty - return if string,
+    converted to lower case, contains in the list: 'true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly',
+    'uh-huh'."""
 
-    if not string or not string.strip():
+    if not string or not string.strip():  # empty string - returning False
         return False
 
     return string.lower() in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh']
+
+
+def str_2_int(string: str | None) -> int:
+    """Convert string to integer number. Empty string or string with non-digit symbols will return 0,
+    otherwise will return int(string)."""
+
+    if not string or not string.strip():
+        return 0
+
+    try:
+        # extended conversion of values:
+        # 1. strip() + replace ',' -> '.' (in order to parse float)
+        # 2. parse float value
+        # 3. convert int to float - just throw away partial part
+        return int(float(string.strip().replace(',', '.')))
+    except ValueError:
+        return 0
+
+
+def str_2_float(string: str | None) -> float:
+    """Convert string to float number. Empty string or string with non-digit symbols will return 0, otherwise
+    will return float(string)."""
+
+    if not string or not string.strip() or not string.isdecimal():
+        return 0.0
+
+    return float(string)
 
 
 if __name__ == "__main__":
