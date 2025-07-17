@@ -21,6 +21,7 @@ from pyutilities.utils.string_utils import (
     trim2none,
     trim2empty,
     get_str_ending,
+    one_of_2_str
 )
 
 # common constants for testing
@@ -275,3 +276,36 @@ def test_coalesce_usual_values():
     assert coalesce(None, "", "asdf", 0.0) == "asdf"
     assert coalesce(None, "0.0", "asdf") == "0.0"
     assert coalesce(None, 100, "asdf", "") == "100"
+
+
+@pytest.mark.parametrize("string1, string2, expected",
+                         [("", "", None),
+                          ("   ", "", None),
+                          ("", "  ", None),
+                          ("    ", "      ", None),
+                          ("aaa", "bbb", None),
+                          ("   aaa", "bbb      ", None),
+                          ("  aaaa     ", "        bbb ", None),
+                          ("a", "b", None),
+                          ("              dfg", "ggg       ", None),
+                          ("    fff", "ddd", None),
+                          ("eeee    ", "ddd", None),
+                          ("   sssss    ", "dddddd ", None),
+                          ("    eeee    ", "      rrr", None)])
+def test_one_of_2_str_both_empty_or_filled(string1, string2, expected):
+    assert one_of_2_str(string1, string2) == expected
+
+
+@pytest.mark.parametrize("string1, string2, expected",
+                         [("aaa", "", "aaa"),
+                          ("   aaa", "  ", "aaa"),
+                          ("aaa   ", "    ", "aaa"),
+                          (" aaa      ", "  ", "aaa"),
+                          ("       aaa      ", "", "aaa"),
+                          ("", "bbb", "bbb"),
+                          ("  ", "   bbb", "bbb"),
+                          (" ", "bbb      ", "bbb"),
+                          ("        ", "   bbb        ", "bbb"),
+                          ("", "   bbb       ", "bbb")])
+def test_one_of_2_str_just_one_filled(string1, string2, expected):
+    assert one_of_2_str(string1, string2) == expected

@@ -1,0 +1,164 @@
+####################################################################################################
+#
+#   Main configuration file for the [pyutilities] library. The whole project configuration (any
+#   setting) should be put here. Also configuration for dependencies and all code quality tools.
+#
+#   Notes (code quality, etc.):
+#       - project line length = 110 symbols
+#       - most of modules should be typed (used mypy stubs libraries)
+#
+#   Created:  Dmitrii Gusev, 30.05.2025
+#   Modified:
+#
+####################################################################################################
+
+# -- build system information
+[build-system]
+requires = ["setuptools >= 78.0", "wheel >= 0.45"]
+build-backend = "setuptools.build_meta"
+
+# -- project meta-information
+[project]
+name = "-application"
+version = "1.0.0"
+license     = "MIT"
+description = ""
+readme      = "README.md"
+authors     = [
+    {name = "Dmitrii Gusev", email = ""},
+]
+requires-python = "3.10"
+keywords    = ["Prometheus", "Alert Manager", "Zabbix", "integration"]
+classifiers = [
+    "Development Status :: 6 - Mature",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Summary :: ",
+    "Typing :: Typed"
+]
+
+# -- flake8 tool configuration
+[tool.flake8]
+# - list of ignored issues (E501 - too long line, F401 - ???)
+ignore = ['F401']
+# - max cognitive complexity for statements
+max-complexity = 10
+# - [flake8] aligned with line len for [black] (88 chars by default) - using the value = 110
+max-line-length = 110
+# - some ignored violations (specific ignores per files)
+per-file-ignores = [
+    'app/__init__.py:E402',
+    'tests/**:S101, S311',
+]
+
+# -- pylint tool configuration
+[tool.pylint.MASTER]
+disable = [
+    'C0114', # missing-module-docstring
+    'C0115', # missing-class-docstring
+    'C0116', # missing-function-docstring
+]
+
+[tool.pylint.FORMAT]
+max-line-length=110
+max-module-lines=1000
+
+# -- isort tool configuration
+[tool.isort]
+profile = 'black'
+multi_line_output = 3
+line_length = 110
+include_trailing_comma = true
+skip_gitignore = true
+skip_glob = ["**/migrations/*", "**/settings/*"]
+src_paths = ["./", "app/"]
+
+# -- black tool configuration
+[tool.black]
+line_length = 110
+target-version = ['py310']
+extend-exclude = '''
+(
+    migrations   # Django/Alembic DB migrations
+)
+'''
+
+# -- bandit tool configuration
+[tool.bandit]
+exclude_dirs = ["tests"]
+tests = ["B201", "B301"]
+skips = ["B101", "B601"]
+
+# -- mypy tool configuration
+[tool.mypy]
+mypy_path = "./"
+follow_imports = "silent"
+strict_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_any_generics = true
+check_untyped_defs = true
+no_implicit_reexport = true
+allow_untyped_defs = true
+# disallow_untyped_defs = true
+# - mypy will ignore missing types defs imports
+ignore_missing_imports = true
+# - force mypy to analyze as best as its can module without types defs
+# follow_untyped_imports = true
+plugins = ["pydantic.mypy"]
+
+# -- mypy extra configuration for pydantic
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+# -- pytest tool configuration
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = """
+--cov=app --cov=config --verbose --cov-report=html --cov-report=xml --cov-report=json --cov-report=annotate
+ --capture=sys
+"""
+testpaths = [
+    "tests/",
+    "integration/",
+]
+# - tests markers - tests can be grouped and executed by them
+markers = [
+    "functional: these tests are significantly slower as they run the whole CLI script",
+]
+
+# -- env variables for tests in pytest
+[tool.pytest_env]
+ADMIN_PASSWORD = "xxx"
+
+# -- coverage tool configuration (coveragerc)
+[tool.coverage.run]
+branch = true
+data_file = ".coverage/.coverage"
+omit = [
+        '*__init__*',
+        '*temp*',
+        '*tests\*'
+]
+
+[tool.coverage.report]
+show_missing = true
+# - show 2 decimal digits for coverage report values
+precision = 2
+# skip_covered = true
+
+[tool.coverage.html]
+directory = ".coverage/htmlcoverage"
+title = "Application :: Tests Coverage Report"
+
+[tool.coverage.xml]
+output = ".coverage/coverage.xml"
+
+# - this setting is used by coverage.py, ignored by pytest-cov
+[tool.coverage.json]
+output = ".coverage/coverage.json"
+pretty_print = true

@@ -8,7 +8,7 @@
     in 'fast' executing code, where logging will just add additional complexity and decrease speed.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 28.12.2024
+    Modified: Dmitrii Gusev, 23.05.2025
 """
 
 import logging
@@ -227,6 +227,42 @@ def coalesce(*args, debug: bool = False) -> str:
                 return str(arg)
 
     return ""
+
+
+def one_of_2_str(string1: str | None, string2: str | None) -> str | None:
+    """Function returning one of two strings, if other is empty. If both are empty or filled in - method
+    returns None (empty value)."""
+
+    if string1 and string1.strip():  # first string check
+        if not string2 or not string2.strip():
+            return string1.strip()
+
+    elif string2 and string2.strip():  # second string check
+        if not string1 or not string1.strip():
+            return string2.strip()
+
+    # can't select cluster name from alert (both empty or both filled in)
+    # logger.warning(f"Can't select one of 2 strings: {string1=}, {string2=}")
+    return None
+
+
+def convert_bytes(num: float) -> str:
+    """Function will convert bytes to MB.... GB... etc. for readability."""
+
+    for x in ["bytes", "KB", "MB", "GB", "TB"]:
+        if num < 1024.0:
+            return "%3.1f %s" % (num, x)  # pylint: disable=consider-using-f-string
+        num /= 1024.0
+
+    return "unknown"
+
+
+def str_2_bool(string: str | None) -> bool:
+
+    if not string or not string.strip():
+        return False
+
+    return string.lower() in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh']
 
 
 if __name__ == "__main__":
