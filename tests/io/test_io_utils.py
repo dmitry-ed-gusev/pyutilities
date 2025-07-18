@@ -5,7 +5,7 @@
     Unit tests for io_utilities module.
 
     Created:  Dmitrii Gusev, 12.10.2022
-    Modified: Dmitrii Gusev, 02.01.2025
+    Modified: Dmitrii Gusev, 18.07.2025
 """
 
 import unittest
@@ -19,24 +19,24 @@ MOCK_OPEN_METHOD = "pyutilities.io.io_utils.open"
 MOCK_WALK_METHOD = "pyutilities.io.io_utils.walk"
 
 
+def test_parse_yaml_ioerror(self):
+    with self.assertRaises(IOError):
+        with patch(MOCK_OPEN_METHOD, mock_open(read_data="name:\tvalue"), create=True):
+            read_yaml("foo_ioerror.file")
 
-    def test_parse_yaml_ioerror(self):
+
+def test_parse_yaml_empty_paths(self):
+    for path in ["", "   "]:
         with self.assertRaises(IOError):
-            with patch(MOCK_OPEN_METHOD, mock_open(read_data="name:\tvalue"), create=True):
-                read_yaml("foo_ioerror.file")
-
-    def test_parse_yaml_empty_paths(self):
-        for path in ["", "   "]:
-            with self.assertRaises(IOError):
-                with patch(MOCK_OPEN_METHOD, mock_open(read_data="n: v"), create=True):
-                    read_yaml(path)
+            with patch(MOCK_OPEN_METHOD, mock_open(read_data="n: v"), create=True):
+                read_yaml(path)
 
 
-def test_():
+def test_aaa():
     pass
 
 
-def test_():
+def test_bbb():
     pass
 
 
@@ -50,7 +50,6 @@ def test_read_yaml():
     #     result = read_yaml("foo_ok.file")
     #     assert result["name123"] == "value123"
     pass
-
 
 
 def test_read_yaml_ioerror(self):
@@ -71,7 +70,6 @@ def test_compress_file():
 
 
 class IOUtilsTest(unittest.TestCase):
-
 
     def test_list_files_invalid_paths(self):
         for path in [

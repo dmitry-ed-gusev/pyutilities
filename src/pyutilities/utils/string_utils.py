@@ -8,12 +8,12 @@
     in 'fast' executing code, where logging will just add additional complexity and decrease speed.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 23.05.2025
+    Modified: Dmitrii Gusev, 18.07.2025
 """
 
 import logging
 from re import match as re_match
-from typing import Dict, Iterable, Tuple
+from typing import Dict, Iterable, Tuple, Any
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.exception import PyUtilitiesException
@@ -88,7 +88,7 @@ def filter_str(string: str | None, debug=False):
     else:  # string isn't empty - filter out all, except symbols/letters, spaces, or comma
         result = "".join(char for char in string if accepted(char))
     if debug:
-        log.debug(f"filter_str(): Filtering string: [{string}], result: [result].")
+        log.debug("filter_str(): Filtering string: [%s], result: [result].", string)
     return result
 
 
@@ -113,26 +113,20 @@ def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = 
         processed_url = processed_url.format(*format_values)
     # debug output
     if debug:
-        log.debug(
-            f"process_url(): URL [{url}], postfix [{postfix}], format values [{format_values}].\n\t \
-            Result: [{processed_url}]."
-        )
+        log.debug("process_url(): URL [%s], postfix [%s], format values [%s].\n\t Result: [%s].",
+                  url, postfix, format_values, processed_url)
     return processed_url
 
 
-def process_urls(
-    urls: Dict[str, str],
-    postfix: str = "",
-    format_values: Tuple[str] | None = None,
-    debug=False,
-) -> Dict[str, str]:
+def process_urls(urls: Dict[str, str], postfix: str = "",
+                 format_values: Tuple[str] | None = None, debug=False) -> Dict[str, str]:
     """Process the provided dictionary of urls with the function"""
 
     if debug:
         log.debug("process_urls(): processing provided dictionary of urls.")
     if not urls or len(urls) == 0:
         raise PyUtilitiesException("Provided empty URLs dictionary for processing!")
-    processed: Dict[str, str] = dict()
+    processed: Dict[str, str] = {}
     for key in urls:
         processed[key] = process_url(urls[key], postfix, format_values, debug)
     return processed
@@ -143,15 +137,19 @@ def get_str_ending(string: str, symbol: str = "/", debug: bool = False) -> str:
     most right part of the string, after the last right symbol (if there are multiple symbols).
     """
 
-    if not (string and string.strip()):  # fail-fast behavior - empty string, raise an exception
-        raise PyUtilitiesException("Specified empty URL!")
+    if not (string and string.strip()):  # fail-fast behavior - empty string - returns string 'as is'
+        if debug:
+            log.debug("Provided empty original string, returning the original string 'as is'.")
+
     if not (symbol and symbol.strip()):  # fast-check - empty symbol - returns the whole string
         if debug:
-            log.debug("get_str_ending(): provided empty symbol, returning the original string.")
+            log.debug("Provided empty delimiter symbol, returning the original string.")
         return string
-    result = string[string.rfind(symbol.strip()) + 1 :]  # processing string (string and symbol are not empty)
+
+    result = string[string.rfind(symbol.strip()) + 1:]  # processing string (string and symbol are not empty)
     if debug:
-        log.debug(f"get_str_ending(): string: [{string}], symbol: [{symbol}], result: [{result}].")
+        log.debug("get_str_ending(): string: [%s], symbol: [%s], result: [%s].", string, symbol, result)
+
     return result
 
 
@@ -160,13 +158,14 @@ def is_number(value: str, debug: bool = False):
 
     if not (value and value.strip()):  # empty value - not a number
         return False
+
     if re_match(REGEX_FLOAT_4, value) is None:  # no match with regex - check with integrated isdigit()
         return value.isdigit()
 
     return True  # regex match returned match
 
 
-def iter_2_str(values: Iterable, braces: bool = True, debug: bool = False) -> str:
+def iter_2_str(values: Iterable[Any], braces: bool = True, debug: bool = False) -> str:
     """Convert number of iterable values to a single string value."""
 
     if not values:  # empty iterable - return empty string value - ""
@@ -289,10 +288,13 @@ def str_2_float(string: str | None) -> float:
     """Convert string to float number. Empty string or string with non-digit symbols will return 0, otherwise
     will return float(string)."""
 
-    if not string or not string.strip() or not string.isdecimal():
+    if not string or not string.strip():
         return 0.0
 
-    return float(string)
+    try:
+        return float(string.strip().replace(',', '.'))
+    except ValueError:
+        return 0.0
 
 
 if __name__ == "__main__":

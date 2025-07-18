@@ -5,14 +5,15 @@
     Unit tests for http client.
 
     Created:  Dmitrii Gusev, 02.06.2021
-    Modified: Dmitrii Gusev, 02.10.2022
+    Modified: Dmitrii Gusev, 18.07.2025
 """
 
 import pytest
 import responses
 from requests.exceptions import HTTPError
 from responses.registries import OrderedRegistry
-from wfleet.scraper.utils.http_client import WebClient, process_url
+
+from pyutilities.web.http_client import HttpClient
 
 # HTTP request parameters (should be added to the URL)
 http_request_params1 = {"zzz": "ccc"}
@@ -105,9 +106,11 @@ testdata_http_err_codes_with_retries = [
 
 # WebClient fixture (resource under test)
 @pytest.fixture()
-def webclient():
+def httpclient():
     print("- setup fixture -")
-    yield WebClient()
+
+    yield HttpClient()
+
     print("- teardown fixture -")
 
 
@@ -121,7 +124,7 @@ def mocked_responses():
 # webclient/mocked_responses - pytest fixtures
 # status/body/content_type/params - test parameters
 @pytest.mark.parametrize("status, body, content_type, params", testdata_http_ok_codes)
-def test_webclient_http_ok_codes(webclient, mocked_responses, status, body, content_type, params):
+def test_httpclient_http_ok_codes(httpclient, mocked_responses, status, body, content_type, params):
 
     # given
     url_with_params = "http://example.com/api/1/foobar?zzz=ccc"
@@ -134,16 +137,16 @@ def test_webclient_http_ok_codes(webclient, mocked_responses, status, body, cont
 
     url_without_params = "http://example.com/api/1/foobar"  # URL without parameters
     # WebClient HTTP methods for testing
-    webclient_http_methods = [
-        webclient.get,
-        webclient.post,
-        webclient.put,
-        webclient.delete,
-        webclient.head,
-        webclient.options,
+    httpclient_http_methods = [
+        httpclient.get,
+        httpclient.post,
+        httpclient.put,
+        httpclient.delete,
+        httpclient.head,
+        httpclient.options,
     ]
 
-    for method in webclient_http_methods:  # iterate and check each method
+    for method in httpclient_http_methods:  # iterate and check each method
         # when
         response = method(url=url_without_params, params=params)
         # then
@@ -237,35 +240,35 @@ def test_webclient_retry_on_fail(webclient, mocked_responses, status, body, cont
         assert response.call_count == 1
 
 
-@pytest.mark.parametrize(
-    "url, postfix, format_params, expected",
-    [
-        ("http://myurl/", "123456", None, "http://myurl/123456"),
-        ("http://myurl", "123456", None, "http://myurl/123456"),
-        ("http://myurl{}/suburl/", "", ("xxx",), "http://myurlxxx/suburl/"),
-        ("http://myurl{}/suburl/", "", ("xxx", "zzz"), "http://myurlxxx/suburl/"),
-        (
-            "http://myurl{}/suburl{}/{}",
-            "",
-            (
-                "aaa",
-                "bbb",
-                "ccc",
-            ),
-            "http://myurlaaa/suburlbbb/ccc",
-        ),
-        ("http://myurl{}/suburl{}/{}", "", ("aaa", "bbb", "ccc", "www"), "http://myurlaaa/suburlbbb/ccc"),
-        (
-            "http://myurl{}/suburl{}/{}",
-            "2",
-            (
-                "_a",
-                "_b",
-                "_c",
-            ),
-            "http://myurl_a/suburl_b/_c/2",
-        ),
-    ],
-)
-def test_process_url(url, postfix, format_params, expected):
-    assert process_url(url, postfix, format_params) == expected
+# @pytest.mark.parametrize(
+#     "url, postfix, format_params, expected",
+#     [
+#         ("http://myurl/", "123456", None, "http://myurl/123456"),
+#         ("http://myurl", "123456", None, "http://myurl/123456"),
+#         ("http://myurl{}/suburl/", "", ("xxx",), "http://myurlxxx/suburl/"),
+#         ("http://myurl{}/suburl/", "", ("xxx", "zzz"), "http://myurlxxx/suburl/"),
+#         (
+#             "http://myurl{}/suburl{}/{}",
+#             "",
+#             (
+#                 "aaa",
+#                 "bbb",
+#                 "ccc",
+#             ),
+#             "http://myurlaaa/suburlbbb/ccc",
+#         ),
+#         ("http://myurl{}/suburl{}/{}", "", ("aaa", "bbb", "ccc", "www"), "http://myurlaaa/suburlbbb/ccc"),
+#         (
+#             "http://myurl{}/suburl{}/{}",
+#             "2",
+#             (
+#                 "_a",
+#                 "_b",
+#                 "_c",
+#             ),
+#             "http://myurl_a/suburl_b/_c/2",
+#         ),
+#     ],
+# )
+# def test_process_url(url, postfix, format_params, expected):
+#     assert process_url(url, postfix, format_params) == expected

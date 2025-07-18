@@ -1,19 +1,38 @@
 #!/usr/bin/env bash
 
-###############################################################################
+##############################################################################################################
 #
-#   Build script for [pyutilities] project (library).
-#   Script can be run from outside of virtual (pipenv) environment (from the
-#   system shell) and from the pipenv environment as well (pipenv shell).
+#   Build script for [pyutilities] project (library). Script can be run from outside of the virtual
+#   environment (from the system shell). This script perform the following:
+#       - executing tests
+#       - executing ???
 #
 #   Created:  Dmitrii Gusev, 30.11.2021
-#   Modified: Dmitrii Gusev, 19.02.2025
+#   Modified: Dmitrii Gusev, 18.07.2025
 #
-###############################################################################
+##############################################################################################################
 
-source _bash_lib.sh
+#source _bash_lib.sh
+set -euf -o pipefail
+export LANG='en_US.UTF-8'
+export VERBOSE="--verbose"
+export MYPY_FAILURE_SCORE="9.8"
+export MYPY_THREADS_NUMBER="3"
 
-print_title "Build of [PyUtilities] library is starting..." "clear"
+printf "=== Build the [PyUtilities] library :: starting. ===\n\n"
+
+# -- Step 1. Run python tests with pytest and coverage (pytest-cov). See pyproject.toml for config.
+# --         Fail if tests are not passed (even one simple test).
+printf "\n = INFO: executing pytest with coverage.\n"
+poetry run pytest tests/
+sleep 1
+
+exit 1
+
+
+
+
+
 
 # -- I. Clean build and distribution folders
 clean_distro_folders

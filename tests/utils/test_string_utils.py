@@ -13,20 +13,9 @@ import pytest
 from hypothesis import given
 from hypothesis.strategies import characters, text
 
-from pyutilities.utils.string_utils import (
-    coalesce,
-    filter_str,
-    is_number,
-    iter_2_str,
-    process_url,
-    trim2none,
-    trim2empty,
-    get_str_ending,
-    one_of_2_str,
-    str_2_bool,
-    str_2_int,
-    str_2_float
-)
+from pyutilities.utils.string_utils import (coalesce, filter_str, is_number, iter_2_str, process_url,
+                                            trim2none, trim2empty, get_str_ending, one_of_2_str,
+                                            str_2_bool, str_2_int, str_2_float)
 
 # common constants for testing
 EMPTY_STRINGS = ["", "     ", None, "               ", "  "]
@@ -163,38 +152,15 @@ def test_is_number_various_values():
 def test_iter_2_str():
     assert iter_2_str(["name"]) == "name"
     assert iter_2_str(("name1", "name2")) == "name1 (name2)"
-    assert (
-        iter_2_str(
-            [
-                "  \n",
-                "name1",
-                "name2",
-                "name3",
-                "name1",
-                "    ",
-            ]
-        )
-        == "name1 (name2, name3)"
-    )
+    assert (iter_2_str(["  \n", "name1", "name2", "name3",
+                        "name1", "    "]) == "name1 (name2, name3)")
 
 
 def test_iter_2_str_no_braces():
     assert iter_2_str(["name"], braces=False) == "name"
     assert iter_2_str(("name1", "name2"), braces=False) == "name1, name2"
-    assert (
-        iter_2_str(
-            [
-                "  \n",
-                "name1",
-                "name2",
-                "name3",
-                "name1",
-                "    ",
-            ],
-            braces=False,
-        )
-        == "name1, name2, name3"
-    )
+    assert (iter_2_str(["  \n", "name1", "name2", "name3",
+                        "name1", "    ", ], braces=False) == "name1, name2, name3")
 
 
 def test_iter_2_str_empty_values():
@@ -226,10 +192,8 @@ def test_iter_2_str_duplicates():
 
 def test_iter_2_str_duplicates_no_braces():
     assert iter_2_str(["name", "name", "name"], braces=False) == "name"
-    assert (
-        iter_2_str(["name", "name", "name", "   name", "name      ", "  name      ", " name"], braces=False)
-        == "name"
-    )
+    assert (iter_2_str(["name", "name", "name", "   name", "name      ",
+                        "  name      ", " name"], braces=False) == "name")
 
 
 def test_iter_2_str_values_with_spaces():
@@ -247,19 +211,15 @@ def test_iter_2_str_values_with_spaces_no_braces():
 def test_iter_2_str_non_str_values():
     assert iter_2_str([1, 2, 3]) == "1 (2, 3)"
     assert iter_2_str([12, 13]) == "12 (13)"
-    assert (
-        iter_2_str(("              \n\t    ", 1.9, 100.000, "    ", 23, "    ", None, "ship1"))
-        == "1.9 (100.0, 23, ship1)"
-    )
+    assert (iter_2_str(("              \n\t    ", 1.9, 100.000, "    ",
+                        23, "    ", None, "ship1")) == "1.9 (100.0, 23, ship1)")
 
 
 def test_iter_2_str_non_str_values_no_braces():
     assert iter_2_str([1, 2, 3], braces=False) == "1, 2, 3"
     assert iter_2_str([12, 13], braces=False) == "12, 13"
-    assert (
-        iter_2_str(("              \n\t    ", 1.9, 100.000, "    ", 23, "    ", None, "ship1"), braces=False)
-        == "1.9, 100.0, 23, ship1"
-    )
+    assert (iter_2_str(("              \n\t    ", 1.9, 100.000, "    ",
+                        23, "    ", None, "ship1"), braces=False) == "1.9, 100.0, 23, ship1")
 
 
 def test_iter_2_str_equal_int_and_float():
@@ -281,6 +241,13 @@ def test_coalesce_usual_values():
     assert coalesce(None, "", "asdf", 0.0) == "asdf"
     assert coalesce(None, "0.0", "asdf") == "0.0"
     assert coalesce(None, 100, "asdf", "") == "100"
+
+
+@pytest.mark.parametrize("string, symbol, expected", [("  ", "/", "  "), ("asdf", " ", "asdf"),
+                                                      ("as/df", "/", "df"), ("as/df/gh/hh", "/", "hh"),
+                                                      ("asdf/", "/", ""), ("123.4567", ".", "4567")])
+def test_get_str_ending(string, symbol, expected):
+    assert get_str_ending(string, symbol) == expected
 
 
 @pytest.mark.parametrize("string1, string2, expected",
@@ -341,14 +308,11 @@ def test_str_2_int(string, expected):
 
 @pytest.mark.parametrize("string", EMPTY_STRINGS)
 def test_str_2_float_empty_string(string):
-    assert math.isclose(str_2_float(string), 0.0, abs_tol=0)
+    assert math.isclose(str_2_float(string), 0.0, abs_tol=0) is True
 
 
 @pytest.mark.parametrize("string, expected", [("10,1", 10.1), ("   100  ", 100.0), ("  -98", -98),
-                                              ("", ), ("", ), ("", ),
-                                              ("", ), ("", ), ("", ),
-                                              ("", ), ("", ), ("", ),
-                                              ("", ), ("", ), ("", ),
-                                              ("", ), ("", ), ("", ),])
+                                              ("    555", 555), ("4.123   ", 4.123), ("-9", -9.0),
+                                              ("+0.789", 0.789), ("aaa", 0.0), ("   -0.0", 0),])
 def test_str_2_float(string, expected):
-    assert math.isclose(str_2_float(string), expected, abs_tol=0)
+    assert math.isclose(str_2_float(string), expected, abs_tol=0.0) is True

@@ -3,7 +3,7 @@
 //   cSpell Settings JSON file (whole project configuration).
 //
 //   Created:  Dmitrii Gusev, 28.12.2024
-//   Modified: Dmitrii Gusev, 15.07.2025
+//   Modified: Dmitrii Gusev, 18.07.2025
 //
 //##############################################################################
 
@@ -42,7 +42,10 @@
         "urllib3",
         "paramiko",
         "prettytable",
-        "useragent"
+        "useragent",
+        "threadsafe",
+        "forcelist",
+        "httpclient"
     ],
 
     // a list of globs to specify which files are to be ignored
