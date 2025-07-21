@@ -1,31 +1,23 @@
-# #!/usr/bin/env bash
+#!/usr/bin/env bash
 
-# ###################################################################################################
-# #
-# #   Python virtual environment (venv) initialization script for git bash (MinGW)/Linux. Script does
-# #   the following:
-# #       - check the machine and select python/pip
-# #       - upgrade global pip + setuptools
-# #       - remove the current virtual environment (if exists - delete folder)
-# #       - create new virtual environment and activate it
-# #       - upgrade pip + setuptools and install dependencies into the newly created virtual
-# #         environment (requirements.txt/requirements-dev.txt)
-# #
-# #   Created:  Dmitrii Gusev, 11.11.2024
-# #   Modified: Dmitrii Gusev, 05.06.2025
-# #
+##############################################################################################################
+#
+#   Python virtual environment initialization script for the project [pyutilities].
+#
+#   Created:  Dmitrii Gusev, 21.07.2025
+#   Modified:
+#
 # ###################################################################################################
 
-# # -- safe bash scripting
-# set -euf -o pipefail
-# # -- default encoding for scripts and utilities
-# export LANG='en_US.UTF-8'
+# -- safe bash scripting
+set -euf -o pipefail
+export LANG='en_US.UTF-8'
 
-# # -- get current date and time
-# _CURRENT_DATE=$(date +"%d-%m-%Y") || { printf "\nError while calculating system date!\n"; sleep 3; exit 1; }
-# export _CURRENT_DATE
-# _CURRENT_TIME=$(date +"%H:%M:%S") || { printf "\nError while calculating system time!\n"; sleep 3; exit 1; }
-# export _CURRENT_TIME
+# -- get current date and time
+_CURRENT_DATE=$(date +"%d-%m-%Y") || { printf "\nError while calculating system date!\n"; sleep 3; exit 1; }
+export _CURRENT_DATE
+_CURRENT_TIME=$(date +"%H:%M:%S") || { printf "\nError while calculating system time!\n"; sleep 3; exit 1; }
+export _CURRENT_TIME
 
 # # -- some useful script defaults
 # export _VERBOSE="--verbose"
@@ -36,9 +28,9 @@
 # export _MSG_NO_SYS_PYTHON="ERROR: no installed python/python3 found in the system!"
 # export _MSG_NO_SYS_PIP="ERROR: no installed pip/pip3 found in the system!"
 
-# # -- clear screen and print title
-# clear
-# printf "=== %s %s - Python Virtual Env initializing... ===\n\n" "${_CURRENT_DATE}" "${_CURRENT_TIME}"
+# -- clear screen and print title
+clear
+printf "=== %s %s - Python Virtual Env initializing... ===\n\n" "${_CURRENT_DATE}" "${_CURRENT_TIME}"
 
 # # -- check the machine and determine the python/pip versions
 # printf "\n= INFO: checking the machine architecture and python/pip versions.\n"
