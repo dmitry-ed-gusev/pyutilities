@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# cspell:ignore reuseaddr
 
 """
-    Simple echo socket-based server. Supports only IPv4 protocol.
-    For configuration - see cmd line options.
+Simple echo socket-based server. Supports only IPv4 protocol.
+For configuration - see cmd line options.
 
-    Warning! This script should be fixed for Windows/GitBash environment -
-             the socket blocks on the socket.accept() call and process the
-             KeyboardInterrupt only after receiving any data.
+Warning! This script should be fixed for Windows/GitBash environment -
+         the socket blocks on the socket.accept() call and process the
+         KeyboardInterrupt only after receiving any data.
 
-    Created:  Dmitrii Gusev, 21.06.2024
-    Modified: Dmitrii Gusev, 25.06.2024
+Created:  Dmitrii Gusev, 21.06.2024
+Modified: Dmitrii Gusev, 25.06.2024
 """
 
 import datetime

@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-    Common defaults for the PyUtilities.
+Common defaults for the PyUtilities.
 
-    Created:  Gusev Dmitrii, 11.10.2022
-    Modified: Dmitrii Gusev, 02.01.2025
+Created:  Gusev Dmitrii, 11.10.2022
+Modified: Dmitrii Gusev, 02.01.2025
 """
 
 # common system messages

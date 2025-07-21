@@ -2,18 +2,18 @@
 # -*- coding: utf-8 -*-
 
 """
-    Utility class for holding configuration.
-    Key properties:
-        - ability to merge configuration with environment variables
-        - ability to load configuration from YAML files
-    For more data - see docstring for Configuration class.
+Utility class for holding configuration.
+Key properties:
+    - ability to merge configuration with environment variables
+    - ability to load configuration from YAML files
+For more data - see docstring for Configuration class.
 
-    18.11.2018 Added config class that is able to load config from xls file.
-    24.11.2022 Various refactorings, added some typing.
-    02.01.2025 Logging refactoring and minor improvements.
+18.11.2018 Added config class that is able to load config from xls file.
+24.11.2022 Various refactorings, added some typing.
+02.01.2025 Logging refactoring and minor improvements.
 
-    Created:  Gusev Dmitrii, 2017
-    Modified: Gusev Dmitrii, 02.01.2025
+Created:  Gusev Dmitrii, 2017
+Modified: Gusev Dmitrii, 02.01.2025
 """
 
 import logging
@@ -47,8 +47,13 @@ class Configuration(object):
         self.log = logging.getLogger(__name__)  # get logger itself
         self.log.addHandler(logging.NullHandler())  # add null handler to prevent exceptions
         self.log.debug("Initializing Configuration() instance...")
-        self.log.debug("Load configuration:\n\tpath -> %s\n\tdict -> %s\n\toverride config -> %s"
-                       "\n\tmerge env -> %s", path_to_config, dict_to_merge, is_override_config, is_merge_env)
+        self.log.debug(
+            "Load configuration:\n\tpath -> %s\n\tdict -> %s\n\toverride config -> %s" "\n\tmerge env -> %s",
+            path_to_config,
+            dict_to_merge,
+            is_override_config,
+            is_merge_env,
+        )
 
         # init internal dictionary
         self.config_dict = {}
@@ -250,8 +255,15 @@ VALUES_COLUMN = 1
 class ConfigurationXls(Configuration):
     """Extension for Configuration class for work with excel config files."""
 
-    def __init__(self, path_to_xls, config_sheet_name, dict_to_merge=None, path_to_yaml=None,
-                 is_override_config=True, is_merge_env=True):
+    def __init__(
+        self,
+        path_to_xls,
+        config_sheet_name,
+        dict_to_merge=None,
+        path_to_yaml=None,
+        is_override_config=True,
+        is_merge_env=True,
+    ):
 
         # init class instance logger
         self.log = logging.getLogger(__name__)
@@ -275,9 +287,12 @@ class ConfigurationXls(Configuration):
             raise ConfigError(f"Invalid type of the dictionary to merge: {type(dict_to_merge)}!")
 
         # init instance with superclass constructor
-        super(ConfigurationXls, self).__init__(path_to_config=path_to_yaml, dict_to_merge=dictionary,
-                                               is_override_config=is_override_config,
-                                               is_merge_env=is_merge_env)
+        super(ConfigurationXls, self).__init__(
+            path_to_config=path_to_yaml,
+            dict_to_merge=dictionary,
+            is_override_config=is_override_config,
+            is_merge_env=is_merge_env,
+        )
 
     def load_dict_from_xls(self, path_to_xls, config_sheet_name):
         self.log.debug("load_dict_from_xls() is working.")

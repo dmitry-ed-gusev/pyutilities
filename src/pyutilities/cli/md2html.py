@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 """
-    Utility script for processing system instruction from MD (Markdown) format to the HTML.
-    See additional tech info here:
-        - https://alberand.com/markdown-custom-tags.html
+Utility script for processing system instruction from MD (Markdown) format to the HTML.
+See additional tech info here:
+    - https://alberand.com/markdown-custom-tags.html
 
-    Created:  Dmitrii Gusev, 08.05.2023
-    Modified: Dmitrii Gusev, 24.07.2023
+Created:  Dmitrii Gusev, 08.05.2023
+Modified: Dmitrii Gusev, 24.07.2023
 """
 
 # todo: make this script complete cmd line utility (use clock library)

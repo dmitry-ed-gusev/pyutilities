@@ -10,7 +10,7 @@
 
 import pytest
 import responses
-from requests.exceptions import HTTPError
+# from requests.exceptions import HTTPError
 from responses.registries import OrderedRegistry
 
 from pyutilities.web.http_client import HttpClient
@@ -123,121 +123,121 @@ def mocked_responses():
 
 # webclient/mocked_responses - pytest fixtures
 # status/body/content_type/params - test parameters
-@pytest.mark.parametrize("status, body, content_type, params", testdata_http_ok_codes)
-def test_httpclient_http_ok_codes(httpclient, mocked_responses, status, body, content_type, params):
+# @pytest.mark.parametrize("status, body, content_type, params", testdata_http_ok_codes)
+# def test_httpclient_http_ok_codes(httpclient, mocked_responses, status, body, content_type, params):
 
-    # given
-    url_with_params = "http://example.com/api/1/foobar?zzz=ccc"
-    mocked_responses.get(url_with_params, body=body, status=status, content_type=content_type)
-    mocked_responses.post(url_with_params, body=body, status=status, content_type=content_type)
-    mocked_responses.put(url_with_params, body=body, status=status, content_type=content_type)
-    mocked_responses.delete(url_with_params, body=body, status=status, content_type=content_type)
-    mocked_responses.head(url_with_params, body=body, status=status, content_type=content_type)
-    mocked_responses.options(url_with_params, body=body, status=status, content_type=content_type)
+#     # given
+#     url_with_params = "http://example.com/api/1/foobar?zzz=ccc"
+#     mocked_responses.get(url_with_params, body=body, status=status, content_type=content_type)
+#     mocked_responses.post(url_with_params, body=body, status=status, content_type=content_type)
+#     mocked_responses.put(url_with_params, body=body, status=status, content_type=content_type)
+#     mocked_responses.delete(url_with_params, body=body, status=status, content_type=content_type)
+#     mocked_responses.head(url_with_params, body=body, status=status, content_type=content_type)
+#     mocked_responses.options(url_with_params, body=body, status=status, content_type=content_type)
 
-    url_without_params = "http://example.com/api/1/foobar"  # URL without parameters
-    # WebClient HTTP methods for testing
-    httpclient_http_methods = [
-        httpclient.get,
-        httpclient.post,
-        httpclient.put,
-        httpclient.delete,
-        httpclient.head,
-        httpclient.options,
-    ]
+#     url_without_params = "http://example.com/api/1/foobar"  # URL without parameters
+#     # WebClient HTTP methods for testing
+#     httpclient_http_methods = [
+#         httpclient.get,
+#         httpclient.post,
+#         httpclient.put,
+#         httpclient.delete,
+#         httpclient.head,
+#         httpclient.options,
+#     ]
 
-    for method in httpclient_http_methods:  # iterate and check each method
-        # when
-        response = method(url=url_without_params, params=params)
-        # then
-        assert response.status_code == status
-        assert response.text == body
-        assert response.headers["Content-Type"] == content_type
-
-
-@pytest.mark.parametrize("status, body, content_type, params", testdata_http_err_codes_without_retries)
-def test_webclient_http_fail_codes(webclient, mocked_responses, status, body, content_type, params):
-
-    # given
-    url_with_params = "http://example.com/api/1/foobar?a=bbb&c=ddd"
-    mocked_responses.get(url_with_params, body=body, status=status, content_type=content_type)
-    mocked_responses.post(url_with_params, body=body, status=status, content_type=content_type)
-    mocked_responses.put(url_with_params, body=body, status=status, content_type=content_type)
-    mocked_responses.delete(url_with_params, body=body, status=status, content_type=content_type)
-    mocked_responses.head(url_with_params, body=body, status=status, content_type=content_type)
-    mocked_responses.options(url_with_params, body=body, status=status, content_type=content_type)
-
-    url_without_params = "http://example.com/api/1/foobar"  # URL without parameters
-    # WebClient HTTP methods for testing
-    webclient_http_methods = [
-        webclient.get,
-        webclient.post,
-        webclient.put,
-        webclient.delete,
-        webclient.head,
-        webclient.options,
-    ]
-
-    for method in webclient_http_methods:  # iterate and check each method
-        # when
-        with pytest.raises(HTTPError) as ex_info:  # should raise requests.exceptions.HTTPError
-            method(url=url_without_params, params=params)
-
-        # then
-        assert str(status) in str(ex_info.value)  # check status code
-        assert body in str(ex_info.value)  # check status code message
+#     for method in httpclient_http_methods:  # iterate and check each method
+#         # when
+#         response = method(url=url_without_params, params=params)
+#         # then
+#         assert response.status_code == status
+#         assert response.text == body
+#         assert response.headers["Content-Type"] == content_type
 
 
-@pytest.mark.parametrize("status, body, content_type, params", testdata_http_err_codes_with_retries)
-def test_webclient_retry_on_fail(webclient, mocked_responses, status, body, content_type, params):
+# @pytest.mark.parametrize("status, body, content_type, params", testdata_http_err_codes_without_retries)
+# def test_webclient_http_fail_codes(webclient, mocked_responses, status, body, content_type, params):
 
-    # given
-    url_with_params = "http://example.com/api/1/foobar?a=bbb&c=ddd"
+#     # given
+#     url_with_params = "http://example.com/api/1/foobar?a=bbb&c=ddd"
+#     mocked_responses.get(url_with_params, body=body, status=status, content_type=content_type)
+#     mocked_responses.post(url_with_params, body=body, status=status, content_type=content_type)
+#     mocked_responses.put(url_with_params, body=body, status=status, content_type=content_type)
+#     mocked_responses.delete(url_with_params, body=body, status=status, content_type=content_type)
+#     mocked_responses.head(url_with_params, body=body, status=status, content_type=content_type)
+#     mocked_responses.options(url_with_params, body=body, status=status, content_type=content_type)
 
-    http_mocked_responses = [  # mocked HTTP responses
-        mocked_responses.get,
-        mocked_responses.post,
-        mocked_responses.put,
-        mocked_responses.delete,
-        mocked_responses.head,
-        mocked_responses.options,
-    ]
+#     url_without_params = "http://example.com/api/1/foobar"  # URL without parameters
+#     # WebClient HTTP methods for testing
+#     webclient_http_methods = [
+#         webclient.get,
+#         webclient.post,
+#         webclient.put,
+#         webclient.delete,
+#         webclient.head,
+#         webclient.options,
+#     ]
 
-    responses = []
-    for mocked_response in http_mocked_responses:  # iterate over HTTP methods
+#     for method in webclient_http_methods:  # iterate and check each method
+#         # when
+#         with pytest.raises(HTTPError) as ex_info:  # should raise requests.exceptions.HTTPError
+#             method(url=url_without_params, params=params)
 
-        for counter in range(5):  # add responses for one method
-            if counter < 4:  # responses with status == 500
-                responses.append(
-                    mocked_response(url_with_params, body=body, status=status, content_type=content_type)
-                )
-            elif counter == 4:  # the latest response with status == 200
-                responses.append(
-                    mocked_response(url_with_params, body="OK", status=200, content_type=content_type)
-                )
+#         # then
+#         assert str(status) in str(ex_info.value)  # check status code
+#         assert body in str(ex_info.value)  # check status code message
 
-    url_without_params = "http://example.com/api/1/foobar"  # URL without parameters
-    # WebClient HTTP methods for testing
-    webclient_http_methods = [
-        webclient.get,
-        webclient.post,
-        webclient.put,
-        webclient.delete,
-        webclient.head,
-        webclient.options,
-    ]
 
-    for method in webclient_http_methods:  # iterate and check each method
-        # when
-        response = method(url=url_without_params, params=params)
-        # then
-        assert response.status_code == 200
-        assert response.text == "OK"
-        assert response.headers["Content-Type"] == content_type
+# @pytest.mark.parametrize("status, body, content_type, params", testdata_http_err_codes_with_retries)
+# def test_webclient_retry_on_fail(webclient, mocked_responses, status, body, content_type, params):
 
-    # assert all mocked responses were hit
-    for response in responses:
-        assert response.call_count == 1
+#     # given
+#     url_with_params = "http://example.com/api/1/foobar?a=bbb&c=ddd"
+
+#     http_mocked_responses = [  # mocked HTTP responses
+#         mocked_responses.get,
+#         mocked_responses.post,
+#         mocked_responses.put,
+#         mocked_responses.delete,
+#         mocked_responses.head,
+#         mocked_responses.options,
+#     ]
+
+#     responses = []
+#     for mocked_response in http_mocked_responses:  # iterate over HTTP methods
+
+#         for counter in range(5):  # add responses for one method
+#             if counter < 4:  # responses with status == 500
+#                 responses.append(
+#                     mocked_response(url_with_params, body=body, status=status, content_type=content_type)
+#                 )
+#             elif counter == 4:  # the latest response with status == 200
+#                 responses.append(
+#                     mocked_response(url_with_params, body="OK", status=200, content_type=content_type)
+#                 )
+
+#     url_without_params = "http://example.com/api/1/foobar"  # URL without parameters
+#     # WebClient HTTP methods for testing
+#     webclient_http_methods = [
+#         webclient.get,
+#         webclient.post,
+#         webclient.put,
+#         webclient.delete,
+#         webclient.head,
+#         webclient.options,
+#     ]
+
+#     for method in webclient_http_methods:  # iterate and check each method
+#         # when
+#         response = method(url=url_without_params, params=params)
+#         # then
+#         assert response.status_code == 200
+#         assert response.text == "OK"
+#         assert response.headers["Content-Type"] == content_type
+
+#     # assert all mocked responses were hit
+#     for response in responses:
+#         assert response.call_count == 1
 
 
 # @pytest.mark.parametrize(

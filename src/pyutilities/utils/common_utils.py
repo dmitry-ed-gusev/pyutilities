@@ -1,23 +1,20 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# cspell:ignore isnt АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ getinstance threadsafe
-
 """
-    Common utilities module.
+Common utilities module.
 
-    Useful materials:
-        - (datetime) https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
-        - (list of dicts to csv) https://stackoverflow.com/questions/3086973/how-do-i-convert-this-list-of-dictionaries-to-a-csv-file
+Useful materials:
+    - (datetime) https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
+    - (list of dicts to csv) https://stackoverflow.com/questions/3086973/how-do-i-convert-this-list-of-dictionaries-to-a-csv-file
 
-    Created:  Gusev Dmitrii, 10.10.2022
-    Modified: Dmitrii Gusev, 12.12.2024
+Created:  Gusev Dmitrii, 10.10.2022
+Modified: Dmitrii Gusev, 12.12.2024
 """
 
-import os
 import csv
 import inspect
 import logging
+import os
 import threading
 from typing import Dict, List, Tuple
 

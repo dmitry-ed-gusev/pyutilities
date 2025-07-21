@@ -45,7 +45,9 @@
         "useragent",
         "threadsafe",
         "forcelist",
-        "httpclient"
+        "httpclient",
+        "rsps",
+        "webclient"
     ],
 
     // a list of globs to specify which files are to be ignored

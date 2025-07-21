@@ -3,17 +3,17 @@
 # -*- coding: utf-8 -*-
 
 """
-    Some useful/convenient string functions (sometimes - similar to module String in java library Apache
-    Commons). For some functions added one default parameter debug=False, as these functions may be used
-    in 'fast' executing code, where logging will just add additional complexity and decrease speed.
+Some useful/convenient string functions (sometimes - similar to module String in java library Apache
+Commons). For some functions added one default parameter debug=False, as these functions may be used
+in 'fast' executing code, where logging will just add additional complexity and decrease speed.
 
-    Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 18.07.2025
+Created:  Dmitrii Gusev, 15.04.2019
+Modified: Dmitrii Gusev, 18.07.2025
 """
 
 import logging
 from re import match as re_match
-from typing import Dict, Iterable, Tuple, Any
+from typing import Any, Dict, Iterable, Tuple
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.exception import PyUtilitiesException
@@ -113,13 +113,19 @@ def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = 
         processed_url = processed_url.format(*format_values)
     # debug output
     if debug:
-        log.debug("process_url(): URL [%s], postfix [%s], format values [%s].\n\t Result: [%s].",
-                  url, postfix, format_values, processed_url)
+        log.debug(
+            "process_url(): URL [%s], postfix [%s], format values [%s].\n\t Result: [%s].",
+            url,
+            postfix,
+            format_values,
+            processed_url,
+        )
     return processed_url
 
 
-def process_urls(urls: Dict[str, str], postfix: str = "",
-                 format_values: Tuple[str] | None = None, debug=False) -> Dict[str, str]:
+def process_urls(
+    urls: Dict[str, str], postfix: str = "", format_values: Tuple[str] | None = None, debug=False
+) -> Dict[str, str]:
     """Process the provided dictionary of urls with the function"""
 
     if debug:
@@ -146,7 +152,7 @@ def get_str_ending(string: str, symbol: str = "/", debug: bool = False) -> str:
             log.debug("Provided empty delimiter symbol, returning the original string.")
         return string
 
-    result = string[string.rfind(symbol.strip()) + 1:]  # processing string (string and symbol are not empty)
+    result = string[string.rfind(symbol.strip()) + 1 :]  # processing string (string and symbol are not empty)
     if debug:
         log.debug("get_str_ending(): string: [%s], symbol: [%s], result: [%s].", string, symbol, result)
 
@@ -264,7 +270,7 @@ def str_2_bool(string: str | None) -> bool:
     if not string or not string.strip():  # empty string - returning False
         return False
 
-    return string.lower() in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh']
+    return string.strip().lower() in ["true", "1", "t", "y", "yes", "yeah", "yup", "certainly", "uh-huh"]
 
 
 def str_2_int(string: str | None) -> int:
@@ -279,7 +285,7 @@ def str_2_int(string: str | None) -> int:
         # 1. strip() + replace ',' -> '.' (in order to parse float)
         # 2. parse float value
         # 3. convert int to float - just throw away partial part
-        return int(float(string.strip().replace(',', '.')))
+        return int(float(string.strip().replace(",", ".")))
     except ValueError:
         return 0
 
@@ -292,7 +298,7 @@ def str_2_float(string: str | None) -> float:
         return 0.0
 
     try:
-        return float(string.strip().replace(',', '.'))
+        return float(string.strip().replace(",", "."))
     except ValueError:
         return 0.0
 

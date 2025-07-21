@@ -1,11 +1,10 @@
-#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
-    IO Utilities module.
+IO Utilities module.
 
-    Created:  Dmitrii Gusev, 04.04.2017
-    Modified: Dmitrii Gusev, 02.01.2025
+Created:  Dmitrii Gusev, 04.04.2017
+Modified: Dmitrii Gusev, 02.01.2025
 """
 
 import errno
@@ -18,9 +17,9 @@ from os import walk
 
 import yaml
 
-from pyutilities.utils.string_utils import convert_bytes
-from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE, DEFAULT_ENCODING
+from pyutilities.defaults import DEFAULT_ENCODING, MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.exception import PyUtilitiesException
+from pyutilities.utils.string_utils import convert_bytes
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
 # don't forget to set disable_existing_loggers=False, otherwise logger won't get its config!

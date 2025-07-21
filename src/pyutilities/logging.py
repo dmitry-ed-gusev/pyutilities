@@ -4,10 +4,10 @@
 # cspell:ignore levelname
 
 """
-    Logging config for cmd line utilities.
+Logging config for cmd line utilities.
 
-    Created:  Dmitrii Gusev, 27.11.2022
-    Modified: Dmitrii Gusev, 25.06.2024
+Created:  Dmitrii Gusev, 27.11.2022
+Modified: Dmitrii Gusev, 25.06.2024
 """
 
 import logging

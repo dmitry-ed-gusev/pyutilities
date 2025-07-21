@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 # coding=utf-8
 
-# cspell:ignore fedit infile
-
 """
-    Inplace/inline file editing utility. Executable from cmd line.
+Inplace/inline file editing utility. Executable from cmd line.
 
-    Created:  Gusev Dmitrii, 13.04.2017
-    Modified: Gusev Dmitrii, 25.06.2024
+Created:  Gusev Dmitrii, 13.04.2017
+Modified: Gusev Dmitrii, 25.06.2024
 """
 
 # todo: implement: add line mode (if not found needed line)

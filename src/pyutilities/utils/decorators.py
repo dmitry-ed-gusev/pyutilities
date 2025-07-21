@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
 
-import time
-import logging
-import functools
+"""
+Decorators module. Contains some useful decorators.
 
+Created:  Gusev Dmitrii, 10.10.2022
+Modified: Dmitrii Gusev, 21.07.2025
+"""
+
+import functools
+import logging
+import time
 from functools import wraps
+
+log = logging.getLogger(__name__)
+log.addHandler(logging.NullHandler())
 
 
 def retry(max_tries=3, delay_seconds=1):
@@ -22,9 +31,11 @@ def retry(max_tries=3, delay_seconds=1):
                     if tries == max_tries:
                         raise e
                     time.sleep(delay_seconds)
+
         return wrapper_retry
 
     return decorator_retry
+
 
 # @retry(max_tries=5, delay_seconds=2)
 # def call_dummy_api():
@@ -43,7 +54,9 @@ def memoize(func):
             result = func(*args)
             cache[args] = result
             return result
+
     return wrapper
+
 
 # @memoize
 # def fibonacci(n):
@@ -63,6 +76,7 @@ def timing_decorator(func):
         return result
 
     return wrapper
+
 
 # @timing_decorator
 # def my_function():
@@ -84,6 +98,7 @@ def log_execution(func):
         return result
 
     return wrapper
+
 
 # @log_execution
 # def extract_data(source):

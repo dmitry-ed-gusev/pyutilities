@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """
-    HTTP client module, based on requests module.
+HTTP client module, based on requests module.
 
-    Created:  Dmitrii Gusev, 01.06.2021
-    Modified: Dmitrii Gusev, 18.07.2025
+Created:  Dmitrii Gusev, 01.06.2021
+Modified: Dmitrii Gusev, 18.07.2025
 """
 
 import logging
@@ -45,6 +45,7 @@ class TimeoutHTTPAdapter(HTTPAdapter):
 
         super().__init__(*args, **kwargs)
 
+    # pylint: disable=arguments-differ
     def send(self, request, **kwargs):  # type: ignore
         timeout = kwargs.get("timeout")
         if timeout is None:
@@ -87,10 +88,18 @@ class HttpClient:
             # HttpClient.__ua.update()
             HttpClient.__user_agent_info_updated = True
 
-    def __init__(self, headers: Dict[str, str] | None = None, cookies: Dict[str, str] | None = None,
-                 auth=None, user_agent: str = "", allow_redirects: bool = True, redirects_count: int = 0,
-                 timeout: int = HTTP_DEFAULT_TIMEOUT, retries: int = HTTP_DEFAULT_RETRIES,
-                 update_user_agents_info: bool = False) -> None:
+    def __init__(
+        self,
+        headers: Dict[str, str] | None = None,
+        cookies: Dict[str, str] | None = None,
+        auth=None,
+        user_agent: str = "",
+        allow_redirects: bool = True,
+        redirects_count: int = 0,
+        timeout: int = HTTP_DEFAULT_TIMEOUT,
+        retries: int = HTTP_DEFAULT_RETRIES,
+        update_user_agents_info: bool = False,
+    ) -> None:
 
         log.debug("HttpClient :: initializing HttpClient instance.")
 
