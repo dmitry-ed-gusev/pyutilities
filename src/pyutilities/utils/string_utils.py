@@ -8,7 +8,7 @@ Commons). For some functions added one default parameter debug=False, as these f
 in 'fast' executing code, where logging will just add additional complexity and decrease speed.
 
 Created:  Dmitrii Gusev, 15.04.2019
-Modified: Dmitrii Gusev, 18.07.2025
+Modified: Dmitrii Gusev, 28.07.2025
 """
 
 import logging
@@ -37,7 +37,7 @@ REGEX_FLOAT_3 = "^[+-]?([0-9]*[.])?[0-9]+$"  # simplified regex, matches: 123/12
 REGEX_FLOAT_4 = "^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"  # matches as previous plus: 123.
 
 
-def trim2none(string: str | None, debug: bool = False) -> str | None:
+def trim_2_none(string: str | None, debug: bool = False) -> str | None:
     """Trim the provided string to None (if empty) or just strip whitespaces.
     :param string: string for trimming leading/trailing whitespaces.
     :type string: string or None
@@ -56,7 +56,7 @@ def trim2none(string: str | None, debug: bool = False) -> str | None:
     return result
 
 
-def trim2empty(string: str | None, debug=False) -> str:
+def trim_2_empty(string: str | None, debug=False) -> str:
     """Trim the provided string to empty string - '' or "" - (if empty) or just strip whitespaces."""
 
     if string and string.strip():  # string isn't empty - trimming whitespaces
@@ -123,9 +123,8 @@ def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = 
     return processed_url
 
 
-def process_urls(
-    urls: Dict[str, str], postfix: str = "", format_values: Tuple[str] | None = None, debug=False
-) -> Dict[str, str]:
+def process_urls(urls: Dict[str, str], postfix: str = "", format_values: Tuple[str] | None = None,
+                 debug=False) -> Dict[str, str]:
     """Process the provided dictionary of urls with the function"""
 
     if debug:
@@ -146,6 +145,7 @@ def get_str_ending(string: str, symbol: str = "/", debug: bool = False) -> str:
     if not (string and string.strip()):  # fail-fast behavior - empty string - returns string 'as is'
         if debug:
             log.debug("Provided empty original string, returning the original string 'as is'.")
+        return string
 
     if not (symbol and symbol.strip()):  # fast-check - empty symbol - returns the whole string
         if debug:
@@ -159,7 +159,7 @@ def get_str_ending(string: str, symbol: str = "/", debug: bool = False) -> str:
     return result
 
 
-def is_number(value: str, debug: bool = False):
+def is_number(value: str, debug: bool = False) -> bool:
     """Returns True if string is a number."""
 
     if not (value and value.strip()):  # empty value - not a number

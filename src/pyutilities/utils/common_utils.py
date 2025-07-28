@@ -8,7 +8,7 @@ Useful materials:
     - (list of dicts to csv) https://stackoverflow.com/questions/3086973/how-do-i-convert-this-list-of-dictionaries-to-a-csv-file
 
 Created:  Gusev Dmitrii, 10.10.2022
-Modified: Dmitrii Gusev, 12.12.2024
+Modified: Dmitrii Gusev, 28.07.2025
 """
 
 import csv
@@ -39,12 +39,12 @@ def singleton(class_):
 
     instances = {}  # classes instances storage
 
-    def getinstance(*args, **kwargs):
+    def get_instance(*args, **kwargs):
         if class_ not in instances:
             instances[class_] = class_(*args, **kwargs)
         return instances[class_]
 
-    return getinstance
+    return get_instance
 
 
 def threadsafe_function(fn):

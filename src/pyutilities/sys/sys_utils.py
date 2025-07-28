@@ -4,7 +4,7 @@
 System Utilities module.
 
 Created:  Dmitrii Gusev, 18.07.2025
-Modified: Dmitrii Gusev, 21.07.2025
+Modified: Dmitrii Gusev, 28.07.2025
 """
 
 import logging
@@ -17,6 +17,7 @@ log.addHandler(logging.NullHandler())
 
 
 def get_str_from_env(key: str, default: str = "") -> str:
+    """TBD"""
 
     if not key or not key.strip():
         return default
@@ -25,6 +26,7 @@ def get_str_from_env(key: str, default: str = "") -> str:
 
 
 def get_int_from_env(key: str, default: int = 0) -> int:
+    """TBD"""
 
     if not key or not key.strip():
         return default
@@ -34,6 +36,7 @@ def get_int_from_env(key: str, default: int = 0) -> int:
 
 
 def get_float_from_env(key: str, default: float = 0.0) -> float:
+    """TBD"""
 
     if not key or not key.strip():
         return default
@@ -43,6 +46,7 @@ def get_float_from_env(key: str, default: float = 0.0) -> float:
 
 
 def get_bool_from_env(key: str, default: bool = False) -> bool:
+    """TBD"""
 
     if not key or not key.strip():
         return default

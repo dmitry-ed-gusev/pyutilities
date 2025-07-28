@@ -4,7 +4,7 @@
 IO Utilities module.
 
 Created:  Dmitrii Gusev, 04.04.2017
-Modified: Dmitrii Gusev, 02.01.2025
+Modified: Dmitrii Gusev, 28.07.2025
 """
 
 import errno
@@ -63,20 +63,39 @@ def list_files(path, out_to_console=False):
     _list_files(path, files, out_to_console)
     return files
 
+# def save_alert_to_file(alert_json: str, filename: str, overwrite: bool = True) -> str:
+#     """Save single file with one alert data - can save both full alert and simple alert."""
 
-def str2file(filename: str, content: str, overwrite_file: bool = False, encoding: str = DEFAULT_ENCODING):
+#     logger.debug(f"save_alert_file(): saving alert JSON to: [{filename=}].")
+
+#     # fast-check for input parameters
+#     if not alert_json or not alert_json.strip():
+#         raise ValueError("Provided empty Alert JSON file.")
+
+#     if not filename or not filename.strip():
+#         raise ValueError("Provided empty file name for saving JSON!")
+
+#     # saving the file, overwriting (y/n) - depending on the parameter
+#     with open(filename, ("w" if overwrite else "x"), encoding=DEFAULT_ENCODING) as fh:
+#         fh.write(alert_json)
+
+#     # returning path - where file was saved
+#     return filename
+
+
+def str_2_file(filename: str, content: str, overwrite: bool = False, encoding: str = DEFAULT_ENCODING):
     """Write string/text content to the provided file."""
 
     log.debug("str2file(): saving content to file: [%s].", filename)
 
-    if os.path.exists(filename) and not overwrite_file:  # file exists and we don't want to overwrite it
-        raise PyUtilitiesException(f"File [{filename}] exists but overwrite is [{overwrite_file}]!")
+    if os.path.exists(filename) and not overwrite:  # file exists and we don't want to overwrite it
+        raise PyUtilitiesException(f"File [{filename}] exists but overwrite is [{overwrite}]!")
 
-    if not os.path.exists(os.path.dirname(filename)):  # create a dir for file
+    if not os.path.exists(os.path.dirname(filename)):
         try:
-            os.makedirs(os.path.dirname(filename))
+            os.makedirs(os.path.dirname(filename))  # create a dir for file
         except OSError as exc:  # guard against race condition
-            if exc.errno != errno.EEXIST:
+            if exc.errno != errno.EXIST:
                 raise
 
     with open(filename, "w", encoding=encoding) as f:  # write content to a file
