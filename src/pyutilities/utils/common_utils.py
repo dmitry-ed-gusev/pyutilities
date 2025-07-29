@@ -90,7 +90,8 @@ def debug_function_name(func):
 
 
 def myself():
-    """Handy utility function/lambda for getting name of executing function from inside the function. Can be rewritten as lambda: myself = lambda: inspect.stack()[1][3]"""
+    """Handy utility function/lambda for getting name of executing function from inside the function.
+    Can be rewritten as lambda: myself = lambda: inspect.stack()[1][3]"""
 
     return inspect.stack()[1][3]
 
