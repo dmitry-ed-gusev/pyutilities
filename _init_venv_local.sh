@@ -23,11 +23,13 @@ export _CURRENT_TIME
 export _VERBOSE="--verbose"
 export _MSG_END_OF_STEP="========== done."
 export _VIRTUAL_ENV_NAME=".venv--3.10"
+export _CMD_PYTHON="-"
+export _CMD_PIP="-"
 # export _PIP_TRUSTED_HOST="--trusted-host pypi.org"
 # export _REQUIREMENTS_FILE='requirements.txt' # prod file
 # export _REQUIREMENTS_DEV_FILE='requirements-dev.txt' # dev file
-# export _MSG_NO_SYS_PYTHON="ERROR: no installed python/python3 found in the system!"
-# export _MSG_NO_SYS_PIP="ERROR: no installed pip/pip3 found in the system!"
+export _MSG_NO_SYS_PYTHON="ERROR: no installed python/python3 found in the system!"
+export _MSG_NO_SYS_PIP="ERROR: no installed pip/pip3 found in the system!"
 
 # -- clear screen and print title
 clear
@@ -47,10 +49,12 @@ esac
 # - debug output I - machine type/python cmd/pip cmd
 printf "\n= INFO: Machine type: [%s], using python: [%s], using pip: [%s].\n" \
     "${_MACHINE_TYPE}" "${_CMD_PYTHON}" "${_CMD_PIP}"
+
 # - debug output II - python version/pip version
 printf "\n= INFO: Using python 3/pip 3 versions:\n"
 printf "\t"; "${_CMD_PYTHON}" --version || { printf "\n%s\n" "${_MSG_NO_SYS_PYTHON}"; sleep 5; exit 1; }
 printf "\t"; "${_CMD_PIP}" --version || { printf "\n%s\n" "${_MSG_NO_SYS_PIP}"; sleep 5; exit 1; }
+
 # - debug output III - show python paths
 printf "\n= INFO: \n"; $_CMD_PYTHON -m site; printf "\n"
 # - show python packages dirs (global+user) <- python code
