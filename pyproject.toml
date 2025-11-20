@@ -8,7 +8,7 @@
 #       - most of modules should be typed (used mypy stubs libraries)
 #
 #   Created:  Dmitrii Gusev, 30.05.2025
-#   Modified: Dmitrii Gusev, 17.07.2025
+#   Modified: Dmitrii Gusev, 21.06.2025
 #
 ####################################################################################################
 
@@ -72,7 +72,7 @@ packages = [{include = "pyutilities", from = "src"}]
 
 [tool.poetry.group.test.dependencies] # -- poetry 'test' dependency group
 # - main pytest libraries
-pytest = "8.3.4"
+pytest = "8.*"  # allowed any version < 9.0.0
 pytest-env = "1.1.5"
 pytest-cov = "6.0.0"
 pytest-mock = "3.14.0"
@@ -106,7 +106,7 @@ flake8-bugbear = "24.12.12"
 black = "25.1.0"
 pylint = "3.3.4"
 pre-commit = "4.1.0"
-bandit = "1.8.2"
+bandit = "1.9.1"
 isort = {version = "6.0.0", extras = ["requirements_deprecated_finder", "pipfile_deprecated_finder"]}
 
 # - other develop/documenting/building/publishing libraries
