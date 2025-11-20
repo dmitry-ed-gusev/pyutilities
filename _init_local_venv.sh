@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 
-##############################################################################################################
+####################################################################################################
 #
 #   Python virtual environment initialization script for the project [pyutilities].
 #
-#   Created:  Dmitrii Gusev, 21.07.2025
-#   Modified: Dmitrii Gusev, 25.09.2025
+#   Script notes:
+#       - script is intended for the Windows environment and should be used in GitBash/Cygwin/MinGW
+#       - this project uses poetry for dependency management - be sure the utility is installed
 #
-# ###################################################################################################
+#   Created:  Dmitrii Gusev, 21.07.2025
+#   Modified: Dmitrii Gusev, 20.11.2025
+#
+# ##################################################################################################
 
 # -- safe bash scripting
 set -euf -o pipefail
@@ -22,7 +26,7 @@ export _CURRENT_TIME
 # -- some useful script defaults
 export _VERBOSE="--verbose"
 export _MSG_END_OF_STEP="========== done."
-export _VIRTUAL_ENV_NAME=".venv--3.10"
+#export _VIRTUAL_ENV_NAME=".venv--3.10"
 export _CMD_PYTHON="-"
 export _CMD_PIP="-"
 # export _PIP_TRUSTED_HOST="--trusted-host pypi.org"
@@ -30,13 +34,14 @@ export _CMD_PIP="-"
 # export _REQUIREMENTS_DEV_FILE='requirements-dev.txt' # dev file
 export _MSG_NO_SYS_PYTHON="ERROR: no installed python/python3 found in the system!"
 export _MSG_NO_SYS_PIP="ERROR: no installed pip/pip3 found in the system!"
+export _MSG_NO_SYS_POETRY="ERROR: no installed poetry utility found in the system!"
 
 # -- clear screen and print title
 clear
 printf "=== %s %s - Python Virtual Env initializing... ===\n\n" "${_CURRENT_DATE}" "${_CURRENT_TIME}"
 
 # -- Step I. Check the machine and determine the python/pip versions, print them.
-printf "\n= INFO: Step I. Checking the machine architecture and python/pip versions.\n"
+printf "\n= INFO: Step I. Checking the machine architecture and python/pip/poetry versions.\n"
 unameOut="$(uname -s)" # get machine name (short)
 # - based on the machine type - setup aliases (env variables)
 case "${unameOut}" in
@@ -47,13 +52,15 @@ case "${unameOut}" in
     *)          printf "Unknown machine: [%s]!" "${unameOut}"; exit 1;;
 esac
 # - debug output I - machine type/python cmd/pip cmd
-printf "\n= INFO: Machine type: [%s], using python: [%s], using pip: [%s].\n" \
+printf "\n=       Machine type: [%s], using python: [%s], using pip: [%s].\n" \
     "${_MACHINE_TYPE}" "${_CMD_PYTHON}" "${_CMD_PIP}"
 
-# - debug output II - python version/pip version
-printf "\n= INFO: Using python 3/pip 3 versions:\n"
+# - debug output II - python version/pip version/poetry version
+printf "\n=       Using python 3/pip 3 versions:\n\n"
 printf "\t"; "${_CMD_PYTHON}" --version || { printf "\n%s\n" "${_MSG_NO_SYS_PYTHON}"; sleep 5; exit 1; }
 printf "\t"; "${_CMD_PIP}" --version || { printf "\n%s\n" "${_MSG_NO_SYS_PIP}"; sleep 5; exit 1; }
+printf "\t"; poetry --verbose --version || { printf "\n%s\n" "${_MSG_NO_SYS_POETRY}"; sleep 5; exit 1; }
+printf "\n========== done.\n"
 
 # - debug output III - show python paths
 printf "\n= INFO: \n"; $_CMD_PYTHON -m site; printf "\n"
@@ -66,37 +73,39 @@ print(f"\n= INFO:\nglobal packages path: [{global_pkg}].\nuser packages path: [{
 END
 printf "\n%s\n" "${_MSG_END_OF_STEP}"
 
-# -- Step II. Upgrade pip + setuptools to the latest versions (on the current python).
-printf "\n= INFO: Step II. Upgrading PIP + SETUPTOOLS in the global python environment.\n"
+# -- Step II. Upgrade pip to the latest version (on the current python).
+printf "\n= INFO: Step II. Upgrading PIP in the global python environment.\n\n"
 # shellcheck disable=SC2086
 ${_CMD_PYTHON} -m pip ${_VERBOSE} --no-cache-dir install --upgrade pip
-# shellcheck disable=SC2086
-${_CMD_PIP} ${_VERBOSE} --no-cache-dir install --upgrade setuptools
 printf "\n%s\n" "${_MSG_END_OF_STEP}"
 
-# # -- remove existing virtual environment
-# printf "\n= INFO: removing existing virtual environment at [%s].\n" "${_VIRTUAL_ENV_NAME}"
-# rm -rf "${_VIRTUAL_ENV_NAME}" || { printf "\tError removing the virtual environment!\n"; }
-# printf "\n========== done.\n"
+# -- Step III. Remove existing virtual environment
+printf "\n= INFO: Step III. Removing existing virtual environment - [.venv*].\n\n"
+rm -rf .venv || { printf "\tError removing the virtual environment!\n"; }
+sleep 2
+printf "\n========== done.\n"
 
-# # -- create new virtual environment and activate it
-# printf "\n= INFO: creating new virtual environment: [%s].\n" "${_VIRTUAL_ENV_NAME}"
-# ${_CMD_PYTHON} -m venv "${_VIRTUAL_ENV_NAME}" --prompt "${_VIRTUAL_ENV_NAME}"
-# printf "\n========== done.\n"
+# -- Step IV. Some setup for the poetry utility
+printf "\n= INFO: Step IV. Updating the poetry configuration.\n\n"
+# - list configuration
+# poetry --verbose config --list; sleep 3
+# - update configuration settings
+poetry --verbose config virtualenvs.in-project true
+# - list updated configuration
+printf "\n=       Updated configuration:\n\n"
+poetry --verbose config --list
+printf "\n========== done.\n"; sleep 3
 
-# # -- activate the newly created virtual environment
-# # printf "\n= INFO: activating created virtual environment [%s].\n" "${_VIRTUAL_ENV_NAME}"
-# if [[ ${_MACHINE_TYPE} == 'Cygwin' || ${_MACHINE_TYPE} == 'MinGW' ]]; then
-#     printf "\n= INFO: MINGW/CYGWIN -> activating virtual environment: [%s].\n" "${_VIRTUAL_ENV_NAME}"
-#     # shellcheck disable=SC1091
-#     source "${_VIRTUAL_ENV_NAME}/Scripts/activate"
-# else # linux/macos
-#     printf "\n= INFO: Linux/MacOS -> activating virtual environment: [%s].\n" "${_VIRTUAL_ENV_NAME}"
-#     # shellcheck disable=SC1091
-#     source "${_VIRTUAL_ENV_NAME}/bin/activate"
-# fi
-# printf "\n========== done.\n"
+# -- Step V. Update dependencies, create virtual environment, install project
+printf "\n= INFO: updating dependencies, creating new virtual environment, installing editable project.\n\n"
+printf "\n=       Executing [poetry update] command:\n\n"
+poetry --verbose update
+printf "\n=       Executing [poetry install] command:\n\n"
+poetry --verbose install
+printf "\n========== done.\n"
 
+# todo: poetry run pip list --outdated
+# todo: poetry run python -m pip install --upgrade pip
 # # - upgrade pip + setuptools to the latest versions
 # printf "\n= INFO: Upgrading PIP + SETUPTOOLS in the virtual environment.\n"
 # # shellcheck disable=SC2086
