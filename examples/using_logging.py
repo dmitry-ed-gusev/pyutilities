@@ -5,30 +5,33 @@
     Examples of using logging with the [pyutilities] library.
 
     Created:  Dmitrii Gusev, 13.12.2024
-    Modified: Dmitrii Gusev, 16.12.2024
+    Modified: Dmitrii Gusev, 21.11.2025
 
     cSpell:ignore mylog levelname
 """
 
 import logging
 
-# from importlib import reload
-from pyutilities.utils.string_utils import trim2none
+from importlib import reload
+from pyutilities.utils.string_utils import trim_2_none, trim_2_empty
+
+# todo: reorder into jupyter notebook
 
 print("\n")
 
 # -------------------------------------------------------------------------------------------------
 
 # 0. -- no configured logger at all - no log output from the library
-print(f"#0 -> trim result: [{trim2none('  string ', debug=True)}].")
+print(f"#0 -> trim result: [{trim_2_none('  string ', debug=True)}].")
 print("\n")
 
 # -------------------------------------------------------------------------------------------------
 
-# 1. -- the simplest case - standard configuration with 'root' logger (this statement initializes the 'root' #       logger with the standard configuration - console output (level = NOTSET), warning level for the
+# 1. -- the simplest case - standard configuration with 'root' logger (this statement initializes the 'root'
+#       logger with the standard configuration - console output (level = NOTSET), warning level for the
 #       logger itself, etc.). In this case the [pyutilities] library won't log anything (same as case #0).
 logging.warning("Unformatted output with logging module (using 'root' logger)!")
-print(f"#1 -> trim result: [{trim2none('  string ', debug=True)}].")
+print(f"#1 -> trim result: [{trim_2_none('  string ', debug=True)}].")
 
 # ! -> 'reset' the logging module - to avoid 'side effects' on further examples. Be careful - these
 # ! -> statements are changing the default logging behavior!
@@ -37,7 +40,8 @@ print(f"#1 -> trim result: [{trim2none('  string ', debug=True)}].")
 
 print("\n")
 
-# 2. -- simple case - standard configuration with the 'named' logger (this doesn't initializes the 'root' #       logger and uses the standard config for the 'named' logger). No logging from the [pyutilities]
+# 2. -- simple case - standard configuration with the 'named' logger (this doesn't initializes the 'root'
+#       logger and uses the standard config for the 'named' logger). No logging from the [pyutilities]
 #       library.
 log = logging.getLogger("simple_logger")
 log.setLevel(logging.DEBUG)
@@ -46,7 +50,7 @@ log.info("INFO -> Logging output with logger!")
 log.warning("WARNING -> Logging output with logger!")
 log.error("ERROR -> Logging output with logger!")
 log.critical("CRITICAL -> Logging output with logger!")
-print(f"#2 -> trim result: [{trim2none('  string ', debug=True)}].")
+print(f"#2 -> trim result: [{trim_2_none('  string ', debug=True)}].")
 print("\n")
 
 # 3. -- adding configuration to the named logger (not [pyutilities] logger!). Same as the previous case -
@@ -73,7 +77,7 @@ mylog.info("Logging output with configured logger - set level INFO.")
 mylog.warning("Logging output with configured logger - set level WARN.")
 mylog.error("Logging output with configured logger - set level ERROR.")
 mylog.critical("Logging output with configured logger - set level CRITICAL.")
-print(f"#3 -> trim result: [{trim2none('  string ', debug=True)}].")
+print(f"#3 -> trim result: [{trim_2_none('  string ', debug=True)}].")
 print("\n")
 
 # 4. -- the case for initializing logger for the [pyutilities] library. Use it as an example, it's better
@@ -96,5 +100,20 @@ mylog.info("Logging output with configured logger - set level INFO.")
 mylog.warning("Logging output with configured logger - set level WARN.")
 mylog.error("Logging output with configured logger - set level ERROR.")
 mylog.critical("Logging output with configured logger - set level CRITICAL.")
-print(f"#4 -> trim result: [{trim2none('  string ', debug=True)}].")
+print(f"#4 -> trim result: [{trim_2_none('  string ', debug=True)}].")
 print("\n")
+
+# 5. -- using with loguru module
+
+from loguru import logger
+
+
+class InterceptHandler(logging.Handler):
+    def emit(self, record):
+        logger_opt = logger.opt(depth=6, exception=record.exc_info)
+        logger_opt.log(record.levelno, record.getMessage())
+
+log = logging.getLogger("pyutilities")
+log.addHandler(InterceptHandler())
+log.setLevel("DEBUG")
+print(trim_2_empty(" aaab   ", debug=True))

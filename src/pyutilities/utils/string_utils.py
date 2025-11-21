@@ -8,7 +8,7 @@ Commons). For some functions added one default parameter debug=False, as these f
 in 'fast' executing code, where logging will just add additional complexity and decrease speed.
 
 Created:  Dmitrii Gusev, 15.04.2019
-Modified: Dmitrii Gusev, 28.07.2025
+Modified: Dmitrii Gusev, 21.11.2025
 """
 
 import logging
@@ -63,8 +63,10 @@ def trim_2_empty(string: str | None, debug=False) -> str:
         result = string.strip()
     else:  # string is empty
         result = ""
+
     if debug:
-        log.debug(f"trim2empty(): input string: [{string}], result string: [{result}].")
+        log.debug("trim2empty(): input string: [%s], result string: [%s].", string, result)
+        log.error("!!!")
     return result
 
 
@@ -152,7 +154,7 @@ def get_str_ending(string: str, symbol: str = "/", debug: bool = False) -> str:
             log.debug("Provided empty delimiter symbol, returning the original string.")
         return string
 
-    result = string[string.rfind(symbol.strip()) + 1 :]  # processing string (string and symbol are not empty)
+    result = string[string.rfind(symbol.strip()) + 1:]  # processing string (string and symbol are not empty)
     if debug:
         log.debug("get_str_ending(): string: [%s], symbol: [%s], result: [%s].", string, symbol, result)
 

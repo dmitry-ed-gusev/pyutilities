@@ -8,14 +8,12 @@
 #       - most of modules should be typed (used mypy stubs libraries)
 #
 #   Created:  Dmitrii Gusev, 30.05.2025
-#   Modified: Dmitrii Gusev, 21.06.2025
+#   Modified: Dmitrii Gusev, 21.11.2025
 #
 ####################################################################################################
 
 # -- build system information
 [build-system]
-# requires = ["setuptools >= 78.0", "wheel >= 0.45"] - previous setup
-# build-backend = "setuptools.build_meta" - previous setup
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
@@ -23,14 +21,14 @@ build-backend = "poetry.core.masonry.api"
 [project]
 name = "pyutilities"
 version = "2.0.0beta2"
-description = "PyUtilities :: Useful python 3.10+ utilities library for various use cases."
+description = "PyUtilities :: Useful python 3 utilities library for various use cases."
 authors     = [
     {name = "Dmitrii Gusev", email = "dmitry.ed.gusev@gmail.com"},
 ]
 license  = "MIT"
 readme   = "README.md"
 requires-python = ">=3.10,<3.11.dev0"
-keywords    = ["Python Utilities", "Useful Functions", "String Utilities", "CLI Functions", "toolset", "library"]
+keywords    = ["Python Utilities", "Useful Functions", "String Utilities", "CLI Functions", "toolset", "library", "System Utilities"]
 classifiers = [
     "Development Status :: 6 - Mature",
     "Operating System :: OS Independent",
@@ -38,7 +36,6 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "License :: OSI Approved :: MIT License",
-#    "Summary :: Python Utilities - useful python utilities for various cases.",
     "Intended Audience :: Developers",
     "Topic :: Utilities",
     "Typing :: Typed"
@@ -48,10 +45,10 @@ dependencies = [
     "xlwt==1.3.0",
     "xlwings~=0.33.9",  # allowed: >=0.33.9 <0.34.0
     "loguru==0.7.3",
-    "pyyaml==6.0.2",
+    "pyyaml==6.*",
     "openpyxl==3.1.5",
     "urllib3~=2.3",  # allowed: >=2.3.0 <3.0.0
-    "paramiko==3.5.1",
+    "paramiko==4.*",
     "requests~=2.32",  # allowed: >=2.32.0 <3.0.0
     "markdown~=3.7",  # allowed: >=3.7.0 <4.0.0
     "prettytable~=3.14",  # allowed: >=3.14.0 <4.0.0
@@ -61,7 +58,7 @@ dependencies = [
 [project.urls]
 homepage = "https://pypi.org/project/pyutilities"
 repository = "https://github.com/dmitry-ed-gusev/pyutilities"
-# documentation = ""
+documentation = "https://github.com/dmitry-ed-gusev/pyutilities"
 "Bug Tracker" = "https://github.com/dmitry-ed-gusev/pyutilities/issues"
 
 # [project.scripts]
@@ -71,49 +68,42 @@ repository = "https://github.com/dmitry-ed-gusev/pyutilities"
 packages = [{include = "pyutilities", from = "src"}]
 
 [tool.poetry.group.test.dependencies] # -- poetry 'test' dependency group
-# - main pytest libraries
-pytest = "8.*"  # allowed any version < 9.0.0
-pytest-env = "1.1.5"
-pytest-cov = "6.0.0"
-pytest-mock = "3.14.0"
+# -- main pytest libraries
+pytest = "9.*"  # allowed any version < 10.0.0
+pytest-env = "1.*"
+pytest-cov = "7.*"
+pytest-mock = "3.*"
 pytest-pep8 = "1.0.6"
 pytest-flakes = "4.0.5"
 pytest-isort = "4.0.0"
 pytest-black = "0.6.0"
 pytest-variables = {version = "3.1.0", extras = ["hjson", "yaml", "toml"]}
-
-# - testing-related libraries
-mock = "5.1.0"
-mockito = "1.5.4"
+# -- testing-related libraries
+mock = "5.*"
+mockito = "1.*"
 nose2 = "0.15.1"
-hypothesis = "6.126.0"
-
+hypothesis = "6.*"
 # -- typing libraries
-mypy = "1.15.0"
-types-six = "1.17.0.20241205"
-types-mock = "5.1.0.20240425"
-types-paramiko = "3.5.0.20240928"
-types-requests = "2.32.0.20241016"
-types-markdown = "3.7.0.20241204"
-types-PyYAML = "6.0.12.20241230"
-types-flake8-bugbear = "24.12.12.20241214"
-
+mypy = "1.*"
+types-six = "1.*"
+types-mock = "5.*"
+types-paramiko = "4.*"
+types-requests = "2.*"
+types-markdown = "3.*"
+types-PyYAML = "6.*"
+types-flake8-bugbear = "25.*"
 # -- code quality libraries
-flake8 = "7.1.2"
+flake8 = "7.*"
 flake8-pyproject = "1.2.3"
 flake8-bandit = "4.1.1"
-flake8-bugbear = "24.12.12"
-black = "25.1.0"
-pylint = "3.3.4"
-pre-commit = "4.1.0"
+flake8-bugbear = "25.*"
+black = "25.*"
+pylint = "4.*"
+pre-commit = "4.*"
 bandit = "1.9.1"
-isort = {version = "6.0.0", extras = ["requirements_deprecated_finder", "pipfile_deprecated_finder"]}
-
-# - other develop/documenting/building/publishing libraries
-#twine = "6.1.0"
-# build = "1.2.2.post1"
-# ipykernel = "6.29.5"
-responses = "0.25.6"
+isort = {version = "7.*", extras = ["requirements_deprecated_finder", "pipfile_deprecated_finder"]}
+# -- other
+responses = "0.*"
 sphinx = "8.1.3"
 
 [tool.flake8] # -- flake8 tool configuration

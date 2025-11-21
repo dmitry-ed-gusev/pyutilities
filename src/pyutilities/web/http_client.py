@@ -5,13 +5,11 @@
 HTTP client module, based on requests module.
 
 Created:  Dmitrii Gusev, 01.06.2021
-Modified: Dmitrii Gusev, 18.07.2025
+Modified: Dmitrii Gusev, 21.11.2025
 """
 
 import logging
-import shutil
-from pathlib import Path
-from typing import Any, AnyStr, Dict, List, Tuple
+from typing import Dict, List
 
 import requests
 from fake_useragent import UserAgent

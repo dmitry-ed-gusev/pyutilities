@@ -5,7 +5,7 @@
     Unit tests for strings module.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 17.07.2025
+    Modified: Dmitrii Gusev, 21.11.2025
 """
 
 import math
@@ -14,7 +14,7 @@ from hypothesis import given
 from hypothesis.strategies import characters, text
 
 from pyutilities.utils.string_utils import (coalesce, filter_str, is_number, iter_2_str, process_url,
-                                            trim2none, trim2empty, get_str_ending, one_of_2_str,
+                                            trim_2_none, trim_2_empty, get_str_ending, one_of_2_str,
                                             str_2_bool, str_2_int, str_2_float)
 
 # common constants for testing
@@ -30,22 +30,22 @@ NON_EMPTY_STRINGS = {
 
 def test_trim2none_with_empty_strings():
     for s in EMPTY_STRINGS:
-        assert trim2none(s) is None, "Must be NoNe!"
+        assert trim_2_none(s) is None, "Must be NoNe!"
 
 
 def test_trim2none_with_non_empty_strings():
     for k, v in NON_EMPTY_STRINGS.items():
-        assert k == trim2none(v), "Must be equals!"
+        assert k == trim_2_none(v), "Must be equals!"
 
 
 def test_trim2empty_with_empty_strings():
     for s in EMPTY_STRINGS:
-        assert "" == trim2empty(s), "Must be an empty string!"
+        assert "" == trim_2_empty(s), "Must be an empty string!"
 
 
 def test_trim2empty_with_non_empty_strings():
     for k, v in NON_EMPTY_STRINGS.items():
-        assert k == trim2empty(v), "Must be equals!"
+        assert k == trim_2_empty(v), "Must be equals!"
 
 
 def test_filter_str_for_empty():
@@ -102,22 +102,22 @@ def test_process_url(url, postfix, format_params, expected):
 # see info here: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.text
 @given(text(alphabet=characters(blacklist_categories=["Cc", "Zs", "Zl", "Zp"]), min_size=1, max_size=100))
 def test_trim2none_with_meaningful_symbols(txt):
-    assert trim2none(txt) == txt
+    assert trim_2_none(txt) == txt
 
 
 @given(text(alphabet=characters(whitelist_categories=["Zs", "Zl", "Zp"]), min_size=1, max_size=100))
 def test_trim2none_with_only_non_meaningful_symbols(text):
-    assert trim2none(text) is None
+    assert trim_2_none(text) is None
 
 
 @given(text(alphabet=characters(blacklist_categories=["Cc", "Zs", "Zl", "Zp"]), min_size=1, max_size=100))
 def test_trim2empty_with_meaningful_symbols(text):
-    assert trim2empty(text) == text
+    assert trim_2_empty(text) == text
 
 
 @given(text(alphabet=characters(whitelist_categories=["Zs", "Zl", "Zp"]), min_size=1, max_size=100))
 def test_trim2empty_with_only_non_meaningful_symbols(text):
-    assert trim2empty(text) == ""
+    assert trim_2_empty(text) == ""
 
 
 def test_is_number_usual_values():
