@@ -86,7 +86,7 @@ class HttpClient:
             # HttpClient.__ua.update()
             HttpClient.__user_agent_info_updated = True
 
-    def __init__(
+    def __init__(  # type: ignore
         self,
         headers: Dict[str, str] | None = None,
         cookies: Dict[str, str] | None = None,

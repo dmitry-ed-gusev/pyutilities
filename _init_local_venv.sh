@@ -76,7 +76,7 @@ ${_CMD_PYTHON} -m pip ${_VERBOSE} --no-cache-dir install --upgrade pip
 printf "\n%s\n" "${_MSG_END_OF_STEP}"
 
 # -- Step III. Remove existing virtual environment
-printf "\n= INFO: Step III. Removing existing virtual environment - [.venv*].\n\n"
+printf "\n= INFO: Step III. Removing existing virtual environment - [.venv].\n\n"
 rm -rf .venv || { printf "\tError removing the virtual environment!\n"; }
 sleep 2
 printf "\n========== done.\n"

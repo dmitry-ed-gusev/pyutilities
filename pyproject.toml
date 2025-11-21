@@ -160,10 +160,13 @@ skips = ["B101", "B601"]
 # -- mypy tool configuration
 [tool.mypy]
 mypy_path = "./"
+python_version = "3.10"
 follow_imports = "silent"
 strict_optional = true
 warn_redundant_casts = true
 warn_unused_ignores = true
+warn_return_any = true
+warn_unused_configs = true
 disallow_any_generics = true
 check_untyped_defs = true
 no_implicit_reexport = true
@@ -174,6 +177,10 @@ ignore_missing_imports = true
 # - force mypy to analyze as best as its can module without types defs
 # follow_untyped_imports = true
 # plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = "pyutilities.web.http_client"
+disable_error_code = ["R0913", "too-many-arguments", "unused-argument"]
 
 # -- mypy extra configuration for pydantic
 # [tool.pydantic-mypy]
