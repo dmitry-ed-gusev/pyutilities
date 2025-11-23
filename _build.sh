@@ -8,19 +8,19 @@
 #       - executing pylint checker
 #
 #   Created:  Dmitrii Gusev, 30.11.2021
-#   Modified: Dmitrii Gusev, 21.11.2025
+#   Modified: Dmitrii Gusev, 22.11.2025
 #
 #############################################################################################################
 
-#source _bash_lib.sh
+# - safe scripting and encoding
 set -euf -o pipefail
 export LANG='en_US.UTF-8'
 
+# - some useful setup
 export DIST_DIR="dist/"
 export VERBOSE="--verbose"
-# export MYPY_FAILURE_SCORE="9.8"
-export MYPY_FAILURE_SCORE="9.0"
-export MYPY_THREADS_NUMBER="3"
+export PYLINT_FAILURE_SCORE="9.0"
+export PYLINT_THREADS_NUMBER="5"
 export SRC_PATH="src/pyutilities/"
 
 printf "=== Build the [PyUtilities] library :: starting. ===\n\n"
@@ -33,8 +33,8 @@ sleep 1
 
 # -- Step 2. Run [pylint] linter for the source code
 printf "\n = INFO: executing [pylint] on the source code.\n"
-poetry run pylint --output-format=colorized --fail-under="${MYPY_FAILURE_SCORE}" \
-    -j "${MYPY_THREADS_NUMBER}" "${SRC_PATH}"
+poetry run pylint "${VERBOSE}" --output-format=colorized --fail-under="${PYLINT_FAILURE_SCORE}" \
+    --jobs "${PYLINT_THREADS_NUMBER}" "${SRC_PATH}"
 sleep 1
 
 # # -- Step 3. Run [mypy] on the source code

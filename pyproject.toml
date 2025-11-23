@@ -178,9 +178,9 @@ ignore_missing_imports = true
 # follow_untyped_imports = true
 # plugins = ["pydantic.mypy"]
 
-[[tool.mypy.overrides]]
-module = "pyutilities.web.http_client"
-disable_error_code = ["R0913", "too-many-arguments", "unused-argument"]
+# [[tool.mypy.overrides]]
+# module = "pyutilities.web.http_client"
+# disable_error_code = ["R0913", "too-many-arguments", "unused-argument"]
 
 # -- mypy extra configuration for pydantic
 # [tool.pydantic-mypy]
@@ -193,7 +193,7 @@ disable_error_code = ["R0913", "too-many-arguments", "unused-argument"]
 minversion = "6.0"
 addopts = """
 --cov=./src/pyutilities --verbose --cov-report=html --cov-report=xml --cov-report=json --cov-report=annotate
- --capture=sys
+ --capture=sys --durations=0 --full-trace --color=auto
 """
 testpaths = [
     "tests/",
@@ -226,7 +226,7 @@ precision = 2
 
 [tool.coverage.html]
 directory = ".coverage/htmlcoverage"
-title = "Python Utilities :: Tests Coverage Report"
+title = "Python Utilities :: Tests Coverage Report."
 
 [tool.coverage.xml]
 output = ".coverage/coverage.xml"

@@ -86,7 +86,7 @@ class HttpClient:
             # HttpClient.__ua.update()
             HttpClient.__user_agent_info_updated = True
 
-    def __init__(  # type: ignore
+    def __init__(  # pylint: disable=too-many-arguments, too-many-positional-arguments
         self,
         headers: Dict[str, str] | None = None,
         cookies: Dict[str, str] | None = None,
@@ -201,20 +201,22 @@ class HttpClient:
         log.debug(f"WebClient.delete(): {url}. Params: {params}. Data: {data}.")
         return self.__session.delete(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
-    def head(self, url: str, data: Dict[str, str] = None, params: Dict[str, str] = None) -> Response:
+    def head(self, url: str, data: Dict[str, str] | None = None,
+             params: Dict[str, str] | None = None) -> Response:
         """Perform HTTP HEAD request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
         """
-        log.debug(f"WebClient.head(): {url}. Params: {params}. Data: {data}.")
+        log.debug("WebClient.head(): %s. Params: %s. Data: %s.", url, params, data)
         return self.__session.head(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
-    def options(self, url: str, data: Dict[str, str] = None, params: Dict[str, str] = None) -> Response:
+    def options(self, url: str, data: Dict[str, str] | None = None,
+                params: Dict[str, str] | None = None) -> Response:
         """Perform HTTP OPTIONS request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
         """
-        log.debug(f"WebClient.options(): {url}. Params: {params}. Data: {data}.")
+        log.debug("WebClient.options(): %s. Params: %s. Data: %s.", url, params, data)
         return self.__session.options(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
     # def get_text_2_files(self, urls: Dict[str, str], dir: str, allow_redicrects: bool,

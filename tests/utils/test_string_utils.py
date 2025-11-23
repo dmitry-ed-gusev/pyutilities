@@ -5,7 +5,7 @@
     Unit tests for strings module.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 21.11.2025
+    Modified: Dmitrii Gusev, 23.11.2025
 """
 
 import math
@@ -120,33 +120,18 @@ def test_trim2empty_with_only_non_meaningful_symbols(text):
     assert trim_2_empty(text) == ""
 
 
-def test_is_number_usual_values():
-    assert is_number("0")
-    assert is_number("123")
-    assert is_number("123.")
-    assert is_number(".456")
-    assert is_number("-123.")
-    assert is_number("+123.")
-    assert is_number("+.456")
-    assert is_number("-.456")
-    assert is_number("123.000")
-    assert is_number("123.456")
-    assert is_number("+123.456")
-    assert is_number("-123.456")
-    assert is_number("+123.000")
+@pytest.mark.parametrize("str_number", ["0", "123", "123.", ".456", "-123", "+123.", "123.456",
+                                        "-123.456"])
+def test_is_number_true(str_number):
+    assert is_number(str_number)
 
 
-def test_is_number_empty_values():
-    assert not is_number(None)
-    assert not is_number("")
-    assert not is_number("      ")
-
-
-def test_is_number_various_values():
-    assert not is_number("asdf")
-    assert not is_number("     asdf")
-    assert not is_number("asdf     ")
-    assert not is_number("e5")
+@pytest.mark.parametrize("str_number", ["0_o", "0_0", "1a2a3", "0x123.", ".d456", "+-123", "+123.+",
+                                        "0x876", "333xx33", None, "", "    ", "   e      ",
+                                        "   456         ", "12.6       ", "asdf", "      asdf", "asdf    ",
+                                        "  e5", "   d2"])
+def test_is_number_false(str_number):
+    assert not is_number(str_number)
 
 
 def test_iter_2_str():
