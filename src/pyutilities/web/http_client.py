@@ -5,7 +5,7 @@
 HTTP client module, based on requests module.
 
 Created:  Dmitrii Gusev, 01.06.2021
-Modified: Dmitrii Gusev, 21.11.2025
+Modified: Dmitrii Gusev, 24.11.2025
 """
 
 import logging
@@ -166,39 +166,41 @@ class HttpClient:
 
         log.debug(
             "HttpClient instance was initialized OK with the configuration:\n"
-            f"\tHeaders: {self.__session.headers}\n"
-            f"\tCookies: {self.__session.cookies}\n"
+            "\tHeaders: %s\n\tCookies: %s\n", self.__session.headers, self.__session.cookies
         )
 
     def get(self, url: str, params: Dict[str, str] | None = None) -> Response:
         """Perform HTTP GET request with retry (if necessary).
         :param params: request parameters -> will be added to the URL
         """
-        log.debug(f"WebClient.get(): {url}. Params: {params}.")
+        log.debug("WebClient.get(): %s. Params: %s.", url, params)
         return self.__session.get(url, params=params, allow_redirects=self.__allow_redirects)
 
-    def post(self, url: str, data: Dict[str, str] = None, params: Dict[str, str] = None) -> Response:
+    def post(self, url: str, data: Dict[str, str] | None = None,
+             params: Dict[str, str] | None = None) -> Response:
         """Perform HTTP POST request with retry (if necessary).
         :param data: request data -> will be added to the request body (HTTP POST)
         :param params: request parameters -> will be added to the URL
         """
-        log.debug(f"WebClient.post(): {url}. Params: {params}. Data: {data}.")
+        log.debug("WebClient.post(): %s. Params: %s. Data: %s.", url, params, data)
         return self.__session.post(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
-    def put(self, url: str, data: Dict[str, str] = None, params: Dict[str, str] = None) -> Response:
+    def put(self, url: str, data: Dict[str, str] | None = None,
+            params: Dict[str, str] | None = None) -> Response:
         """Perform HTTP PUT request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
         """
-        log.debug(f"WebClient.put(): {url}. Params: {params}. Data: {data}.")
+        log.debug("WebClient.put(): %s. Params: %s. Data: %s.", url, params, data)
         return self.__session.put(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
-    def delete(self, url: str, data: Dict[str, str] = None, params: Dict[str, str] = None) -> Response:
+    def delete(self, url: str, data: Dict[str, str] | None = None,
+               params: Dict[str, str] | None = None) -> Response:
         """Perform HTTP DELETE request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
         """
-        log.debug(f"WebClient.delete(): {url}. Params: {params}. Data: {data}.")
+        log.debug("WebClient.delete(): %s. Params: %s. Data: %s.", url, params, data)
         return self.__session.delete(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
     def head(self, url: str, data: Dict[str, str] | None = None,
@@ -358,40 +360,6 @@ class HttpClient:
 #     log.info(f"Downloaded file: {url} and put here: {local_path}")
 
 #     return local_path
-
-
-# def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = None) -> str:
-#     log.debug(f"Processing URL [{url}] with postfix [{postfix}] and format values [{format_values}].")
-
-#     if not url:
-#         raise PyUtilitiesException("Provided empty URL for processing!")
-
-#     processed_url: str = url
-#     if postfix:  # if postfix - add it to the URL string
-#         if not processed_url.endswith("/"):
-#             processed_url += "/"
-#         processed_url += postfix
-
-#     if format_values:  # if there are values - format URL string with them
-#         processed_url = processed_url.format(*format_values)
-
-#     return processed_url
-
-
-# def process_urls(
-#     urls: Dict[str, str], postfix: str = "", format_values: Tuple[str] | None = None
-# ) -> Dict[str, str]:
-
-#     log.debug("Processing urls dictionary.")
-
-#     if not urls:
-#         raise PyUtilitiesException("Provided empty URLs dictionary for processing!")
-
-#     processed: Dict[str, str] = dict()
-#     for key in urls:
-#         processed[key] = process_url(urls[key], postfix, format_values)
-
-#     return processed
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@
 //   cSpell Settings JSON file (whole project configuration).
 //
 //   Created:  Dmitrii Gusev, 28.12.2024
-//   Modified: Dmitrii Gusev, 18.07.2025
+//   Modified: Dmitrii Gusev, 24.11.2025
 //
 //##############################################################################
 
@@ -29,25 +29,9 @@
 
     // a list of words to be ignored (even if they are in the flagWords)
     "ignoreWords": [
-        "pyutilities",
-        "абвгдеёжзийклмнопрстуфхцчшщъыьэюя",
-        "rtype",
-        "namenode",
-        "xlrd",
-        "xlwt",
-        "loguru",
-        "xlwings",
-        "pyyaml",
-        "openpyxl",
-        "urllib3",
-        "paramiko",
-        "prettytable",
-        "useragent",
-        "threadsafe",
-        "forcelist",
-        "httpclient",
-        "rsps",
-        "webclient"
+        "pyutilities", "абвгдеёжзийклмнопрстуфхцчшщъыьэюя", "rtype", "namenode", "xlrd", "xlwt", "loguru",
+        "xlwings", "pyyaml", "openpyxl", "urllib3", "paramiko", "prettytable", "useragent", "threadsafe",
+        "forcelist", "httpclient", "rsps", "webclient", "fedit", "functool"
     ],
 
     // a list of globs to specify which files are to be ignored

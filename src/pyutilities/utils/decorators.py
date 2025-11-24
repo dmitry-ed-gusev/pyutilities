@@ -4,19 +4,22 @@
 Decorators module. Contains some useful decorators.
 
 Created:  Gusev Dmitrii, 10.10.2022
-Modified: Dmitrii Gusev, 21.07.2025
+Modified: Dmitrii Gusev, 24.11.2025
 """
 
 import functools
 import logging
 import time
 from functools import wraps
+from typing import Any
+
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 
 def retry(max_tries=3, delay_seconds=1):
+    """Retrying decorator."""
 
     def decorator_retry(func):
 
@@ -26,7 +29,7 @@ def retry(max_tries=3, delay_seconds=1):
             while tries < max_tries:
                 try:
                     return func(*args, **kwargs)
-                except Exception as e:
+                except Exception as e:  # pylint: disable=W0718
                     tries += 1
                     if tries == max_tries:
                         raise e
@@ -37,36 +40,24 @@ def retry(max_tries=3, delay_seconds=1):
     return decorator_retry
 
 
-# @retry(max_tries=5, delay_seconds=2)
-# def call_dummy_api():
-#     response = requests.get("https://jsonplaceholder.typicode.com/todos/1")
-#     return response
-
-
 def memoize(func):
+    """Decorator - analogue for the functool.lru_cache()."""
 
-    cache = {}
+    cache: dict[Any, Any] = {}
 
     def wrapper(*args):
         if args in cache:
             return cache[args]
-        else:
-            result = func(*args)
-            cache[args] = result
-            return result
+
+        result = func(*args)
+        cache[args] = result
+        return result
 
     return wrapper
 
 
-# @memoize
-# def fibonacci(n):
-#     if n <= 1:
-#         return n
-#     else:
-#         return fibonacci(n-1) + fibonacci(n-2)
-
-
 def timing_decorator(func):
+    """Execution time measurement decorator."""
 
     def wrapper(*args, **kwargs):
         start_time = time.time()
@@ -78,13 +69,6 @@ def timing_decorator(func):
     return wrapper
 
 
-# @timing_decorator
-# def my_function():
-#     # some code here
-#     time.sleep(1)  # simulate some time-consuming operation
-#     return
-
-
 logging.basicConfig(level=logging.INFO)
 
 
@@ -92,9 +76,9 @@ def log_execution(func):
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
-        logging.info(f"Executing {func.__name__}")
+        logging.info("Executing %s", func.__name__)
         result = func(*args, **kwargs)
-        logging.info(f"Finished executing {func.__name__}")
+        logging.info("Finished executing %s", func.__name__)
         return result
 
     return wrapper

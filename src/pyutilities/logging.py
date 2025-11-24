@@ -7,7 +7,7 @@
 Logging config for cmd line utilities.
 
 Created:  Dmitrii Gusev, 27.11.2022
-Modified: Dmitrii Gusev, 25.06.2024
+Modified: Dmitrii Gusev, 24.11.2025
 """
 
 import logging
@@ -15,8 +15,8 @@ import logging.config
 import os
 from pathlib import Path
 
-logs_dir: str = str(Path.home()) + "/.pyutilities/logs"
-encoding: str = "utf-8"
+LOGS_DIR: str = str(Path.home()) + "/.pyutilities/logs"
+ENCODING: str = "utf-8"
 
 LOGGING_CONFIG = {
     "version": 1,
@@ -44,19 +44,19 @@ LOGGING_CONFIG = {
             "class": "logging.handlers.RotatingFileHandler",
             "level": "DEBUG",
             "formatter": "simple",
-            "filename": logs_dir + "/log_info.log",
+            "filename": LOGS_DIR + "/log_info.log",
             "maxBytes": 10485760,  # 10MB
             "backupCount": 20,
-            "encoding": encoding,
+            "encoding": ENCODING,
         },
         "error_file_handler": {
             "class": "logging.handlers.RotatingFileHandler",
             "level": "ERROR",
             "formatter": "simple",
-            "filename": logs_dir + "/log_errors.log",
+            "filename": LOGS_DIR + "/log_errors.log",
             "maxBytes": 10485760,  # 10MB
             "backupCount": 20,
-            "encoding": encoding,
+            "encoding": ENCODING,
         },
     },  # end of handlers block
     "loggers": {
@@ -81,7 +81,7 @@ LOGGING_CONFIG = {
 def init_logging():
 
     # create logs directory
-    os.makedirs(str(logs_dir), exist_ok=True)
+    os.makedirs(str(LOGS_DIR), exist_ok=True)
 
     # init logging
     logging.config.dictConfig(LOGGING_CONFIG)

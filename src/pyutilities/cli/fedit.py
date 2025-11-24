@@ -5,7 +5,7 @@
 Inplace/inline file editing utility. Executable from cmd line.
 
 Created:  Gusev Dmitrii, 13.04.2017
-Modified: Gusev Dmitrii, 25.06.2024
+Modified: Gusev Dmitrii, 24.11.2025
 """
 
 # todo: implement: add line mode (if not found needed line)
@@ -34,9 +34,11 @@ def check_str(args, check_type, source_str, test_str):
 
     if check_type == CHECK_TYPE_STARTS:
         return source_str.startswith(test_str)
-    elif args.edit_type == CHECK_TYPE_ENDS:
+
+    if args.edit_type == CHECK_TYPE_ENDS:
         return source_str.endswith(test_str)
-    elif args.edit_type == CHECK_TYPE_CONTAINS:
+
+    if args.edit_type == CHECK_TYPE_CONTAINS:
         return test_str in source_str
 
 
@@ -92,7 +94,7 @@ def fedit():
     for line in fileinput.input(files=[args.infile], inplace=True, backup=".original"):
         # if we found string - we will replace it
         if check_str(args, args.edit_type, line, args.sourceStr):
-            sys.stderr.write("Found: {}\n".format(args.sourceStr))
+            sys.stderr.write(f"Found: {args.sourceStr}\n")
             print(args.destStr)
         else:
             print(line)

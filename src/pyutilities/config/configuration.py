@@ -48,7 +48,7 @@ class Configuration(object):
         self.log.addHandler(logging.NullHandler())  # add null handler to prevent exceptions
         self.log.debug("Initializing Configuration() instance...")
         self.log.debug(
-            "Load configuration:\n\tpath -> %s\n\tdict -> %s\n\toverride config -> %s" "\n\tmerge env -> %s",
+            "Load configuration:\n\tpath -> %s\n\tdict -> %s\n\toverride config -> %s\n\tmerge env -> %s",
             path_to_config,
             dict_to_merge,
             is_override_config,

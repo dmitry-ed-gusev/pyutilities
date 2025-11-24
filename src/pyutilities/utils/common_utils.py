@@ -5,20 +5,23 @@ Common utilities module.
 
 Useful materials:
     - (datetime) https://docs.python.org/3/library/datetime.html#strftime-strptime-behavior
-    - (list of dicts to csv) https://stackoverflow.com/questions/3086973/how-do-i-convert-this-list-of-dictionaries-to-a-csv-file
+    - (list of dicts to csv) https://stackoverflow.com/questions/3086973/
+        how-do-i-convert-this-list-of-dictionaries-to-a-csv-file
 
 Created:  Gusev Dmitrii, 10.10.2022
-Modified: Dmitrii Gusev, 28.07.2025
+Modified: Dmitrii Gusev, 24.11.2025
 """
 
+import os
 import csv
+import time
 import inspect
 import logging
-import os
 import threading
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Any
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
+from pyutilities.defaults import DEFAULT_ENCODING
 from pyutilities.exception import PyUtilitiesException
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
@@ -66,12 +69,10 @@ def threadsafe_function(fn):
 def debug_benchmark(func):
     """Decorator: logs the given function execution time."""
 
-    import time
-
     def wrapper(*args, **kwargs):
         t = time.process_time()
         res = func(*args, **kwargs)
-        log.debug(f"Function [{func.__name__}] executed in [{time.process_time() - t}] second(s).")
+        log.debug("Function [%s] executed in [%s] second(s).", func.__name__, time.process_time() - t)
         return res
 
     return wrapper
@@ -81,7 +82,7 @@ def debug_function_name(func):
     """Decorator: logs the name of the decorating function."""
 
     def wrapper(*args, **kwargs):
-        log.debug(f"Function [{func.__name__}] is working.")
+        log.debug("Function [%s] is working.", func.__name__)
         # print(func.__name__, args, kwargs)
         res = func(*args, **kwargs)
         return res
@@ -96,14 +97,14 @@ def myself():
     return inspect.stack()[1][3]
 
 
-def build_variations_list() -> list:
+def build_variations_list() -> list[Any]:
     """Build list of possible variations of provided symbols.
     :return: list of variations
     """
 
     log.debug("build_variations_list(): processing.")
 
-    result = list()  # resulting list
+    result = []  # resulting list
     for letter1 in RUS_CHARS + ENG_CHARS + NUM_CHARS:
         for letter2 in RUS_CHARS + ENG_CHARS + NUM_CHARS:
             result.append(letter1 + letter2)  # add value to resulting list
@@ -116,7 +117,7 @@ def build_variations_list() -> list:
 def add_kv_2_dict(dicts_list: List[Dict[str, str]], kv: Tuple[str, str]):
     """Add specified key-value pair to all dictionaries in the provided dicts list."""
 
-    log.debug(f"add_kv_2_dict(): adding key:value [{kv}] to dicts list.")
+    log.debug("add_kv_2_dict(): adding key:value [%s] to dicts list.", kv)
 
     if not dicts_list:
         raise ValueError("Provided empty dictionaries list!")
@@ -134,7 +135,7 @@ def dict_2_csv(dicts_list: List[Dict[str, str]], filename: str, overwrite_file: 
     the existing file will be overwritten, otherwise existing file will raise an exception.
     """
 
-    log.debug(f"dict_2_csv(): saving the dictionaries list to CSV: [{filename}].")
+    log.debug("dict_2_csv(): saving the dictionaries list to CSV: [%s].", filename)
 
     if not dicts_list or not filename:  # I - fail-fast check
         raise ValueError(f"Provided empty dictionaries list: [{not dicts_list}] or filename: [{filename}]!")
@@ -143,7 +144,7 @@ def dict_2_csv(dicts_list: List[Dict[str, str]], filename: str, overwrite_file: 
         raise PyUtilitiesException(f"File [{filename}] exists but overwrite is [{overwrite_file}]!")
 
     keys = dicts_list[0].keys()
-    with open(filename, "w", newline="") as output_file:
+    with open(filename, "w", newline="", encoding=DEFAULT_ENCODING) as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(dicts_list)

@@ -163,7 +163,7 @@ def is_number(value: str, trace: bool = False) -> bool:
         result = True
 
     if trace:
-        log.debug("is_number(): input [%s], result [%s].", str, result)
+        log.debug("is_number(): input [%s], result [%s].", value, result)
 
     return result
 
@@ -343,5 +343,4 @@ def str_2_float(string: str | None, trace: bool = False) -> float:
 
 
 if __name__ == "__main__":
-    # print(MSG_MODULE_ISNT_RUNNABLE)
-    print("333 ===>", coalesce(None, "", "asdf", 0.0))
+    print(MSG_MODULE_ISNT_RUNNABLE)
