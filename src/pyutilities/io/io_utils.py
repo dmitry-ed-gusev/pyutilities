@@ -4,7 +4,7 @@
 IO Utilities module.
 
 Created:  Dmitrii Gusev, 04.04.2017
-Modified: Dmitrii Gusev, 28.07.2025
+Modified: Dmitrii Gusev, 25.11.2025
 """
 
 import errno
@@ -63,25 +63,6 @@ def list_files(path, out_to_console=False):
     _list_files(path, files, out_to_console)
     return files
 
-# def save_alert_to_file(alert_json: str, filename: str, overwrite: bool = True) -> str:
-#     """Save single file with one alert data - can save both full alert and simple alert."""
-
-#     logger.debug(f"save_alert_file(): saving alert JSON to: [{filename=}].")
-
-#     # fast-check for input parameters
-#     if not alert_json or not alert_json.strip():
-#         raise ValueError("Provided empty Alert JSON file.")
-
-#     if not filename or not filename.strip():
-#         raise ValueError("Provided empty file name for saving JSON!")
-
-#     # saving the file, overwriting (y/n) - depending on the parameter
-#     with open(filename, ("w" if overwrite else "x"), encoding=DEFAULT_ENCODING) as fh:
-#         fh.write(alert_json)
-
-#     # returning path - where file was saved
-#     return filename
-
 
 def str_2_file(filename: str, content: str, overwrite: bool = False, encoding: str = DEFAULT_ENCODING):
     """Write string/text content to the provided file."""
@@ -95,7 +76,7 @@ def str_2_file(filename: str, content: str, overwrite: bool = False, encoding: s
         try:
             os.makedirs(os.path.dirname(filename))  # create a dir for file
         except OSError as exc:  # guard against race condition
-            if exc.errno != errno.EXIST:
+            if exc.errno != errno.EEXIST:
                 raise
 
     with open(filename, "w", encoding=encoding) as f:  # write content to a file
@@ -131,7 +112,7 @@ def read_yaml(file_path: str, encoding: str = DEFAULT_ENCODING):
         cfg_file_content = cfg_file.read()
         if "\t" in cfg_file_content:  # no tabs allowed in file content
             raise IOError(f"Config file [{file_path}] contains 'tab' character!")
-        return yaml.load(cfg_file_content, Loader=yaml.FullLoader)
+        return yaml.safe_load(cfg_file_content)
 
 
 def compress_file(input_file, output_file):

@@ -4,15 +4,15 @@
 Decorators module. Contains some useful decorators.
 
 Created:  Gusev Dmitrii, 10.10.2022
-Modified: Dmitrii Gusev, 24.11.2025
+Modified: Dmitrii Gusev, 25.11.2025
 """
 
 import functools
 import logging
 import time
-from functools import wraps
 from typing import Any
 
+from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
 log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
@@ -23,8 +23,8 @@ def retry(max_tries=3, delay_seconds=1):
 
     def decorator_retry(func):
 
-        @wraps(func)
-        def wrapper_retry(*args, **kwargs):
+        @functools.wraps(func)
+        def wrapper_retry(*args, **kwargs):  # pylint: disable=inconsistent-return-statements
             tries = 0
             while tries < max_tries:
                 try:
@@ -45,6 +45,7 @@ def memoize(func):
 
     cache: dict[Any, Any] = {}
 
+    @functools.wraps(func)
     def wrapper(*args):
         if args in cache:
             return cache[args]
@@ -59,6 +60,7 @@ def memoize(func):
 def timing_decorator(func):
     """Execution time measurement decorator."""
 
+    @functools.wraps(func)
     def wrapper(*args, **kwargs):
         start_time = time.time()
         result = func(*args, **kwargs)
@@ -69,10 +71,8 @@ def timing_decorator(func):
     return wrapper
 
 
-logging.basicConfig(level=logging.INFO)
-
-
 def log_execution(func):
+    """Log function execution decorator."""
 
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -84,37 +84,5 @@ def log_execution(func):
     return wrapper
 
 
-# @log_execution
-# def extract_data(source):
-#     # extract data from source
-#     data = ...
-
-#     return data
-
-# @log_execution
-# def transform_data(data):
-#     # transform data
-#     transformed_data = ...
-
-#     return transformed_data
-
-# @log_execution
-# def load_data(data, target):
-#     # load data into target
-#     ...
-
-# def main():
-#     # extract data
-#     data = extract_data(source)
-
-#     # transform data
-#     transformed_data = transform_data(data)
-
-#     # load data
-#     load_data(transformed_data, target)
-
-# @log_execution
-# @timing_decorator
-# def my_function(x, y):
-#     time.sleep(1)
-#     return x + y
+if __name__ == "__main__":
+    print(MSG_MODULE_ISNT_RUNNABLE)

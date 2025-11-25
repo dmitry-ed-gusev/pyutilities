@@ -118,7 +118,7 @@ class HttpClient:
         # -               [status_forcelist] list
         # -   option II: -> raise for all error status codes (4xx, 5xx) except statuses from
         # -                 [status_forcelist] list and [dont_raise_for] list
-        def assert_status_hook(response, *args, **kwargs):
+        def assert_status_hook(response, *args, **kwargs):  # pylint: disable=unused-argument
             # expanded_raise_for_status(response, dont_raise_for)
             response.raise_for_status()
 
@@ -166,7 +166,9 @@ class HttpClient:
 
         log.debug(
             "HttpClient instance was initialized OK with the configuration:\n"
-            "\tHeaders: %s\n\tCookies: %s\n", self.__session.headers, self.__session.cookies
+            "\tHeaders: %s\n\tCookies: %s\n",
+            self.__session.headers,
+            self.__session.cookies,
         )
 
     def get(self, url: str, params: Dict[str, str] | None = None) -> Response:
@@ -176,8 +178,9 @@ class HttpClient:
         log.debug("WebClient.get(): %s. Params: %s.", url, params)
         return self.__session.get(url, params=params, allow_redirects=self.__allow_redirects)
 
-    def post(self, url: str, data: Dict[str, str] | None = None,
-             params: Dict[str, str] | None = None) -> Response:
+    def post(
+        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+    ) -> Response:
         """Perform HTTP POST request with retry (if necessary).
         :param data: request data -> will be added to the request body (HTTP POST)
         :param params: request parameters -> will be added to the URL
@@ -185,8 +188,9 @@ class HttpClient:
         log.debug("WebClient.post(): %s. Params: %s. Data: %s.", url, params, data)
         return self.__session.post(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
-    def put(self, url: str, data: Dict[str, str] | None = None,
-            params: Dict[str, str] | None = None) -> Response:
+    def put(
+        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+    ) -> Response:
         """Perform HTTP PUT request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
@@ -194,8 +198,9 @@ class HttpClient:
         log.debug("WebClient.put(): %s. Params: %s. Data: %s.", url, params, data)
         return self.__session.put(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
-    def delete(self, url: str, data: Dict[str, str] | None = None,
-               params: Dict[str, str] | None = None) -> Response:
+    def delete(
+        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+    ) -> Response:
         """Perform HTTP DELETE request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
@@ -203,8 +208,9 @@ class HttpClient:
         log.debug("WebClient.delete(): %s. Params: %s. Data: %s.", url, params, data)
         return self.__session.delete(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
-    def head(self, url: str, data: Dict[str, str] | None = None,
-             params: Dict[str, str] | None = None) -> Response:
+    def head(
+        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+    ) -> Response:
         """Perform HTTP HEAD request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL
@@ -212,8 +218,9 @@ class HttpClient:
         log.debug("WebClient.head(): %s. Params: %s. Data: %s.", url, params, data)
         return self.__session.head(url, data=data, params=params, allow_redirects=self.__allow_redirects)
 
-    def options(self, url: str, data: Dict[str, str] | None = None,
-                params: Dict[str, str] | None = None) -> Response:
+    def options(
+        self, url: str, data: Dict[str, str] | None = None, params: Dict[str, str] | None = None
+    ) -> Response:
         """Perform HTTP OPTIONS request with retry (if necessary).
         :param data: request data -> will be added to the request body (like HTTP POST)
         :param params: request parameters -> will be added to the URL

@@ -33,7 +33,7 @@ LATIN_SYMBOLS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 ALL_SYMBOLS = SPECIAL_SYMBOLS + CYRILLIC_SYMBOLS + LATIN_SYMBOLS
 
 # set of regex for determining float values
-REGEX_FLOAT_1 = "^\d+?\.\d+?$"  # original regex
+REGEX_FLOAT_1 = "^\d+?\.\d+?$"  # original regex # pylint: disable=anomalous-backslash-in-string # noqa: W605
 REGEX_FLOAT_2 = "^\\d+?\\.\\d+?$"  # original regex with fixed warnings
 REGEX_FLOAT_3 = "^[+-]?([0-9]*[.])?[0-9]+$"  # simplified regex, matches: 123/123.456/.456
 REGEX_FLOAT_4 = "^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"  # matches as previous plus: 123.
@@ -90,8 +90,9 @@ def filter_str(string: str | None, trace: bool = False):
 
 
 @cache
-def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = None,
-                trace: bool = False) -> str:
+def process_url(
+    url: str, postfix: str = "", format_values: Tuple[str] | None = None, trace: bool = False
+) -> str:
     """Process the provided url and update it: add postfix (if provided) and add format values
     (if provided). In case empty string provided = empty string will be returned as well."""
 
@@ -111,15 +112,21 @@ def process_url(url: str, postfix: str = "", format_values: Tuple[str] | None = 
         result = processed_url
 
     if trace:  # trace output
-        log.debug("process_url(): URL [%s], postfix [%s], format values [%s].\n\t Result: [%s].",
-                  url, postfix, format_values, result)
+        log.debug(
+            "process_url(): URL [%s], postfix [%s], format values [%s].\n\t Result: [%s].",
+            url,
+            postfix,
+            format_values,
+            result,
+        )
 
     return result
 
 
 @cache
-def process_urls(urls: Dict[str, str], postfix: str = "", format_values: Tuple[str] | None = None,
-                 trace: bool = False) -> Dict[str, str]:
+def process_urls(
+    urls: Dict[str, str], postfix: str = "", format_values: Tuple[str] | None = None, trace: bool = False
+) -> Dict[str, str]:
     """Process the provided dictionary of urls with the function"""
 
     processed: Dict[str, str] = {}
@@ -143,7 +150,9 @@ def get_str_ending(string: str, symbol: str = "/", trace: bool = False) -> str:
     result: str = string
 
     if (string and string.strip()) and (symbol and symbol.strip()):  # string and symbol both are not empty
+        # fmt: off
         result = string[string.rfind(symbol.strip()) + 1:]  # processing string
+        # fmt: on
 
     if trace:  # trace output
         log.debug("get_str_ending(): string: [%s], symbol: [%s], result: [%s].", string, symbol, result)
@@ -168,7 +177,7 @@ def is_number(value: str, trace: bool = False) -> bool:
     return result
 
 
-def iter_2_str(values: Iterable[Any], braces: bool = True, trace: bool = False) -> str:
+def iter_2_str(values: Iterable[Any], braces: bool = True, trace: bool = False) -> str:  # noqa: C901
     """Convert number of iterable values to a single string value. If iterable is empty - the result is
     empty string. If braces == True, the braces will be added around the resulting string. For each value
     in the iterable trailing/leading spaces will be cut, duplicates will be removed, duplicate numbers
@@ -289,8 +298,17 @@ def str_2_bool(string: str | None, trace: bool = False) -> bool:
     if not string or not string.strip():  # empty string - returning False
         result = False
     else:
-        result = string.strip().lower() in \
-            ["true", "1", "t", "y", "yes", "yeah", "yup", "certainly", "uh-huh"]
+        result = string.strip().lower() in [
+            "true",
+            "1",
+            "t",
+            "y",
+            "yes",
+            "yeah",
+            "yup",
+            "certainly",
+            "uh-huh",
+        ]
 
     if trace:
         log.debug("str_2_bool(): input string [%s], result [%s].", string, result)

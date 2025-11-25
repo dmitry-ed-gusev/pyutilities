@@ -31,7 +31,7 @@ YAML_EXTENSION_2 = ".yaml"
 DEFAULT_ENCODING = "UTF8"
 
 
-class Configuration(object):
+class Configuration:
     """Tree-like configuration-holding structure, allows loading from YAML and retrieving values
     by using chained hierarchical key with dot-separated levels, e.g. "hdfs.namenode.address".
     Can include environment variables (switch by key), environment usually override internal values.
@@ -197,7 +197,7 @@ class Configuration(object):
         while len(keys) > 1:
             cur = keys.pop(0)
             if cur not in values:
-                values[cur] = dict()
+                values[cur] = {}
             values = values[cur]
         values[keys[0]] = value
 
@@ -223,20 +223,22 @@ class Configuration(object):
         """
         if not values:
             raise KeyError
+
         keys = key.split(".", 1)
         if len(keys) < 2:
             return values[keys[0]]
-        else:
-            return self.__get_value(keys[1], values[keys[0]])
+
+        return self.__get_value(keys[1], values[keys[0]])
 
     def __contains_key(self, key, values):
         if not values:
             return False
         keys = key.split(".", 1)
+
         if len(keys) < 2:
             return keys[0] in values
-        else:
-            return self.__contains_key(keys[1], values[keys[0]])
+
+        return self.__contains_key(keys[1], values[keys[0]])
 
     def contains_key(self, key):
         return self.__contains_key(key, self.config_dict)

@@ -12,16 +12,15 @@ Created:  Gusev Dmitrii, 10.10.2022
 Modified: Dmitrii Gusev, 24.11.2025
 """
 
-import os
 import csv
-import time
 import inspect
 import logging
+import os
 import threading
-from typing import Dict, List, Tuple, Any
+import time
+from typing import Any, Dict, List, Tuple
 
-from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
-from pyutilities.defaults import DEFAULT_ENCODING
+from pyutilities.defaults import DEFAULT_ENCODING, MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.exception import PyUtilitiesException
 
 # configure logger on module level. it isn't a good practice, but it's convenient.
