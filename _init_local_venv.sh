@@ -9,7 +9,7 @@
 #       - this project uses poetry for dependency management - be sure the utility is installed
 #
 #   Created:  Dmitrii Gusev, 21.07.2025
-#   Modified: Dmitrii Gusev, 20.11.2025
+#   Modified: Dmitrii Gusev, 25.11.2025
 #
 # ##################################################################################################
 
@@ -33,7 +33,9 @@ export _MSG_NO_SYS_PIP="ERROR: no installed pip/pip3 found in the system!"
 export _MSG_NO_SYS_POETRY="ERROR: no installed poetry utility found in the system!"
 
 # -- clear screen and print title
-clear; printf "=== %s %s - Python Virtual Env initializing... ===\n\n" "${_CURRENT_DATE}" "${_CURRENT_TIME}"
+clear;
+printf "\n === %s %s - Python Virtual Env initializing :: starting ===\n\n" \
+    "${_CURRENT_DATE}" "${_CURRENT_TIME}"
 sleep 2
 
 # -- Step I. Check the machine and determine the python/pip versions, print them.
@@ -120,4 +122,5 @@ export _CURRENT_DATE
 _CURRENT_TIME=$(date +"%H:%M:%S") || { printf "\nError while calculating system time!\n"; sleep 3; exit 1; }
 export _CURRENT_TIME
 # -- print end-script message
-printf "\n=== %s %s - Python Virtual Env initialized. ===\n\n" "${_CURRENT_DATE}" "${_CURRENT_TIME}"
+printf "\n === %s %s - Python Virtual Env initializing :: done. ===\n\n" \
+    "${_CURRENT_DATE}" "${_CURRENT_TIME}"
