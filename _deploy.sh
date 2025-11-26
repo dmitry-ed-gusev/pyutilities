@@ -18,13 +18,10 @@ export LANG="en_US.UTF-8"
 printf "=== Deploy the [PyUtilities] library :: starting. ===\n\n"
 
 # -- select .env* config file - by default we use the local config
-export ENV_FILE=".env.local"
-# -- if provided cmd line option - use its value
-[[ -n ${2-} ]] && { export ENV_FILE=${2}; }
-printf "\nINFO: using env file: [%s]\n" "${ENV_FILE}"
+export ENV_FILE=".env.deploy"
+printf "\n = INFO: using deploy env file: [%s]\n" "${ENV_FILE}"
 
-# -- loading environment variables from file to shell: if file exists - get lines <name=value> not starting
-#    with # and execute <export name=value>
+# -- loading env variables from file to shell - get lines <name=value> not starting with #
 # shellcheck disable=SC2046
 [ ! -f "${ENV_FILE}" ] || export $(grep -v '^#' "${ENV_FILE}" | xargs)
 printf "\nINFO: all environment variables from file [%s] were loaded.\n" "${ENV_FILE}"
