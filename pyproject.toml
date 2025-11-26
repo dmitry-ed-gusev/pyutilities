@@ -20,13 +20,13 @@ build-backend = "poetry.core.masonry.api"
 # -- project / poetry utility meta-information
 [project]
 name = "pyutilities"
-version = "2.0.0beta2"
+version = "2.0.0beta3"
 description = "PyUtilities :: Useful python 3 utilities library for various use cases."
 authors     = [
     {name = "Dmitrii Gusev", email = "dmitry.ed.gusev@gmail.com"},
 ]
 license  = "MIT"
-readme   = "README.md"
+readme   = "docs/README-PUB.md"
 requires-python = ">=3.10,<3.11.dev0"
 keywords    = ["Python Utilities", "Useful Functions", "String Utilities", "CLI Functions", "toolset", "library", "System Utilities"]
 classifiers = [

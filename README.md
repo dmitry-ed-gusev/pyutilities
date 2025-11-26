@@ -3,25 +3,16 @@
 Version 2.1.0, 2018 - 2025, Dmitrii Gusev  
 *Last update: 25.11.2025*
 
+[TOC]
+
 ## Project Description
 
 Useful utilities functions for various needs for the python 3.10+. Containing 'general purpose' functions.
 
-## Versions history
+## Docs Links
 
-### 2.1.0
+TBD
 
-Major release with complete set of useful 'general purpose' functions. Documentation 'is coming'...
+## Tech Details
 
-### Versions before 2.x.x
-
-**It is strongly recommended: don't use versions prior to the 2.x.x!**
-
-Main properties of the previous library versions:
-
-- set of the 'minor' and 'experimental' releases
-- various set of functions without consistency
-- many 'experimental' functions without proper testing
-- a lot of unnecessary code
-- experiments with building/dependencies management tools - no tool, pipenv poetry
-- unstable list of dependencies with obsolete versions
+TBD
