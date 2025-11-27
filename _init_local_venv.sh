@@ -9,7 +9,7 @@
 #       - this project uses poetry for dependency management - be sure the utility is installed
 #
 #   Created:  Dmitrii Gusev, 21.07.2025
-#   Modified: Dmitrii Gusev, 25.11.2025
+#   Modified: Dmitrii Gusev, 27.11.2025
 #
 # ##################################################################################################
 
@@ -33,7 +33,7 @@ export _MSG_NO_SYS_PIP="ERROR: no installed pip/pip3 found in the system!"
 export _MSG_NO_SYS_POETRY="ERROR: no installed poetry utility found in the system!"
 
 # -- clear screen and print title
-clear;
+clear
 printf "\n === %s %s - Python Virtual Env initializing :: starting ===\n\n" \
     "${_CURRENT_DATE}" "${_CURRENT_TIME}"
 sleep 2

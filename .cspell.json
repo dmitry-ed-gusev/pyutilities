@@ -31,7 +31,7 @@
     "ignoreWords": [
         "pyutilities", "абвгдеёжзийклмнопрстуфхцчшщъыьэюя", "rtype", "namenode", "xlrd", "xlwt", "loguru",
         "xlwings", "pyyaml", "openpyxl", "urllib3", "paramiko", "prettytable", "useragent", "threadsafe",
-        "forcelist", "httpclient", "rsps", "webclient", "fedit", "functool", "eexist"
+        "forcelist", "httpclient", "rsps", "webclient", "fedit", "functool", "eexist", "hjson"
     ],
 
     // a list of globs to specify which files are to be ignored

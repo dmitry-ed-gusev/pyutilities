@@ -8,7 +8,7 @@
 #       - executing pylint checker
 #
 #   Created:  Dmitrii Gusev, 30.11.2021
-#   Modified: Dmitrii Gusev, 25.11.2025
+#   Modified: Dmitrii Gusev, 27.11.2025
 #
 #############################################################################################################
 
@@ -23,7 +23,7 @@ export PYLINT_FAILURE_SCORE="9.8"
 export WORKERS_NUMBER="4"
 export SRC_PATH="src/pyutilities/"
 
-printf "=== Build the [PyUtilities] library :: starting. ===\n\n"
+clear; printf "=== Build the [PyUtilities] library :: starting. ===\n\n"; sleep 1
 
 # -- Step 1. Run python tests with pytest and coverage (pytest-cov). See pyproject.toml for config.
 # --         Fail if tests are not passed (even one simple test).

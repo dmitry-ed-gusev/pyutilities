@@ -11,7 +11,8 @@ Useful utilities functions for various needs for the python 3.10+. Containing 'g
 
 ## Docs Links
 
-TBD
+- [Git Flow](./docs/GITFLOW.%20RELEASES.md)
+- [README for pypi (publishing)](./docs/README-PUB.md)
 
 ## Tech Details
 
