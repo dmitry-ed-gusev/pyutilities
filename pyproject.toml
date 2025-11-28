@@ -20,7 +20,7 @@ build-backend = "poetry.core.masonry.api"
 # -- project / poetry utility meta-information
 [project]
 name = "pyutilities"
-version = "2.1.1"
+version = "2.1.2"
 description = "PyUtilities :: Useful python 3 utilities library for various use cases."
 authors     = [
     {name = "Dmitrii Gusev", email = "dmitry.ed.gusev@gmail.com"},
@@ -61,9 +61,9 @@ dependencies = [
 ]
 
 [project.urls]
-homepage = "https://pypi.org/project/pyutilities"
-repository = "https://github.com/dmitry-ed-gusev/pyutilities"
-documentation = "https://github.com/dmitry-ed-gusev/pyutilities"
+Homepage = "https://pypi.org/project/pyutilities"
+Repository = "https://github.com/dmitry-ed-gusev/pyutilities"
+Documentation = "https://github.com/dmitry-ed-gusev/pyutilities"
 "Bug Tracker" = "https://github.com/dmitry-ed-gusev/pyutilities/issues"
 
 # [project.scripts]

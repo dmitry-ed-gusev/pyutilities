@@ -1,7 +1,7 @@
 # Python Utilities Library
 
-Version 2.1.1, 2018 - 2025, Dmitrii Gusev  
-*Last update: 25.11.2025*
+Version 2.1.2, 2018 - 2025, Dmitrii Gusev  
+*Last update: 28.11.2025*
 
 [TOC]
 
