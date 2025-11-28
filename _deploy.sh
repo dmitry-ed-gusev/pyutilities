@@ -42,8 +42,9 @@ sleep 2
 printf "\n = INFO: publishing the library to [pypi.org]\n\n"
 
 # - key press before the actual publishing (deploy)
-read -r -p "Press any key before the deploy..."
-# poetry publish --build
+printf "\t"; read -r -p "Press any key before the deploy..."
+# poetry publish --build --verbose --dry-run
+poetry publish --verbose
 sleep 2
 
 printf "\n === Deploy the [PyUtilities] library :: done. ===\n\n"
