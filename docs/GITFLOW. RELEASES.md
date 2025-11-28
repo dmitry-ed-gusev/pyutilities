@@ -8,7 +8,7 @@
 
 The overall git flow is represented on the picture:
 
-![git flow](./git_flow.png){width=575 height=762}
+![git flow](./git_flow.png)
 
 ### Git Flow step-by-step
 
