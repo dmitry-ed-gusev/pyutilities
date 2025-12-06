@@ -52,7 +52,7 @@ dependencies = [
     "loguru==0.7.3",
     "pyyaml==6.*",
     "openpyxl==3.1.5",
-    "urllib3~=2.3",  # allowed: >=2.3.0 <3.0.0
+    "urllib3~=2.6",  # allowed: >=2.3.0 <3.0.0
     "paramiko==4.*",
     "requests~=2.32",  # allowed: >=2.32.0 <3.0.0
     "markdown~=3.7",  # allowed: >=3.7.0 <4.0.0
