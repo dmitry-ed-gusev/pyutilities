@@ -1,13 +1,20 @@
 # Python Utilities Library
 
-Version 2.1.2, 2018 - 2025, Dmitrii Gusev  
-*Last update: 28.11.2025*
+Version 2.2.0, 2018 - 2026, Dmitrii Gusev  
+*Last update: XX.XX.2026*
 
 ## Project Description
 
 Useful utilities functions for various needs for the python 3.10+. Containing 'general purpose' functions.
 
 ## Versions history
+
+### 2.2.0
+
+Added new functions:
+
+- func1()
+- func2()
 
 ### 2.1.2
 
