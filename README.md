@@ -3,8 +3,6 @@
 Version 2.2.0, 2018 - 2026, Dmitrii Gusev  
 *Last update: 19.03.2026*
 
-[TOC]
-
 ## Project Description
 
 Useful utilities functions for various needs for the python 3.10+. Containing 'general purpose' functions.

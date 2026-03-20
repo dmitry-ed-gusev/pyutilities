@@ -2,14 +2,24 @@
 
 ####################################################################################################
 #
-#   Python virtual environment initialization script for the project [pyutilities].
+#   Python virtual environment (venv) initialization script for bash (MinGW)/Linux. Script does
+#   the following:
+#       - check/show the machine architecture and python/pip/poetry, if no installed
+#           python/pip/poetry found - exit (no further execution in the invalid environment)
+#       - upgrade global pip (if there are updates)
+#       - remove the current virtual environment (if exists) - delete environment folder
+#       - cleanup the project folder: remove tmp dirs - see variable _TEMPORARY_DIRS
+#       - create new virtual environment and activate it
+#       - upgrade pip in the virtual environment and install dependencies into the newly created
+#            virtual environment
 #
-#   Script notes:
-#       - script is intended for the Windows environment and should be used in GitBash/Cygwin/MinGW
-#       - this project uses poetry for dependency management - be sure the utility is installed
+#   Warning! Must-have pre-requisites for this script:
+#       - python version 3.14.x (3.14+ is a must)
+#       - the commands python/pip must exist in the bash (environment)
+#       - poetry must be installed
 #
 #   Created:  Dmitrii Gusev, 21.07.2025
-#   Modified: Dmitrii Gusev, 27.11.2025
+#   Modified: Dmitrii Gusev, 20.03.2026
 #
 # ##################################################################################################
 
@@ -17,110 +27,98 @@
 set -euf -o pipefail
 export LANG='en_US.UTF-8'
 
-# -- get current date and time
-_CURRENT_DATE=$(date +"%d-%m-%Y") || { printf "\nError while calculating system date!\n"; sleep 3; exit 1; }
-export _CURRENT_DATE
-_CURRENT_TIME=$(date +"%H:%M:%S") || { printf "\nError while calculating system time!\n"; sleep 3; exit 1; }
-export _CURRENT_TIME
-
 # -- some useful script defaults
 export _VERBOSE="--verbose"
-export _MSG_END_OF_STEP="========== done."
-export _CMD_PYTHON="-"
-export _CMD_PIP="-"
-export _MSG_NO_SYS_PYTHON="ERROR: no installed python/python3 found in the system!"
-export _MSG_NO_SYS_PIP="ERROR: no installed pip/pip3 found in the system!"
-export _MSG_NO_SYS_POETRY="ERROR: no installed poetry utility found in the system!"
+export _VERBOSE_REMOVAL="--verbose"
+export _TEMPORARY_DIRS=('.venv/' 'dist/' '.coverage/' '.pytest_cache/' '.mypy_cache/' '.hypothesis/')
+export _STEP_DELAY=1
 
-# -- clear screen and print title
-clear
-printf "\n === %s %s - Python Virtual Env initializing :: starting ===\n\n" \
-    "${_CURRENT_DATE}" "${_CURRENT_TIME}"
-sleep 2
+# -- script error messages
+export _MSG_END_OF_STEP="= ========= done."
+export _MSG_ERR_DATETIME_CALC="= [ERROR] Calculating system date/time issue!"
+export _MSG_ERR_NO_APP="= [ERROR] Installed application doesn't found in the system: "
+export _MSG_ERR_TMP_FOLDER_REMOVE="= [ERROR] There are issues during removing the temporary folder!"
 
-# -- Step I. Check the machine and determine the python/pip versions, print them.
-printf "\n= INFO: Step I. Checking the machine architecture and python/pip/poetry versions.\n"
+# -- get current date/time (we don't need export it), clear screen and print title
+_CURR_DATETIME="[$(date +"%d-%m-%Y %H:%M:%S")]" || { printf "\n%s\n" "${_MSG_ERR_DATETIME_CALC}"; exit 1; }
+clear; printf "=== %s Python Virtual Env init :: starting. ===\n\n" "${_CURR_DATETIME}";
+
+# -- Step I. Check the machine and determine the python/pip versions
+printf "\n= [INFO] Step I: checking the architecture/python/pip/poetry versions.\n"
 unameOut="$(uname -s)" # get machine name (short)
-# - based on the machine type - setup aliases (env variables)
-case "${unameOut}" in
-    Linux*)     export _MACHINE_TYPE=Linux;  export _CMD_PYTHON=python3; export _CMD_PIP=pip3;;
-    Darwin*)    export _MACHINE_TYPE=Mac;    export _CMD_PYTHON=python3; export _CMD_PIP=pip3;;
-    CYGWIN*)    export _MACHINE_TYPE=Cygwin; export _CMD_PYTHON=python;  export _CMD_PIP=pip;; # win emu
-    MINGW*)     export _MACHINE_TYPE=MinGW;  export _CMD_PYTHON=python;  export _CMD_PIP=pip;; # win emu
-    *)          printf "Unknown machine: [%s]!" "${unameOut}"; exit 1;;
-esac
-# - debug output I - machine type/python cmd/pip cmd
-printf "\n=       Machine type: [%s], using python: [%s], using pip: [%s].\n" \
-    "${_MACHINE_TYPE}" "${_CMD_PYTHON}" "${_CMD_PIP}"
-
-# - debug output II - python version/pip version/poetry version
-printf "\n=       Using python 3/pip 3 versions:\n\n"
-printf "\t"; "${_CMD_PYTHON}" --version || { printf "\n%s\n" "${_MSG_NO_SYS_PYTHON}"; sleep 5; exit 1; }
-printf "\t"; "${_CMD_PIP}" --version || { printf "\n%s\n" "${_MSG_NO_SYS_PIP}"; sleep 5; exit 1; }
-printf "\t"; poetry --verbose --version || { printf "\n%s\n" "${_MSG_NO_SYS_POETRY}"; sleep 5; exit 1; }
-printf "\n========== done.\n"
-
-# - debug output III - show python paths
-printf "\n= INFO: \n"; $_CMD_PYTHON -m site; printf "\n"
+# - debug output I - machine/python/pip
+printf "\n= [INFO] Machine type: [%s].\n" "${unameOut}"
+# - debug output II - python/pip/poetry versions
+printf "\n= [INFO] Using python/pip/poetry versions:\n"
+printf "\t"; python --version 2>/dev/null || \
+    { printf "\n%s[python]\n" "${_MSG_ERR_NO_APP}"; sleep 5; exit 1; }
+printf "\t"; python -m pip --version 2>/dev/null || \
+    { printf "\n%s[pip]\n" "${_MSG_ERR_NO_APP}"; sleep 5; exit 1; }
+printf "\t"; poetry --version 2>/dev/null || \
+    { printf "\n%s[poetry]\n" "${_MSG_ERR_NO_APP}"; sleep 5; exit 1; }
+# -- debug output III - show python paths
+printf "\n= [INFO] \n"; python -m site; printf "\n"
 # - show python packages dirs (global+user) <- python code
-$_CMD_PYTHON - << END
+python - << END
 import site
 global_pkg = site.getsitepackages()
 users_pkg = site.getusersitepackages()
-print(f"\n= INFO:\nglobal packages path: [{global_pkg}].\nuser packages path: [{users_pkg}].")
+print(f"global packages path: [{global_pkg}].\nuser packages path: [{users_pkg}].")
 END
-printf "\n%s\n" "${_MSG_END_OF_STEP}"
+printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
 # -- Step II. Upgrade pip to the latest version (on the current python).
-printf "\n= INFO: Step II. Upgrading PIP in the global python environment.\n\n"
+printf "\n= [INFO] Step II. Upgrading PIP in the global python environment.\n\n"
 # shellcheck disable=SC2086
-${_CMD_PYTHON} -m pip ${_VERBOSE} --no-cache-dir install --upgrade pip
-printf "\n%s\n" "${_MSG_END_OF_STEP}"
+python -m pip ${_VERBOSE} --no-cache-dir install --upgrade pip
+printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
-# -- Step III. Remove existing virtual environment
-printf "\n= INFO: Step III. Removing existing virtual environment - [.venv].\n\n"
-rm -rf .venv || { printf "\tError removing the virtual environment!\n"; }
-sleep 2
-printf "\n========== done.\n"
+# -- Step III. Remove existing virtual environment + other temporary folders
+printf "\n= [INFO] Step III. Removing virtual environment + cleanup.\n"
+# - remove temporary directories
+for folder in "${_TEMPORARY_DIRS[@]}"; do
+    printf "\n=        Removing the temporary dir [%s].\n\n" "$folder"
+    rm -rf "${_VERBOSE_REMOVAL}" "$folder" || printf "\n=        %s\n" "${_MSG_ERR_TMP_FOLDER_REMOVE}"
+    sleep 2
+done
+# - remove cashes, pre-compiled files, coverage, etc.
+printf "\n=        Removing python caches and pre-compiled files\n"
+find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$|\.py,cover$)" | xargs rm -rf "${_VERBOSE_REMOVAL}" || \
+{ printf "\n=        Nothing to remove, project is clean.\n"; }
+printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
 # -- Step IV. Some setup for the poetry utility
-printf "\n= INFO: Step IV. Updating the poetry configuration.\n\n"
-# - list configuration
-# poetry --verbose config --list; sleep 3
-# - update configuration settings
-poetry --verbose config virtualenvs.in-project true
-# - list updated configuration
-printf "\n=       Updated configuration:\n\n"
-poetry --verbose config --list
-printf "\n========== done.\n"; sleep 3
+printf "\n= [INFO] Step IV. Updating the poetry configuration.\n\n"
+# - update poetry configuration settings and show it
+poetry ${_VERBOSE} config virtualenvs.in-project true
+printf "\n=        Poetry current configuration:\n\n"
+poetry ${_VERBOSE} config --list
+printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
 # -- Step V. Update dependencies, create virtual environment, install project
-printf "\n= INFO: Step V. Updating dependencies, creating virtual env, installing editable project.\n\n"
+printf "\n= [INFO] Step V. Upgrade pip, lock + install/update dependencies (virtual env will be created).\n\n"
+# - upgrade pip in the virtual environment
+printf "\n=        Upgrading pip in the virtual environment:\n\n"
+poetry ${_VERBOSE} run python -m pip install --upgrade pip
+# - sync 'poetry.lock' with 'pyproject.toml' if the latter was changed since the last build
+printf "\n=        Executing [poetry lock] command:\n\n"
+poetry ${_VERBOSE} lock
+# - install the project dependencies and update the project environment according to config (sync)
+printf "\n=        Executing [poetry install] command:\n\n"
+# poetry ${_VERBOSE} install --with extras
+poetry ${_VERBOSE} install
+printf "\n=        Executing [poetry sync] command in the virtual environment:\n\n"
+poetry ${_VERBOSE} sync
+# - update dependencies in the virtual environment
+printf "\n=        Executing [poetry update] command:\n\n"
+poetry ${_VERBOSE} update
+printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
-printf "\n=       Executing [poetry update] command:\n\n"
-poetry --verbose update
+# -- Step VI. Show list of the outdated dependencies in the virtual environment
+printf "\n= [INFO] Step VI. List of outdated dependencies in the virtual environment.\n\n"
+poetry ${_VERBOSE} run pip list --outdated
+printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
-printf "\n=       Upgrading pip in the virtual environment:\n\n"
-poetry --verbose run python -m pip install --upgrade pip
-
-printf "\n=       Executing [poetry install] command:\n\n"
-poetry --verbose install
-
-printf "\n=       Executing [poetry sync] command in the virtual environment:\n\n"
-poetry --verbose sync
-
-printf "\n========== done.\n"
-
-# -- Step VI. Show outdated dependencies list in the virtual environment
-printf "\n= INFO: Step VI. Showing list of outdated dependencies in the project virtual environment.\n\n"
-poetry run pip list --outdated
-printf "\n========== done.\n"
-
-# -- update the current date and time
-_CURRENT_DATE=$(date +"%d-%m-%Y") || { printf "\nError while calculating system date!\n"; sleep 3; exit 1; }
-export _CURRENT_DATE
-_CURRENT_TIME=$(date +"%H:%M:%S") || { printf "\nError while calculating system time!\n"; sleep 3; exit 1; }
-export _CURRENT_TIME
-# -- print end-script message
-printf "\n === %s %s - Python Virtual Env initializing :: done. ===\n\n" \
-    "${_CURRENT_DATE}" "${_CURRENT_TIME}"
+# -- print end-script message (with the current datetime)
+_CURR_DATETIME="[$(date +"%d-%m-%Y %H:%M:%S")]" || { printf "\n%s\n" "${_MSG_ERR_DATETIME_CALC}"; exit 1; }
+printf "\n === %s - Python Virtual Env init :: done. ===\n\n" "${_CURR_DATETIME}"; sleep 2
