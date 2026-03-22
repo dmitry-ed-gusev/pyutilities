@@ -1,13 +1,15 @@
 # Python Utilities Library
 
-Version 2.2.0, 2018 - 2026, Dmitrii Gusev  
-*Last update: 19.03.2026*
+**Version 2.2.0**, 2018 - 2026, Dmitrii Gusev.
+*Last update: 22.03.2026*
 
 ## Project Description
 
-Useful utilities functions for various needs for the python 3.10+. Containing 'general purpose' functions.
+Current development version: **2.3.0dev1**
 
-This README file is the technical one and not intended for publishing to the **pypi** registry.
+Useful utilities functions for various needs for the python 3.10+. Containing many 'general purpose' functions for various areas.
+
+This README file is the technical one and not intended for publishing to the **pypi** registry. [Publishable README](./docs/README-PUB.md)
 
 ## Project's Docs Links
 
