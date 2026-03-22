@@ -321,7 +321,8 @@ class ConfigurationXls(Configuration):
                 dictionary[name] = value
 
         elif path_to_xls.endswith("xlsx"):  # load from excel file - format xlsx
-            excel_book = openpyxl.load_workbook(path_to_xls)  # workbook
+            # load workbook by the given path
+            excel_book = openpyxl.load_workbook(path_to_xls)  # type: ignore
             excel_sheet = excel_book[config_sheet_name]  # specified sheet by name
             self.log.debug("Loaded XLSX config. Found [%s] row(s). Loading.", excel_sheet.max_row)
             for rownumber in range(excel_sheet.max_row):

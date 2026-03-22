@@ -3,8 +3,6 @@
 Version 2.2.0, 2018 - 2026, Dmitrii Gusev  
 *Last update: 19.03.2026*
 
-[TOC]
-
 ## Project Description
 
 Useful utilities functions for various needs for the python 3.10+. Containing 'general purpose' functions.
@@ -17,6 +15,11 @@ This README file is the technical one and not intended for publishing to the **p
 - [README for pypi (publishable README)](./docs/README-PUB.md)
 
 ## Tech Details
+
+### Library Usage Examples
+
+- [decorators usage](./examples/using_decorators.py) - decorators usages examples
+- [library logging configuration example](./examples/using_logging.py) - how to configure logging for this library
 
 ### Development Environment Setup
 
