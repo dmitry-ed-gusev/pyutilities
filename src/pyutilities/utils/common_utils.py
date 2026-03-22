@@ -149,5 +149,15 @@ def dict_2_csv(dicts_list: List[Dict[str, str]], filename: str, overwrite_file: 
         dict_writer.writerows(dicts_list)
 
 
+def get_value_safely(dictionary: dict[str, str | None], key: str, default_value: Any) -> Any:
+    """Safely retrieves a value from a dictionary, handling both a potential None dictionary and a
+    missing key."""
+
+    if dictionary:
+        return dictionary.get(key, default_value)  # The .get() method handles the missing key gracefully
+
+    return default_value  # If the dictionary itself is None, return the default value
+
+
 if __name__ == "__main__":
     print(MSG_MODULE_ISNT_RUNNABLE)

@@ -26,7 +26,7 @@ printf "\n = INFO: using deploy env file: [%s]\n" "${ENV_FILE}"
 [ ! -f "${ENV_FILE}" ] || export $(grep -v '^#' "${ENV_FILE}" | xargs)
 printf "\n = INFO: all environment variables from file [%s] were loaded.\n" "${ENV_FILE}"
 # - adding loaded token to poetry
-poetry config pypi-token.pypi "${PYPI_REPOSITORY_TOKEN}"
+poetry config pypi-token.pypi "${PYUTILITIES_TOKEN}"
 printf "\n = INFO: added pypi token from the file [%s]\n" "${ENV_FILE}"
 sleep 2
 
