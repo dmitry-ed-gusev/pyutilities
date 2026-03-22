@@ -8,7 +8,7 @@
 #       - most of modules should be typed (used mypy stubs libraries)
 #
 #   Created:  Dmitrii Gusev, 30.05.2025
-#   Modified: Dmitrii Gusev, 21.03.2026
+#   Modified: Dmitrii Gusev, 22.03.2026
 #
 ####################################################################################################
 
@@ -119,7 +119,9 @@ dev = [
     "viztracer ==1.1.1",
 
     # -- development-related process libraries
-    "sphinx ==9.0.4", # - documenting lib
+    "sphinx ==8.* ; python_version == '3.10'", # - docs lib - for python == 3.10
+    "sphinx ==9.* ; python_version >= '3.11' and python_version < '4.0'", # - docs lib - for python > 3.10
+
     "watchdog ==6.0.0", # - file monitor and auto-reloader
     "responses ==0.*", # - used by many testing/code quality libraries
 

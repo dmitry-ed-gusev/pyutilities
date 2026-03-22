@@ -16,6 +16,11 @@ This README file is the technical one and not intended for publishing to the **p
 
 ## Tech Details
 
+### Library Usage Examples
+
+- [decorators usage](./examples/using_decorators.py) - decorators usages examples
+- [library logging configuration example](./examples/using_logging.py) - how to configure logging for this library
+
 ### Development Environment Setup
 
 TBD

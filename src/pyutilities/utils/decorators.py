@@ -84,5 +84,37 @@ def log_execution(func):
     return wrapper
 
 
+def check_not_none(*arg_names):
+    """
+    A decorator that checks if specified arguments are not None.
+
+    Args:
+        *arg_names: Variable number of strings representing the names of
+                    arguments to check for None values.
+    """
+
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # Get the argument names from the function signature
+            func_arg_names = func.__code__.co_varnames[: func.__code__.co_argcount]
+
+            # Map positional arguments to their names
+            arg_map = dict(zip(func_arg_names, args))
+            # Add keyword arguments
+            arg_map.update(kwargs)
+
+            for name in arg_names:
+                if name not in arg_map:
+                    raise TypeError(f"Argument '{name}' not found in function signature.")
+                if arg_map[name] is None:
+                    raise ValueError(f"Argument '{name}' cannot be None.")
+            return func(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
+
+
 if __name__ == "__main__":
     print(MSG_MODULE_ISNT_RUNNABLE)
