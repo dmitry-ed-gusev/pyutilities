@@ -19,7 +19,7 @@
 #       - poetry must be installed
 #
 #   Created:  Dmitrii Gusev, 21.07.2025
-#   Modified: Dmitrii Gusev, 20.03.2026
+#   Modified: Dmitrii Gusev, 28.03.2026
 #
 # ##################################################################################################
 
@@ -29,7 +29,8 @@ export LANG='en_US.UTF-8'
 
 # -- some useful script defaults
 export _VERBOSE="--verbose"
-export _VERBOSE_REMOVAL="--verbose"
+# export _VERBOSE_REMOVAL="--verbose"
+export _VERBOSE_REMOVAL=""
 export _TEMPORARY_DIRS=('.venv/' 'dist/' '.coverage/' '.pytest_cache/' '.mypy_cache/' '.hypothesis/')
 export _STEP_DELAY=1
 
