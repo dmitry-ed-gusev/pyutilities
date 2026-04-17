@@ -4,7 +4,7 @@
 IO Utilities module.
 
 Created:  Dmitrii Gusev, 04.04.2017
-Modified: Dmitrii Gusev, 25.11.2025
+Modified: Dmitrii Gusev, 17.04.2026
 """
 
 import errno
@@ -83,7 +83,7 @@ def str_2_file(filename: str, content: str, overwrite: bool = False, encoding: s
         f.write(content)
 
 
-def file2str(filename: str, encoding: str = DEFAULT_ENCODING) -> str:
+def file_2_str(filename: str, encoding: str = DEFAULT_ENCODING) -> str:
     """Read content from the provided file as string/text."""
 
     log.debug("file2str(): reading content from file: [%s].", filename)
@@ -123,8 +123,20 @@ def compress_file(input_file, output_file):
             shutil.copyfileobj(f_in, f_out)
 
 
-def file_size(file_path: str) -> str:
-    """Function will return the file size in readable format with the highest size mark - KB/MB/GB/TB."""
+def file_str(file_path: str) -> int:
+    """Function will return the file size in bytes. In case file doesn't exist/not a file/other
+    issues - the function will return -1 (negative value)."""
+
+    if os.path.isfile(file_path):
+        file_info = os.stat(file_path)
+        return file_info.st_size
+
+    return -1
+
+
+def file_size_str(file_path: str) -> str:
+    """Function will return the file size in a human-readable format with the highest size
+    mark - KB/MB/GB/TB."""
 
     if os.path.isfile(file_path):
         file_info = os.stat(file_path)

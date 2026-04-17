@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # This code should be put in <your_package_name>/__init__.py or <your_package_name>/_version.py
 # The library version now is programmatically accessible (from code).
 
