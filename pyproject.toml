@@ -8,7 +8,7 @@
 #       - most of modules should be typed (used mypy stubs libraries)
 #
 #   Created:  Dmitrii Gusev, 30.05.2025
-#   Modified: Dmitrii Gusev, 22.03.2026
+#   Modified: Dmitrii Gusev, 19.04.2026
 #
 ####################################################################################################
 
@@ -20,7 +20,7 @@ build-backend = "poetry.core.masonry.api"
 # -- project / poetry utility meta-information
 [project]
 name = "pyutilities"
-version = "2.2.0"
+version = "2.3.0"
 description = "PyUtilities :: Useful python 3+ utilities library for various use cases."
 authors     = [
     {name = "Dmitrii Gusev", email = "dmitry.ed.gusev@gmail.com"},
@@ -54,7 +54,7 @@ dependencies = [
 
     "xlrd~=2.0.1",  # - allowed: >=2.0.1 <2.1.0
     "xlwt==1.3.0",
-    "xlwings~=0.33.9",  # - allowed: >=0.33.9 <0.34.0
+    "xlwings~=0.35",
     "loguru==0.7.3",
     "pyyaml==6.*",
     "openpyxl==3.1.5",
@@ -63,7 +63,8 @@ dependencies = [
     "requests~=2.32",  # - allowed: >=2.32.0 <3.0.0
     "markdown~=3.7",  # - allowed: >=3.7.0 <4.0.0
     "prettytable~=3.14",  # - allowed: >=3.14.0 <4.0.0
-    "fake-useragent~=2.0"  # - allowed: >=2.0.0 <3.0.0
+    "fake-useragent~=2.0",  # - allowed: >=2.0.0 <3.0.0
+    "click~=8.3"
 
 ]
 
@@ -140,6 +141,13 @@ research = [ # - research dependencies (Jupyter, etc.)
 [tool.poetry]
 packages = [{include = "pyutilities", from = "src"}]
 
+# -- poetry :: source repositories setup
+[[tool.poetry.source]]
+name = "severstal_repo"
+url = "https://repo.severstal.severstalgroup.com/artifactory/api/pypi/pypi/simple/"
+# priority = "primary" # - primary packages source
+priority = "supplemental" # - packages source will be used when primary is not available...
+
 [tool.poetry.dependencies]
 python = ">=3.10,<4"
 
@@ -149,8 +157,8 @@ Repository = "https://github.com/dmitry-ed-gusev/pyutilities"
 Documentation = "https://github.com/dmitry-ed-gusev/pyutilities"
 "Bug Tracker" = "https://github.com/dmitry-ed-gusev/pyutilities/issues"
 
-# [project.scripts]
-# my_package_cli = 'my_package.console:run'
+[project.scripts]
+pyutils = 'pyutilities.cli.pyutils:pyutils'
 
 # -- flake8 tool
 [tool.flake8]

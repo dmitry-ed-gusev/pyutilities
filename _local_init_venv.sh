@@ -19,7 +19,7 @@
 #       - poetry must be installed
 #
 #   Created:  Dmitrii Gusev, 21.07.2025
-#   Modified: Dmitrii Gusev, 20.03.2026
+#   Modified: Dmitrii Gusev, 19.04.2026
 #
 # ##################################################################################################
 
@@ -29,7 +29,8 @@ export LANG='en_US.UTF-8'
 
 # -- some useful script defaults
 export _VERBOSE="--verbose"
-export _VERBOSE_REMOVAL="--verbose"
+# export _VERBOSE_REMOVAL="--verbose"
+export _VERBOSE_REMOVAL=""
 export _TEMPORARY_DIRS=('.venv/' 'dist/' '.coverage/' '.pytest_cache/' '.mypy_cache/' '.hypothesis/')
 export _STEP_DELAY=1
 
@@ -79,7 +80,7 @@ printf "\n= [INFO] Step III. Removing virtual environment + cleanup.\n"
 for folder in "${_TEMPORARY_DIRS[@]}"; do
     printf "\n=        Removing the temporary dir [%s].\n\n" "$folder"
     rm -rf "${_VERBOSE_REMOVAL}" "$folder" || printf "\n=        %s\n" "${_MSG_ERR_TMP_FOLDER_REMOVE}"
-    sleep 2
+    sleep "${_STEP_DELAY}"
 done
 # - remove cashes, pre-compiled files, coverage, etc.
 printf "\n=        Removing python caches and pre-compiled files\n"
@@ -121,4 +122,4 @@ printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
 # -- print end-script message (with the current datetime)
 _CURR_DATETIME="[$(date +"%d-%m-%Y %H:%M:%S")]" || { printf "\n%s\n" "${_MSG_ERR_DATETIME_CALC}"; exit 1; }
-printf "\n === %s - Python Virtual Env init :: done. ===\n\n" "${_CURR_DATETIME}"; sleep 2
+printf "\n === %s - Python Virtual Env init :: done. ===\n\n" "${_CURR_DATETIME}"; sleep "${_STEP_DELAY}"
