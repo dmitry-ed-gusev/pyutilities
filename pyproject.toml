@@ -8,7 +8,7 @@
 #       - most of modules should be typed (used mypy stubs libraries)
 #
 #   Created:  Dmitrii Gusev, 30.05.2025
-#   Modified: Dmitrii Gusev, 17.04.2026
+#   Modified: Dmitrii Gusev, 19.04.2026
 #
 ####################################################################################################
 
@@ -158,7 +158,7 @@ Documentation = "https://github.com/dmitry-ed-gusev/pyutilities"
 "Bug Tracker" = "https://github.com/dmitry-ed-gusev/pyutilities/issues"
 
 [project.scripts]
-pyutils = 'pyutilities.cli.pyutils:cli'
+pyutils = 'pyutilities.cli.pyutils:pyutils'
 
 # -- flake8 tool
 [tool.flake8]

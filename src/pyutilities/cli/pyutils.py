@@ -8,6 +8,7 @@ Modified: Dmitrii Gusev, 17.04.2026
 """
 
 import click
+
 from pyutilities import __version__
 
 MSG_VERSION = f"\nPy Utilities, version: {__version__}, (C) Dmitrii Gusev, 2018-2026.\n"
