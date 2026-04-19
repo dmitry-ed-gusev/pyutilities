@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-###############################################################################
+#############################################################################################################
 #
 #   Deployment script for [pyutilities] project.
 #   Script can be run from outside of virtual (pipenv) environment (from the
 #   system shell) and from the pipenv environment as well (pipenv shell).
 #
 #   Created:  Dmitrii Gusev, 27.11.2022
-#   Modified: Dmitrii Gusev, 27.11.2025
+#   Modified: Dmitrii Gusev, 19.04.2026
 #
-###############################################################################
+#############################################################################################################
 
 # -- safe bash scripting + encoding
 set -euf -o pipefail
@@ -30,13 +30,9 @@ poetry config pypi-token.pypi "${PYUTILITIES_TOKEN}"
 printf "\n = INFO: added pypi token from the file [%s]\n" "${ENV_FILE}"
 sleep 2
 
-# -- Step III. Reload the local virtual environment
-source ./_init_local_venv.sh
-sleep 2
-
-# -- Step IV. Build the project
-source ./_build.sh
-sleep 2
+# -- Step III. Reload the local virtual environment and build the project
+# source ./_local_full_build.sh
+# sleep 2
 
 # -- Step V. Publishing the library to pypi.org
 printf "\n = INFO: publishing the library to [pypi.org]\n\n"

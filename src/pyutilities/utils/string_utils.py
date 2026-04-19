@@ -10,11 +10,11 @@ in 'fast' executing code, where logging will just add additional complexity and 
 Also most of the functions use LRU feature of the python language.
 
 Created:  Dmitrii Gusev, 15.04.2019
-Modified: Dmitrii Gusev, 23.11.2025
+Modified: Dmitrii Gusev, 17.04.2026
 """
 
 import logging
-from functools import cache
+from functools import lru_cache
 from re import match as re_match
 from typing import Any, Dict, Iterable, Tuple
 
@@ -38,10 +38,13 @@ REGEX_FLOAT_2 = "^\\d+?\\.\\d+?$"  # original regex with fixed warnings
 REGEX_FLOAT_3 = "^[+-]?([0-9]*[.])?[0-9]+$"  # simplified regex, matches: 123/123.456/.456
 REGEX_FLOAT_4 = "^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"  # matches as previous plus: 123.
 
+# cache setup (size) for cached functions/methods
+LRU_CACHE_SIZE: int = 128
 
-@cache
+
 def trim_2_none(string: str | None, trace: bool = False) -> str | None:
-    """Trim the provided string to None (if empty) or just strip leading/trailing whitespaces."""
+    """NOT CACHED. Trim the provided string to None (if it is None or empty - only spaces) or just strip
+    leading/trailing whitespaces and return the string."""
 
     if string and string.strip():  # string isn't empty - trimming whitespaces
         result = string.strip()
@@ -54,9 +57,15 @@ def trim_2_none(string: str | None, trace: bool = False) -> str | None:
     return result
 
 
-@cache
+@lru_cache(maxsize=LRU_CACHE_SIZE)
+def trimc_2_none(string: str | None, trace: bool = False) -> str | None:
+    """CACHED version of the trim_2_none()."""
+    return trim_2_none(string, trace)
+
+
 def trim_2_empty(string: str | None, trace: bool = False) -> str:
-    """Trim the provided string to empty string - '' or "" - (if empty) or just strip whitespaces."""
+    """NOT CACHED. Trim the provided string to empty string - ''/"" - (if empty or None) or just
+    strip whitespaces and return the string."""
 
     if string and string.strip():  # string isn't empty - trimming whitespaces
         result = string.strip()
@@ -69,10 +78,16 @@ def trim_2_empty(string: str | None, trace: bool = False) -> str:
     return result
 
 
-@cache
-def filter_str(string: str | None, trace: bool = False):
-    """Filter out all unnecessary/unwanted symbols from string (clear string) except letters, numbers,
-    spaces, commas. By default, decode input string in unicode (utf-8)."""
+@lru_cache(maxsize=LRU_CACHE_SIZE)
+def trimc_2_empty(string: str | None, trace: bool = False) -> str:
+    """CACHED version of the trim_2_empty()."""
+    return trim_2_empty(string, trace)
+
+
+def filter_str(string: str | None, trace: bool = False) -> str | None:
+    """NOT CACHED. Filter out all unnecessary/unwanted symbols from string (clear string) except
+    letters, numbers, spaces, commas. By default, decode input string in unicode (utf-8).
+    Accepted symbols are: letters, numbers, space, ALL_SYMBOLS (see above)."""
 
     def accepted(char) -> bool:  # internal function
         """Simple internal helper function."""
@@ -89,7 +104,13 @@ def filter_str(string: str | None, trace: bool = False):
     return result
 
 
-@cache
+@lru_cache(maxsize=LRU_CACHE_SIZE)
+def filterc_str(string: str | None, trace: bool = False) -> str | None:
+    """CACHED version of the filter_str()."""
+    return filter_str(string, trace)
+
+
+@lru_cache(maxsize=LRU_CACHE_SIZE)
 def process_url(
     url: str, postfix: str = "", format_values: Tuple[str] | None = None, trace: bool = False
 ) -> str:
@@ -123,7 +144,7 @@ def process_url(
     return result
 
 
-@cache
+@lru_cache(maxsize=LRU_CACHE_SIZE)
 def process_urls(
     urls: Dict[str, str], postfix: str = "", format_values: Tuple[str] | None = None, trace: bool = False
 ) -> Dict[str, str]:
@@ -141,7 +162,7 @@ def process_urls(
     return processed
 
 
-@cache
+@lru_cache(maxsize=LRU_CACHE_SIZE)
 def get_str_ending(string: str, symbol: str = "/", trace: bool = False) -> str:
     """Returns the last right part of the string after the symbol (not including the symbol itself). It is
     most right part of the string, after the last right symbol (if there are multiple symbols).
@@ -160,7 +181,7 @@ def get_str_ending(string: str, symbol: str = "/", trace: bool = False) -> str:
     return result
 
 
-@cache
+@lru_cache(maxsize=LRU_CACHE_SIZE)
 def is_number(value: str, trace: bool = False) -> bool:
     """Returns True if string is a number. String is checked 'as is' - no trailing/leading spaces cut, no
     any other transformations."""
@@ -228,9 +249,8 @@ def iter_2_str(values: Iterable[Any], braces: bool = True, trace: bool = False) 
     return resulting_value  # returning result
 
 
-@cache
 def coalesce(*args, trace: bool = False) -> str:
-    """Return first not None and not empty value from provided args list."""
+    """NOT CACHED. Return first not None and not empty value from provided args list."""
 
     result: str = ""
 
@@ -252,7 +272,13 @@ def coalesce(*args, trace: bool = False) -> str:
     return result
 
 
-@cache
+@lru_cache(maxsize=LRU_CACHE_SIZE)
+def coalescec(*args, trace: bool = False) -> str:
+    """CACHED version of the coalesce()."""
+    return coalesce(*args, trace)
+
+
+@lru_cache(maxsize=LRU_CACHE_SIZE)
 def one_of_2_str(string1: str | None, string2: str | None, trace: bool = False) -> str | None:
     """Function returning one of two strings, if other is empty. If both are empty or filled in - method
     returns None (empty value)."""
@@ -271,7 +297,7 @@ def one_of_2_str(string1: str | None, string2: str | None, trace: bool = False) 
     return result
 
 
-@cache
+@lru_cache(maxsize=LRU_CACHE_SIZE)
 def convert_bytes(num: float, trace: bool = False) -> str:
     """Function will convert bytes to MB.... GB... etc. for readability."""
 
@@ -288,7 +314,7 @@ def convert_bytes(num: float, trace: bool = False) -> str:
     return result
 
 
-@cache
+@lru_cache(maxsize=LRU_CACHE_SIZE)
 def str_2_bool(string: str | None, trace: bool = False) -> bool:
     """Convert string to bool. If empty string - return False. If string is not empty - return if string,
     converted to lower case, contains in the list: 'true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly',
@@ -316,7 +342,7 @@ def str_2_bool(string: str | None, trace: bool = False) -> bool:
     return result
 
 
-@cache
+@lru_cache(maxsize=LRU_CACHE_SIZE)
 def str_2_int(string: str | None, trace: bool = False) -> int:
     """Convert string to integer number. Empty string or string with non-digit symbols will return 0,
     otherwise will return int(string)."""
@@ -340,7 +366,7 @@ def str_2_int(string: str | None, trace: bool = False) -> int:
     return result
 
 
-@cache
+@lru_cache(maxsize=LRU_CACHE_SIZE)
 def str_2_float(string: str | None, trace: bool = False) -> float:
     """Convert string to float number. Empty string or string with non-digit symbols
     will return 0, otherwise will return float(string)."""
