@@ -1,6 +1,6 @@
 # Python Utilities Library
 
-**Version 2.3.0dev1**, 2018 - 2026, Dmitrii Gusev.
+**Version 2.4.0dev1**, 2018 - 2026, Dmitrii Gusev.
 *Last update: 22.03.2026*
 
 ## Project Description
