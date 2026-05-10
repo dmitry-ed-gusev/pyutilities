@@ -19,7 +19,7 @@
 #       - poetry must be installed
 #
 #   Created:  Dmitrii Gusev, 21.07.2025
-#   Modified: Dmitrii Gusev, 19.04.2026
+#   Modified: Dmitrii Gusev, 10.05.2026
 #
 # ##################################################################################################
 
@@ -100,6 +100,7 @@ printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 printf "\n= [INFO] Step V. Upgrade pip, lock + install/update dependencies (virtual env will be created).\n\n"
 # - upgrade pip in the virtual environment
 printf "\n=        Upgrading pip in the virtual environment:\n\n"
+poetry ${_VERBOSE} run python -m pip cache purge
 poetry ${_VERBOSE} run python -m pip install --upgrade pip
 # - sync 'poetry.lock' with 'pyproject.toml' if the latter was changed since the last build
 printf "\n=        Executing [poetry lock] command:\n\n"
