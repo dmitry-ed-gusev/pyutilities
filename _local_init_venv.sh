@@ -19,7 +19,7 @@
 #       - poetry must be installed
 #
 #   Created:  Dmitrii Gusev, 21.07.2025
-#   Modified: Dmitrii Gusev, 10.05.2026
+#   Modified: Dmitrii Gusev, 11.05.2026
 #
 # ##################################################################################################
 
@@ -69,7 +69,8 @@ END
 printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
 # -- Step II. Upgrade pip to the latest version (on the current python).
-printf "\n= [INFO] Step II. Upgrading PIP in the global python environment.\n\n"
+printf "\n= [INFO] Step II. Upgrading PIP (+ purge cache) in the global python env.\n\n"
+python -m pip ${_VERBOSE} cache purge
 # shellcheck disable=SC2086
 python -m pip ${_VERBOSE} --no-cache-dir install --upgrade pip
 printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
@@ -100,7 +101,6 @@ printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 printf "\n= [INFO] Step V. Upgrade pip, lock + install/update dependencies (virtual env will be created).\n\n"
 # - upgrade pip in the virtual environment
 printf "\n=        Upgrading pip in the virtual environment:\n\n"
-poetry ${_VERBOSE} run python -m pip cache purge
 poetry ${_VERBOSE} run python -m pip install --upgrade pip
 # - sync 'poetry.lock' with 'pyproject.toml' if the latter was changed since the last build
 printf "\n=        Executing [poetry lock] command:\n\n"
@@ -114,6 +114,9 @@ poetry ${_VERBOSE} sync
 # - update dependencies in the virtual environment
 printf "\n=        Executing [poetry update] command:\n\n"
 poetry ${_VERBOSE} update
+# - purge cache for pip
+printf "\n=        Executing [pip cache purge] command:\n\n"
+poetry ${_VERBOSE} run python -m pip cache purge
 printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
 # -- Step VI. Show list of the outdated dependencies in the virtual environment

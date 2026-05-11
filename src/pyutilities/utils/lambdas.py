@@ -26,7 +26,7 @@
 # # convert python object to the human-readable JSON
 # pretty_json = lambda obj: __import__('json').dumps(obj, ensure_ascii=False, indent=2)
 
-# # get all files with the .py extebsion recursively
+# # get all files with the .py extension recursively
 # files = list(Path('.').rglob('*.py'))
 
 # # show all env variables sorted by name:

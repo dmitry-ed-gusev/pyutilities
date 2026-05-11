@@ -8,7 +8,7 @@
 #       - most of modules should be typed (used mypy stubs libraries)
 #
 #   Created:  Dmitrii Gusev, 30.05.2025
-#   Modified: Dmitrii Gusev, 10.05.2026
+#   Modified: Dmitrii Gusev, 11.05.2026
 #
 ####################################################################################################
 
@@ -69,6 +69,7 @@ dependencies = [
     "pyyaml ==6.*",
     "ruamel.yaml ==0.*",
 
+    # -- technical libraries
     "urllib3~=2.6",  # - allowed: >=2.3.0 <3.0.0
     "paramiko==4.*",
     "requests~=2.32",  # - allowed: >=2.32.0 <3.0.0
@@ -77,6 +78,11 @@ dependencies = [
     "fake-useragent~=2.0",  # - allowed: >=2.0.0 <3.0.0
     "click~=8.3",
     "python-dotenv ~=1.2", # - loading various .env configs
+
+    # -- terminal pseudo-graphics / pretty output
+    "prettytable ~=3.17", # - terminal tables
+    "pyfiglet ~=1.0", # - ASCII graphics
+    "rich-pyfiglet ~=1.0", # - ASCII graphics addon (colors)
 
     # -- datetime utilities
     "pendulum ~=3.2",

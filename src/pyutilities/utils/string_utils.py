@@ -10,13 +10,16 @@ in 'fast' executing code, where logging will just add additional complexity and 
 Also most of the functions use LRU feature of the python language.
 
 Created:  Dmitrii Gusev, 15.04.2019
-Modified: Dmitrii Gusev, 17.04.2026
+Modified: Dmitrii Gusev, 11.05.2026
 """
 
+import json
 import logging
 from functools import lru_cache
 from re import match as re_match
 from typing import Any, Dict, Iterable, Tuple
+
+import pyfiglet
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
@@ -26,19 +29,19 @@ log = logging.getLogger(__name__)
 # to avoid errors like 'no handlers' for libraries it's necessary/convenient to add NullHandler
 log.addHandler(logging.NullHandler())
 
-# useful module defaults
+# - useful module defaults
 SPECIAL_SYMBOLS = ".,/-№"
 CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
 LATIN_SYMBOLS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 ALL_SYMBOLS = SPECIAL_SYMBOLS + CYRILLIC_SYMBOLS + LATIN_SYMBOLS
-
-# set of regex for determining float values
+# - password replacement symbols
+PASSWORDS_REPLACEMENT_SYMBOLS = "**********"
+# - set of regex for determining float values
 REGEX_FLOAT_1 = "^\d+?\.\d+?$"  # original regex # pylint: disable=anomalous-backslash-in-string # noqa: W605
 REGEX_FLOAT_2 = "^\\d+?\\.\\d+?$"  # original regex with fixed warnings
 REGEX_FLOAT_3 = "^[+-]?([0-9]*[.])?[0-9]+$"  # simplified regex, matches: 123/123.456/.456
 REGEX_FLOAT_4 = "^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"  # matches as previous plus: 123.
-
-# cache setup (size) for cached functions/methods
+# - cache setup (size) for cached functions/methods
 LRU_CACHE_SIZE: int = 128
 
 
@@ -249,6 +252,37 @@ def iter_2_str(values: Iterable[Any], braces: bool = True, trace: bool = False) 
     return resulting_value  # returning result
 
 
+def dict_2_json_str(dictionary: dict[Any, Any]) -> str:
+    """Convert dictionary to readable/printable JSON string. If contains entries like 'password'/'pass' -
+    such an entries values will be replaced by '' values.
+    """
+
+    if not dictionary:  # quick check
+        return ""
+
+    # - filter out (mask) passwords in the config
+    filtered_dictionary = {
+        k: (v if "password" not in str(k).lower() and "pass" not in str(k).lower()
+            else PASSWORDS_REPLACEMENT_SYMBOLS) for k, v in dictionary.items()
+    }
+
+    # - dump JSON and set a lambda for not serializable types
+    json_str: str = json.dumps(filtered_dictionary, indent=4, default=lambda o: "<not serializable>")
+
+    return json_str
+
+
+def generate_ascii_title(app_title: str, app_subtitle: str) -> str:
+    """Generates ASCII title for the application/system, using short/abbreviated name, version, author
+    and dates info. ASCII title returned as string.
+    """
+
+    ascii_title: str = pyfiglet.figlet_format(f"{app_title}", font="doom")
+    ascii_title += f"\n\n{ascii_title}\n{app_subtitle}"
+
+    return ascii_title
+
+
 def coalesce(*args, trace: bool = False) -> str:
     """NOT CACHED. Return first not None and not empty value from provided args list."""
 
@@ -384,6 +418,7 @@ def str_2_float(string: str | None, trace: bool = False) -> float:
         log.debug("str_2_float(): input [%s], result [%s].", string, result)
 
     return result
+
 
 
 if __name__ == "__main__":

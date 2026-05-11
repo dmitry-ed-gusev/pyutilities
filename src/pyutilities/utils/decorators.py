@@ -41,7 +41,9 @@ def retry(max_tries=3, delay_seconds=1):
 
 
 def memoize(func):
-    """Decorator - analogue for the functool.lru_cache()."""
+    """Cache decorator - analogue for the functool.lru_cache().
+    WARNING! Unbounded cache!
+    """
 
     cache: dict[Any, Any] = {}
 

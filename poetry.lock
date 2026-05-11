@@ -835,15 +835,15 @@ pandas = ">=2.3"
 
 [[package]]
 name = "codeaudit"
-version = "1.6.4"
+version = "1.6.5"
 description = "A modern Python security source code analyzer (SAST) based on distrust."
 optional = false
 python-versions = ">=3.11"
 groups = ["dev"]
 markers = "python_version >= \"3.11\""
 files = [
-    {file = "codeaudit-1.6.4-py3-none-any.whl", hash = "sha256:a70609451ee15b854322fb65c6d1697e4a6ac6f44380edb3cdfe2a9c348e20b7"},
-    {file = "codeaudit-1.6.4.tar.gz", hash = "sha256:c45e0ef0f00f618aeac95c3e3f00bea62560e89f0df9c3ea6cb1a4209d3fa37c"},
+    {file = "codeaudit-1.6.5-py3-none-any.whl", hash = "sha256:81d54f9ce9280d844ab908ad3970592c4058f61c3cc6f415851ff2fe74873ef3"},
+    {file = "codeaudit-1.6.5.tar.gz", hash = "sha256:7a7943d3b4a547187351d6d7626fcf3bc986ae61235dd0a574e8c3eef3d01e87"},
 ]
 
 [package.dependencies]
@@ -1502,14 +1502,14 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "hypothesis"
-version = "6.152.5"
+version = "6.152.6"
 description = "The property-based testing library for Python"
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "hypothesis-6.152.5-py3-none-any.whl", hash = "sha256:9d6fc81a7321dc34ec6a986c0bc5d669746d1cc694bc12a39280cec9c549f7c4"},
-    {file = "hypothesis-6.152.5.tar.gz", hash = "sha256:d6e7a3b163ee7f951a2652cfa26ea4c5ff5e94afcdfcaccf1ed72f0435276ff4"},
+    {file = "hypothesis-6.152.6-py3-none-any.whl", hash = "sha256:b20ffc532e5f2901229348d10ed7cb37fd9723ebf4799df663d2dce1cdce4e32"},
+    {file = "hypothesis-6.152.6.tar.gz", hash = "sha256:4a3f21e9a7349a17616626e9010f04360b02e6bf8ff15fdc7c53e76d5517c1e8"},
 ]
 
 [package.dependencies]
@@ -2403,7 +2403,7 @@ version = "4.2.0"
 description = "Python port of markdown-it. Markdown parsing, done right!"
 optional = false
 python-versions = ">=3.10"
-groups = ["dev"]
+groups = ["main", "dev"]
 files = [
     {file = "markdown_it_py-4.2.0-py3-none-any.whl", hash = "sha256:9f7ebbcd14fe59494226453aed97c1070d83f8d24b6fc3a3bcf9a38092641c4a"},
     {file = "markdown_it_py-4.2.0.tar.gz", hash = "sha256:04a21681d6fbb623de53f6f364d352309d4094dd4194040a10fd51833e418d49"},
@@ -2572,7 +2572,7 @@ version = "0.1.2"
 description = "Markdown URL utilities"
 optional = false
 python-versions = ">=3.7"
-groups = ["dev"]
+groups = ["main", "dev"]
 files = [
     {file = "mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8"},
     {file = "mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba"},
@@ -3888,6 +3888,18 @@ dev = ["mypy (==1.17.1)", "pre-commit (==4.2.0)", "pytest (==8.4.1)", "ruff (==0
 docs = ["mkdocs", "mkdocs-material", "mkdocstrings[python]", "pygments", "pymdown-extensions", "types-setuptools"]
 
 [[package]]
+name = "pyfiglet"
+version = "1.0.4"
+description = "Pure-python FIGlet implementation"
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "pyfiglet-1.0.4-py3-none-any.whl", hash = "sha256:65b57b7a8e1dff8a67dc8e940a117238661d5e14c3e49121032bd404d9b2b39f"},
+    {file = "pyfiglet-1.0.4.tar.gz", hash = "sha256:db9c9940ed1bf3048deff534ed52ff2dafbbc2cd7610b17bb5eca1df6d4278ef"},
+]
+
+[[package]]
 name = "pyflakes"
 version = "3.4.0"
 description = "passive checker of Python programs"
@@ -3905,7 +3917,7 @@ version = "2.20.0"
 description = "Pygments is a syntax highlighting package written in Python."
 optional = false
 python-versions = ">=3.9"
-groups = ["dev", "research"]
+groups = ["main", "dev", "research"]
 files = [
     {file = "pygments-2.20.0-py3-none-any.whl", hash = "sha256:81a9e26dd42fd28a23a2d169d86d7ac03b46e2f8b59ed4698fb4785f946d0176"},
     {file = "pygments-2.20.0.tar.gz", hash = "sha256:6757cd03768053ff99f3039c1a36d6c0aa0b263438fcab17520b30a303a82b5f"},
@@ -4673,14 +4685,14 @@ testing = ["pytest (>=8.3.5)"]
 
 [[package]]
 name = "rich"
-version = "15.0.0"
+version = "14.3.4"
 description = "Render rich text, tables, progress bars, syntax highlighting, markdown and more to the terminal"
 optional = false
-python-versions = ">=3.9.0"
-groups = ["dev"]
+python-versions = ">=3.8.0"
+groups = ["main", "dev"]
 files = [
-    {file = "rich-15.0.0-py3-none-any.whl", hash = "sha256:33bd4ef74232fb73fe9279a257718407f169c09b78a87ad3d296f548e27de0bb"},
-    {file = "rich-15.0.0.tar.gz", hash = "sha256:edd07a4824c6b40189fb7ac9bc4c52536e9780fbbfbddf6f1e2502c31b068c36"},
+    {file = "rich-14.3.4-py3-none-any.whl", hash = "sha256:07e7adb4690f68864777b1450859253bed81a99a31ac321ac1817b2313558952"},
+    {file = "rich-14.3.4.tar.gz", hash = "sha256:817e02727f2b25b40ef56f5aa2217f400c8489f79ca8f46ea2b70dd5e14558a9"},
 ]
 
 [package.dependencies]
@@ -4689,6 +4701,23 @@ pygments = ">=2.13.0,<3.0.0"
 
 [package.extras]
 jupyter = ["ipywidgets (>=7.5.1,<9)"]
+
+[[package]]
+name = "rich-pyfiglet"
+version = "1.0.0"
+description = "A library that wraps PyFiglet with the Rich library for rendering ASCII art in the terminal."
+optional = false
+python-versions = ">=3.9"
+groups = ["main"]
+files = [
+    {file = "rich_pyfiglet-1.0.0-py3-none-any.whl", hash = "sha256:0b1653b0381cab356772c562e528c091171beeaa1821f71cfd65c379197b4244"},
+    {file = "rich_pyfiglet-1.0.0.tar.gz", hash = "sha256:a9ba2ae109eb43112a2eb8f35abb3fc4113be0927d4718cdbbc47513957f38ed"},
+]
+
+[package.dependencies]
+click = ">=8.1.8"
+pyfiglet = ">=1.0.3"
+rich = ">=12.0.0,<15.0.0"
 
 [[package]]
 name = "roman-numerals"
@@ -5871,4 +5900,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4"
-content-hash = "52efa4caadb1133110590326e392dc349b63df155dbbb9caa1910fb0f050d730"
+content-hash = "e8e9ae96890ec995d816fd52ba83952c9024a31af8c3cb2c0e9165c581a585d2"
