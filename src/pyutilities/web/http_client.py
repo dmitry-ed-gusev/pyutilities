@@ -5,7 +5,7 @@
 HTTP client module, based on requests module.
 
 Created:  Dmitrii Gusev, 01.06.2021
-Modified: Dmitrii Gusev, 24.11.2025
+Modified: Dmitrii Gusev, 15.05.2026
 """
 
 import logging
@@ -17,7 +17,7 @@ from requests import Response
 from requests.adapters import HTTPAdapter, Retry
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
-from pyutilities.utils.common_utils import threadsafe_function
+from pyutilities.utils.decorators import threadsafe_function
 
 # init module logger
 log = logging.getLogger(__name__)

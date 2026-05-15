@@ -33,11 +33,14 @@ def get_timestamp(
     )
 
 
-def get_dates_range_before_today(today: datetime) -> tuple[int, int]:
-    """Generates two dates range - date_from/date_to for"""
+def get_dates_range_before_date(date: datetime) -> tuple[int, int]:
+    """Generates two dates range - date_from/date_to for the time period 'before today' - from the 1st day
+    of the current month till the today - 1 day (current month). In case today is 1st day - range for the
+    whole previous month, if today is 01.01.XXXX - range for 01.12.XXXX-1 - 31.12.XXXX-1.
+    """
 
     # - local variables
-    local_today: Date = Date(today.year, today.month, today.day)
+    local_today: Date = Date(date.year, date.month, date.day)
     date_from: Date
     date_to: Date
 
@@ -61,7 +64,7 @@ def get_dates_range_before_today(today: datetime) -> tuple[int, int]:
     else:  # today isn't the 1st, we need report from 1st till yesterday
 
         date_from = pendulum.date(local_today.year, local_today.month, 1)  # from: 01 Month Year
-        date_to = pendulum.date(local_today.year, local_today.month, today.day - 1)  # to: Day-1 Month Year
+        date_to = pendulum.date(local_today.year, local_today.month, date.day - 1)  # to: Day-1 Month Year
 
     # - generate from/to timestamps
     tstamp_from = pendulum.datetime(date_from.year, date_from.month, date_from.day)

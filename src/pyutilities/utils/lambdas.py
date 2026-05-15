@@ -1,13 +1,18 @@
-# # -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
-# """
-#     Module with useful lambdas functions/one-liners.
+"""
+Lambdas module. Contains useful lambda functions.
 
-#     Created:  Dmitrii Gusev, 29.07.2025
-#     Modified: Dmitrii Gusev, 21.11.2025
-# """
+Created:  Dmitrii Gusev, 15.05.2026
+Modified: Dmitrii Gusev, 15.05.2026
+"""
 
-# from pathlib import Path
+import logging
+
+from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
+
+log = logging.getLogger(__name__)
+log.addHandler(logging.NullHandler())
 
 # # execute shell cmd and return output
 # sh = lambda cmd: __import__('subprocess').run(cmd, shell=True, check=True, capture_output=True) \
@@ -23,21 +28,14 @@
 # # split list into n-sized chunks
 # chunked = lambda lst, n: [lst[i:i+n] for i in range(0, len(lst), n)]
 
-# # convert python object to the human-readable JSON
-# pretty_json = lambda obj: __import__('json').dumps(obj, ensure_ascii=False, indent=2)
-
 # # get all files with the .py extension recursively
 # files = list(Path('.').rglob('*.py'))
-
-# # show all env variables sorted by name:
-# # print('\n'.join(f'{k}={v}' for k, v in sorted(os.environ.items())))
 
 # # read all lines from file, removing wrap line
 # lines = Path('file.txt').read_text().splitlines()
 
 # # get SHA256 code of the string
 # hash = hashlib.sha256(b"your text").hexdigest()
-
 
 # # quickly stop the script execution
 # raise SystemExit("Done")
@@ -53,3 +51,7 @@
 
 # # check host liveness without ping
 # ok = socket.create_connection((host, port), timeout=2)
+
+
+if __name__ == "__main__":
+    print(MSG_MODULE_ISNT_RUNNABLE)

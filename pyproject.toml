@@ -264,7 +264,8 @@ follow_untyped_imports = true
 [tool.pytest.ini_options]
 minversion = "6.0"
 addopts = """
---cov=./src/pyutilities --verbose --cov-report=html --cov-report=xml --cov-report=json --cov-report=annotate --capture=sys -rx --durations=0 --full-trace --color=auto
+--cov=./src/pyutilities --verbose --cov-report=html --cov-report=xml --cov-report=json --cov-report=annotate --capture=sys -rx --durations=0 --full-trace --color=auto --hypothesis-show-statistics --hypothesis-verbosity=verbose
+
 """
 testpaths = [
     "tests/",

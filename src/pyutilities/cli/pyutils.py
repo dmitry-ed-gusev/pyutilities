@@ -18,7 +18,7 @@ MSG_VERSION = f"\nPy Utilities, version: {__version__}, (C) Dmitrii Gusev, 2018-
 @click.help_option("-h", "--help")
 @click.version_option(__version__, "-v", "--version", message=MSG_VERSION)
 @click.pass_context
-def pyutils(ctx):
+def pyutils(ctx):  # pylint: disable=unused-argument
     """Module [Py Utilities], (C) Dmitrii Gusev, 2018-2026."""
     click.echo("")
 

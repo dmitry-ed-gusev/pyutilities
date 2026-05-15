@@ -5,7 +5,7 @@ from datetime import datetime
 import pytest
 
 from pyutilities.utils.datetime_utils import MSK_TIMEZONE
-from pyutilities.utils.datetime_utils import get_timestamp, get_dates_range_before_today
+from pyutilities.utils.datetime_utils import get_timestamp, get_dates_range_before_date
 
 
 def test_get_timestamp():
@@ -31,10 +31,10 @@ def test_get_timestamp():
     (10, 10, 2022, MSK_TIMEZONE, "01-10-2022", "09-10-2022")
 
 ])
-def test_get_dates_range_before_today(day, month, year, tz, expected_from, expected_to):
+def test_get_dates_range_before_date(day, month, year, tz, expected_from, expected_to):
 
     now = datetime(year, month, day, tzinfo=tz)
-    tstamp_from, tstamp_to = get_dates_range_before_today(now)
+    tstamp_from, tstamp_to = get_dates_range_before_date(now)
     dt_from = datetime.fromtimestamp(tstamp_from).strftime("%d-%m-%Y")
     dt_to = datetime.fromtimestamp(tstamp_to).strftime("%d-%m-%Y")
 
