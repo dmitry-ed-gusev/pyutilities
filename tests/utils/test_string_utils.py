@@ -5,17 +5,17 @@
     Unit tests for strings module.
 
     Created:  Dmitrii Gusev, 15.04.2019
-    Modified: Dmitrii Gusev, 23.11.2025
+    Modified: Dmitrii Gusev, 14.05.2026
 """
 
 import math
 import pytest
-from hypothesis import given
+from hypothesis import given, settings
 from hypothesis.strategies import characters, text
 
 from pyutilities.utils.string_utils import (coalesce, filter_str, is_number, iter_2_str, process_url,
                                             trim_2_none, trim_2_empty, get_str_ending, one_of_2_str,
-                                            str_2_bool, str_2_int, str_2_float)
+                                            str_2_bool, str_2_int, str_2_float, is_empty)
 
 # common constants for testing
 EMPTY_STRINGS = ["", "     ", None, "               ", "  "]
@@ -60,6 +60,17 @@ def test_filter_str_for_non_empty_strings():
     assert "zzzz. , fgh " == filter_str("zzzz. ??, fgh *")
 
 
+@pytest.mark.parametrize("string", EMPTY_STRINGS)
+def test_is_empty_with_empty_strings(string):
+    assert is_empty(string)
+
+
+@pytest.mark.parametrize("item", NON_EMPTY_STRINGS.items())
+def test_is_empty_with_non_empty_strings(item):
+    _, value = item
+    assert not is_empty(value)
+
+
 @pytest.mark.parametrize(
     "url, postfix, format_params, expected",
     [
@@ -99,24 +110,25 @@ def test_process_url(url, postfix, format_params, expected):
     assert process_url(url, postfix, format_params) == expected
 
 
-# see info here: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.text
+# see here: https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.text
+# see here: https://en.wikipedia.org/wiki/Unicode_character_property
 @given(text(alphabet=characters(blacklist_categories=["Cc", "Zs", "Zl", "Zp"]), min_size=1, max_size=100))
-def test_trim2none_with_meaningful_symbols(txt):
-    assert trim_2_none(txt) == txt
+def test_trim_2_none_with_meaningful_symbols(text):
+    assert trim_2_none(text) == text
 
 
 @given(text(alphabet=characters(whitelist_categories=["Zs", "Zl", "Zp"]), min_size=1, max_size=100))
-def test_trim2none_with_only_non_meaningful_symbols(text):
+def test_trim_2_none_with_only_non_meaningful_symbols(text):
     assert trim_2_none(text) is None
 
 
 @given(text(alphabet=characters(blacklist_categories=["Cc", "Zs", "Zl", "Zp"]), min_size=1, max_size=100))
-def test_trim2empty_with_meaningful_symbols(text):
+def test_trim_2_empty_with_meaningful_symbols(text):
     assert trim_2_empty(text) == text
 
 
 @given(text(alphabet=characters(whitelist_categories=["Zs", "Zl", "Zp"]), min_size=1, max_size=100))
-def test_trim2empty_with_only_non_meaningful_symbols(text):
+def test_trim_2_empty_with_only_non_meaningful_symbols(text):
     assert trim_2_empty(text) == ""
 
 
