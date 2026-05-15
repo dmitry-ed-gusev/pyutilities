@@ -9,13 +9,14 @@ Useful utilities functions for various needs for the python 3.10+. Containing 'g
 
 ## Versions history
 
-### 2.4.0
+### 2.4.0/2.4.1
 
 - many refactorings and minor code improvements
 - overall tests coverage now > 50%, working on improvements :)
 - added new date/time function, several decorators
 - added several useful string functions
 - added LoggingManager component for loguru simple configuration
+- v.2.4.1 - minor docs fixes
 
 ### 2.3.0
 
