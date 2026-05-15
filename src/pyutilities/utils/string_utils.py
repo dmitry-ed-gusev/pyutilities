@@ -10,13 +10,16 @@ in 'fast' executing code, where logging will just add additional complexity and 
 Also most of the functions use LRU feature of the python language.
 
 Created:  Dmitrii Gusev, 15.04.2019
-Modified: Dmitrii Gusev, 17.04.2026
+Modified: Dmitrii Gusev, 14.05.2026
 """
 
+import json
 import logging
 from functools import lru_cache
 from re import match as re_match
 from typing import Any, Dict, Iterable, Tuple
+
+import pyfiglet
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
@@ -26,19 +29,31 @@ log = logging.getLogger(__name__)
 # to avoid errors like 'no handlers' for libraries it's necessary/convenient to add NullHandler
 log.addHandler(logging.NullHandler())
 
-# useful module defaults
+# - Symbols :: useful module defaults
 SPECIAL_SYMBOLS = ".,/-№"
 CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
 LATIN_SYMBOLS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 ALL_SYMBOLS = SPECIAL_SYMBOLS + CYRILLIC_SYMBOLS + LATIN_SYMBOLS
-
-# set of regex for determining float values
-REGEX_FLOAT_1 = "^\d+?\.\d+?$"  # original regex # pylint: disable=anomalous-backslash-in-string # noqa: W605
-REGEX_FLOAT_2 = "^\\d+?\\.\\d+?$"  # original regex with fixed warnings
+# - Symbols :: password replacement symbols for various output
+REPLACEMENT_SYMBOLS = "**********"
+# - Symbols :: set of regex for determining float values
+# REGEX_FLOAT_1 = "^\d+?\.\d+?$"  # orig regex # pylint: disable=anomalous-backslash-in-string # noqa: W605
+REGEX_FLOAT_2 = "^\\d+?\\.\\d+?$"  # orig regex with fixed warnings
 REGEX_FLOAT_3 = "^[+-]?([0-9]*[.])?[0-9]+$"  # simplified regex, matches: 123/123.456/.456
 REGEX_FLOAT_4 = "^[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)$"  # matches as previous plus: 123.
-
-# cache setup (size) for cached functions/methods
+# - Symbols :: string True values (for the conversion purpose)
+TRUE_STRINGS_LIST: list[str] = [
+    "true",
+    "1",
+    "t",
+    "y",
+    "yes",
+    "yeah",
+    "yup",
+    "certainly",
+    "uh-huh",
+]
+# - CACHE :: cache setup (size) for cached functions/methods
 LRU_CACHE_SIZE: int = 128
 
 
@@ -110,12 +125,26 @@ def filterc_str(string: str | None, trace: bool = False) -> str | None:
     return filter_str(string, trace)
 
 
+def is_empty(string: str | None) -> bool:
+    """NOT CACHED. Is string  empty - None or contains only spaces. Based on non-cached trim_2_none()."""
+
+    return trim_2_none(string) is None
+
+
+@lru_cache(maxsize=LRU_CACHE_SIZE)
+def is_emptyc(string: str | None) -> bool:
+    """CACHED. Is string empty - equals to None or contains only spaces. Based on cached trim_2_none()."""
+
+    return trimc_2_none(string) is None
+
+
 @lru_cache(maxsize=LRU_CACHE_SIZE)
 def process_url(
     url: str, postfix: str = "", format_values: Tuple[str] | None = None, trace: bool = False
 ) -> str:
-    """Process the provided url and update it: add postfix (if provided) and add format values
-    (if provided). In case empty string provided = empty string will be returned as well."""
+    """CACHED. Process the provided url and update it: add postfix (if provided) and add format
+    values (if provided). In case empty string provided = empty string will be returned as well.
+    """
 
     result: str = ""
     if url and url.strip():  # provided url is not empty
@@ -148,7 +177,7 @@ def process_url(
 def process_urls(
     urls: Dict[str, str], postfix: str = "", format_values: Tuple[str] | None = None, trace: bool = False
 ) -> Dict[str, str]:
-    """Process the provided dictionary of urls with the function"""
+    """CACHED. Process the provided dictionary of urls with the function"""
 
     processed: Dict[str, str] = {}
 
@@ -164,8 +193,9 @@ def process_urls(
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
 def get_str_ending(string: str, symbol: str = "/", trace: bool = False) -> str:
-    """Returns the last right part of the string after the symbol (not including the symbol itself). It is
-    most right part of the string, after the last right symbol (if there are multiple symbols).
+    """CACHED. Returns the last right part of the string after the symbol (not including the symbol
+    itself). It is most right part of the string, after the last right symbol (if there are multiple
+    symbols).
     """
 
     result: str = string
@@ -183,8 +213,9 @@ def get_str_ending(string: str, symbol: str = "/", trace: bool = False) -> str:
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
 def is_number(value: str, trace: bool = False) -> bool:
-    """Returns True if string is a number. String is checked 'as is' - no trailing/leading spaces cut, no
-    any other transformations."""
+    """CACHED. Returns True if string is a number. String is checked 'as is' - no trailing/leading
+    spaces cut, no any other transformations.
+    """
 
     result: bool = False
 
@@ -199,10 +230,12 @@ def is_number(value: str, trace: bool = False) -> bool:
 
 
 def iter_2_str(values: Iterable[Any], braces: bool = True, trace: bool = False) -> str:  # noqa: C901
-    """Convert number of iterable values to a single string value. If iterable is empty - the result is
-    empty string. If braces == True, the braces will be added around the resulting string. For each value
-    in the iterable trailing/leading spaces will be cut, duplicates will be removed, duplicate numbers
-    will be removed as well."""
+    """NOT CACHED. Despite the function itself doesn't use cache, it uses cached function is_number().
+    Convert number of iterable values to a single string value. If iterable is empty - the result
+    is empty string. If braces == True, the braces will be added around the resulting string. For
+    each value in the iterable trailing/leading spaces will be cut, duplicates will be removed,
+    duplicate numbers will be removed as well.
+    """
 
     # setup for processing
     resulting_value: str = ""
@@ -244,9 +277,45 @@ def iter_2_str(values: Iterable[Any], braces: bool = True, trace: bool = False) 
                 resulting_value = resulting_value[:-2]
 
     if trace:
-        log.debug("iter_2_str(): resulting string is [%s].", resulting_value)
+        log.debug("iter_2_str(): result is [%s].", resulting_value)
 
     return resulting_value  # returning result
+
+
+def dict_2_json_str(dictionary: dict[Any, Any]) -> str:
+    """NOT CACHED. Convert dictionary to readable/printable JSON string. If contains entries like
+    'password'/'pass' - such an entries values will be replaced by '**********' values. Non-serializable
+    entries will be replaced by symbols '<not serializable>'.
+    """
+
+    if not dictionary:  # quick check
+        return ""
+
+    # - filter out (mask) passwords in the config
+    filtered_dictionary = {
+        k: (v if "password" not in str(k).lower() and "pass" not in str(k).lower() else REPLACEMENT_SYMBOLS)
+        for k, v in dictionary.items()
+    }
+
+    # - dump JSON and set a lambda for not serializable types
+    json_str: str = json.dumps(filtered_dictionary, indent=4, default=lambda o: "<not serializable>")
+
+    return json_str
+
+
+# # convert python object to the human-readable JSON
+# pretty_json = lambda obj: __import__('json').dumps(obj, ensure_ascii=False, indent=2)
+
+
+def generate_ascii_title(app_title: str, app_subtitle: str) -> str:
+    """NOT CACHED. Generates ASCII title for the application/system, using short/abbreviated name,
+    version, author and dates info. ASCII title returned as string.
+    """
+
+    ascii_title: str = pyfiglet.figlet_format(f"{app_title}", font="doom")
+    ascii_title += f"\n\n{ascii_title}\n{app_subtitle}\n"
+
+    return ascii_title
 
 
 def coalesce(*args, trace: bool = False) -> str:
@@ -280,8 +349,9 @@ def coalescec(*args, trace: bool = False) -> str:
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
 def one_of_2_str(string1: str | None, string2: str | None, trace: bool = False) -> str | None:
-    """Function returning one of two strings, if other is empty. If both are empty or filled in - method
-    returns None (empty value)."""
+    """CACHED. Function returning one of two strings, if other is empty. If both are empty or
+    filled in - method returns None (empty value).
+    """
 
     result: str | None = None
     if string1 and string1.strip():  # first string check
@@ -299,7 +369,7 @@ def one_of_2_str(string1: str | None, string2: str | None, trace: bool = False) 
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
 def convert_bytes(num: float, trace: bool = False) -> str:
-    """Function will convert bytes to MB.... GB... etc. for readability."""
+    """CACHED. Function will convert bytes to MB.... GB... etc. for readability."""
 
     # processing of the value
     result: str = "unknown"
@@ -316,9 +386,10 @@ def convert_bytes(num: float, trace: bool = False) -> str:
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
 def str_2_bool(string: str | None, trace: bool = False) -> bool:
-    """Convert string to bool. If empty string - return False. If string is not empty - return if string,
-    converted to lower case, contains in the list: 'true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly',
-    'uh-huh'."""
+    """CACHED. Convert string to bool. If empty string - return False. If string is not empty - return
+    if string, converted to lower case, contains in the list: 'true', '1', 't', 'y', 'yes', 'yeah',
+    'yup', 'certainly', 'uh-huh'.
+    """
 
     result: bool
     if not string or not string.strip():  # empty string - returning False
@@ -344,8 +415,9 @@ def str_2_bool(string: str | None, trace: bool = False) -> bool:
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
 def str_2_int(string: str | None, trace: bool = False) -> int:
-    """Convert string to integer number. Empty string or string with non-digit symbols will return 0,
-    otherwise will return int(string)."""
+    """CACHED. Convert string to integer number. Empty string or string with non-digit symbols will
+    return 0, otherwise will return int(string).
+    """
 
     result: int
     if not string or not string.strip():  # empty input string
@@ -368,8 +440,9 @@ def str_2_int(string: str | None, trace: bool = False) -> int:
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
 def str_2_float(string: str | None, trace: bool = False) -> float:
-    """Convert string to float number. Empty string or string with non-digit symbols
-    will return 0, otherwise will return float(string)."""
+    """CACHED. Convert string to float number. Empty string or string with non-digit symbols
+    will return 0, otherwise will return float(string).
+    """
 
     result: float
     if not string or not string.strip():

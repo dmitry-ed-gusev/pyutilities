@@ -9,15 +9,13 @@ Useful materials:
         how-do-i-convert-this-list-of-dictionaries-to-a-csv-file
 
 Created:  Gusev Dmitrii, 10.10.2022
-Modified: Dmitrii Gusev, 24.11.2025
+Modified: Dmitrii Gusev, 14.05.2026
 """
 
 import csv
 import inspect
 import logging
 import os
-import threading
-import time
 from typing import Any, Dict, List, Tuple
 
 from pyutilities.defaults import DEFAULT_ENCODING, MSG_MODULE_ISNT_RUNNABLE
@@ -34,59 +32,6 @@ RUS_CHARS = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
 ENG_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 NUM_CHARS = "0123456789"
 SPEC_CHARS = "-"
-
-
-def singleton(class_):
-    """Decorator: singleton class decorator. Use it on the class level to make class Singleton."""
-
-    instances = {}  # classes instances storage
-
-    def get_instance(*args, **kwargs):
-        if class_ not in instances:
-            instances[class_] = class_(*args, **kwargs)
-        return instances[class_]
-
-    return get_instance
-
-
-def threadsafe_function(fn):
-    """Decorator: it is making sure that the decorated function is thread safe."""
-
-    lock = threading.Lock()  # acquire lock
-
-    def new(*args, **kwargs):
-        lock.acquire()
-        try:
-            r = fn(*args, **kwargs)
-        finally:
-            lock.release()  # release lock in any case
-        return r
-
-    return new
-
-
-def debug_benchmark(func):
-    """Decorator: logs the given function execution time."""
-
-    def wrapper(*args, **kwargs):
-        t = time.process_time()
-        res = func(*args, **kwargs)
-        log.debug("Function [%s] executed in [%s] second(s).", func.__name__, time.process_time() - t)
-        return res
-
-    return wrapper
-
-
-def debug_function_name(func):
-    """Decorator: logs the name of the decorating function."""
-
-    def wrapper(*args, **kwargs):
-        log.debug("Function [%s] is working.", func.__name__)
-        # print(func.__name__, args, kwargs)
-        res = func(*args, **kwargs)
-        return res
-
-    return wrapper
 
 
 def myself():
