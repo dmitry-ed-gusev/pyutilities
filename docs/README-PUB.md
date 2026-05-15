@@ -1,7 +1,7 @@
 # Python Utilities Library
 
 Version 2.2.0, 2018 - 2026, Dmitrii Gusev  
-*Last update: XX.XX.2026*
+*Last update: 15.05.2026*
 
 ## Project Description
 
@@ -9,12 +9,21 @@ Useful utilities functions for various needs for the python 3.10+. Containing 'g
 
 ## Versions history
 
+### 2.4.0
+
+- many refactorings and minor code improvements
+- overall tests coverage now > 50%, working on improvements :)
+- added new date/time function, several decorators
+- added several useful string functions
+- added LoggingManager component for loguru simple configuration
+
+### 2.3.0
+
+Intermediate version with improvements/refactorings.
+
 ### 2.2.0
 
-Added new functions:
-
-- func1()
-- func2()
+Added several new functions - see sources.
 
 ### 2.1.2
 
