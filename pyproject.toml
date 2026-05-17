@@ -63,15 +63,15 @@ dependencies = [
 
     # -- data validation and marshalling (JSON/YAML) --
     "pydantic (>=2.12.5,<3.0.0)",
-    "pydantic-yaml ==1.*",
+    "pydantic-yaml ~=1.6",
     "pydantic-settings ==2.*",
     "marshmallow ~=4.1",
     "pyyaml ==6.*",
-    "ruamel.yaml ==0.*",
+    "ruamel.yaml ==0.18.*",
 
     # -- technical libraries
     "urllib3~=2.6",  # - allowed: >=2.3.0 <3.0.0
-    "paramiko==4.*",
+    "paramiko ==5.*",
     "requests~=2.32",  # - allowed: >=2.32.0 <3.0.0
     "markdown~=3.7",  # - allowed: >=3.7.0 <4.0.0
     "prettytable~=3.14",  # - allowed: >=3.14.0 <4.0.0
@@ -114,7 +114,7 @@ dev = [
     "hypothesis ==6.*",
 
     # -- typing libraries + typing stubs for runtime dependencies --
-    "mypy ==1.*", # - typing library
+    "mypy ==2.*", # - typing library
     "types-six ==1.*",
     "types-mock ==5.*",
     "types-paramiko ==4.*",
@@ -150,7 +150,7 @@ dev = [
     "responses ==0.*", # - used by many testing/code quality libraries
 
     # -- readline module depending on the platform
-    "pyreadline3 ==3.5.4 ; sys_platform == 'win32' or sys_platform == 'cygwin'",
+    "pyreadline3 ==3.* ; sys_platform == 'win32' or sys_platform == 'cygwin'",
     "gnureadline ==8.2.13 ; sys_platform != 'win32'"
 
 ]
@@ -165,11 +165,11 @@ research = [ # - research dependencies (Jupyter, etc.)
 packages = [{include = "pyutilities", from = "src"}]
 
 # -- poetry :: source repositories setup
-[[tool.poetry.source]]
-name = "severstal_repo"
-url = "https://repo.severstal.severstalgroup.com/artifactory/api/pypi/pypi/simple/"
+# [[tool.poetry.source]]
+# name = "severstal_repo"
+# url = "https://repo.severstal.severstalgroup.com/artifactory/api/pypi/pypi/simple/"
 # priority = "primary" # - primary packages source
-priority = "supplemental" # - packages source will be used when primary is not available...
+# priority = "supplemental" # - packages source will be used when primary is not available...
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4"
