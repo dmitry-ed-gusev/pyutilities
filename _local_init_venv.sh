@@ -149,7 +149,13 @@ printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
 # -- Step VI. Show list of the outdated dependencies in the virtual environment
 printf "\n= [INFO] Step VI. List of outdated dependencies in the virtual environment.\n\n"
-poetry ${_VERBOSE} run pip list --outdated
+outdated=$(poetry ${_VERBOSE} run pip list --outdated)
+printf "%s\n" "$outdated"
+# - put outdated to the file, only if we are NOT in a main branch (see list above)
+if [ "${_MAIN_BRANCH}" != "yes" ]; then
+    current_date=$(date +"%d-%m-%Y")
+    echo "$outdated" > "outdated_${current_date}.txt"
+fi
 printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
 # -- print end-script message (with the current datetime)

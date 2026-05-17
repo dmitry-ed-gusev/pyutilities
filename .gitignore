@@ -137,3 +137,6 @@ dmypy.json
 
 # PyPi config
 .pypirc
+
+# outdated packages
+outdated*
