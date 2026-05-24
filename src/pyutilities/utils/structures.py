@@ -4,28 +4,65 @@
 Structures module.
 
 Created:  Dmitrii Gusev, 21.05.2026
-Modified: Dmitrii Gusev, 21.05.2026
+Modified: Dmitrii Gusev, 24.05.2026
 """
 
-from typing import Any
+from collections import defaultdict
+
+from pyutilities.utils.string_utils import is_empty
 
 
-def defaultdict_factory(key) -> Any:
+# Создаём экземпляр нашего класса
+# dynamic_dict = KeyAwareDefaultDict(dynamic_factory)
+
+# dynamic_dict = defaultdict(lambda: None)
+# dynamic_dict.default_factory = dynamic_factory
+# dynamic_dict = defaultdict(dynamic_factory(None))
+
+def _defaultdict_factory(key: str):
     """Return different default types for the defaultdict based on the key prefix.
-    Usage example:
-            dynamic_dict = defaultdict(lambda: None)
-            dynamic_dict.defaultdict_factory = defaultdict_factory
+    This function is used a s a default factory for the class KeyAwareDefaultDict - see below.
     """
 
-    if key.startswith('count_'):  # int type
-        return 0
-    elif key.startswith('str_'):  # string type
-        return ''
-    elif key.startswith('items_'):  # list type
-        return []
-    elif key.startswith('set_'):  # set type
-        return set()
-    elif key.startswith('dict_'):  # dictionary type
-        return {}
-    else:  # unknown type
-        return None  # fallback for unknown keys
+    if isinstance(key, str) and not is_empty(key):
+        if key.startswith('count_'):  # int type
+            return 0
+
+        if key.startswith('str_'):  # string type
+            return ''
+
+        if key.startswith('items_'):  # list type
+            return []
+
+        if key.startswith('set_'):  # set type
+            return set()
+
+        if key.startswith('dict_'):  # dictionary type
+            return {}
+
+    # unknown type - fallback for unknown keys
+    return None
+
+
+class KeyAwareDefaultDict(defaultdict):
+    """Extension of the default dictionary in python - 'key aware default dictionary', implementing
+    different types of the dictionary values, depending on the dictionary keys prefixes.
+    Prefixes are:
+        - count_* - int type
+        - str_*   - str type
+        - items_* - list type
+        - set_*   - set type
+        - dict_*  - dict type
+    Usage example:
+        dynamic_dict = KeyAwareDefaultDict()  # option I - default factory (see above)
+        dynamic_dict = KeyAwareDefaultDict(default_factory)  # option II - use your custom factory function
+    """
+
+    def __init__(self, default_factory=_defaultdict_factory):
+        super().__init__(default_factory)
+
+    def __missing__(self, key):
+        # Вызываем фабрику с ключом и сохраняем результат
+        result = self.default_factory(key)
+        self[key] = result
+        return result
