@@ -32,8 +32,9 @@
         "pyutilities", "абвгдеёжзийклмнопрстуфхцчшщъыьэюя", "rtype", "namenode", "xlrd", "xlwt", "loguru",
         "xlwings", "pyyaml", "openpyxl", "urllib3", "paramiko", "prettytable", "useragent", "threadsafe",
         "forcelist", "httpclient", "rsps", "webclient", "fedit", "functool", "eexist", "hjson", "pyutils",
-        "trimc", "filterc", "coalescec", "tstamp", "figlet", "emptyc", "timestampc", "datec", "", "", "",
-        "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""
+        "trimc", "filterc", "coalescec", "tstamp", "figlet", "emptyc", "timestampc", "datec", "secondsc",
+        "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
+        "", "", ""
     ],
 
     // a list of globs to specify which files are to be ignored

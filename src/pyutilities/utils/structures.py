@@ -12,39 +12,33 @@ from collections import defaultdict
 from pyutilities.utils.string_utils import is_empty
 
 
-# Создаём экземпляр нашего класса
-# dynamic_dict = KeyAwareDefaultDict(dynamic_factory)
-
-# dynamic_dict = defaultdict(lambda: None)
-# dynamic_dict.default_factory = dynamic_factory
-# dynamic_dict = defaultdict(dynamic_factory(None))
-
 def _defaultdict_factory(key: str):
     """Return different default types for the defaultdict based on the key prefix.
     This function is used a s a default factory for the class KeyAwareDefaultDict - see below.
     """
 
     if isinstance(key, str) and not is_empty(key):
-        if key.startswith('count_'):  # int type
+
+        if key.startswith("count_"):  # int type
             return 0
 
-        if key.startswith('str_'):  # string type
-            return ''
+        if key.startswith("str_"):  # string type
+            return ""
 
-        if key.startswith('items_'):  # list type
+        if key.startswith("items_"):  # list type
             return []
 
-        if key.startswith('set_'):  # set type
+        if key.startswith("set_"):  # set type
             return set()
 
-        if key.startswith('dict_'):  # dictionary type
+        if key.startswith("dict_"):  # dictionary type
             return {}
 
     # unknown type - fallback for unknown keys
     return None
 
 
-class KeyAwareDefaultDict(defaultdict):
+class KeyAwareDefaultDict(defaultdict):  # type: ignore[type-arg]
     """Extension of the default dictionary in python - 'key aware default dictionary', implementing
     different types of the dictionary values, depending on the dictionary keys prefixes.
     Prefixes are:
@@ -62,7 +56,7 @@ class KeyAwareDefaultDict(defaultdict):
         super().__init__(default_factory)
 
     def __missing__(self, key):
-        # Вызываем фабрику с ключом и сохраняем результат
-        result = self.default_factory(key)
+        # call the factory with a key and save the result
+        result = self.default_factory(key)  # type: ignore[call-arg, misc]
         self[key] = result
         return result
