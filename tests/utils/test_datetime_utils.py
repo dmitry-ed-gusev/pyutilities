@@ -34,9 +34,9 @@ def test_get_timestamp():
 def test_get_dates_range_before_date(day, month, year, tz, expected_from, expected_to):
 
     now = datetime(year, month, day, tzinfo=tz)
-    tstamp_from, tstamp_to = get_dates_range_before_date(now)
-    dt_from = datetime.fromtimestamp(tstamp_from).strftime("%d-%m-%Y")
-    dt_to = datetime.fromtimestamp(tstamp_to).strftime("%d-%m-%Y")
+    tstamp_from, tstamp_to = get_dates_range_before_date(now, tzinfo=tz)
+    dt_from = datetime.fromtimestamp(tstamp_from, tz=tz).strftime("%d-%m-%Y")
+    dt_to = datetime.fromtimestamp(tstamp_to, tz=tz).strftime("%d-%m-%Y")
 
     # checks / assertions
     assert dt_from == expected_from

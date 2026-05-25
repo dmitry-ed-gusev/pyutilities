@@ -1,32 +1,42 @@
-# Python Utilities Library
+# Python Utilities Library (PyUtilities)
 
-**Version 2.4.2**, 2018 - 2026, Dmitrii Gusev.
-*Last update: 15.05.2026*
+**Dmitrii Gusev, 2018-2026.**
 
 ## Project Description
 
-Current development version: **2.5.0dev1**
+Useful utilities functions for various needs for the **python 3.10+**. Containing many 'general purpose' functions for various areas. Using of this library may simplify/help with the development in various 'common' tasks.
 
-Useful utilities functions for various needs for the python 3.10+. Containing many 'general purpose' functions for various areas.
+## Installation
 
-This README file is the technical one and not intended for publishing to the **pypi** registry. [Publishable README](./docs/README-PUB.md)
+There are no special pre-requisites for the library to be installed, except **python 3.10+**
+In order to install this library, use the following command:
 
-## Project's Docs Links
+```bash
+    pip install pyutilities
+```
 
-- This project uses the following [Git Flow](./docs/GITFLOW.%20RELEASES.md)
-- [README for pypi (publishable README)](./docs/README-PUB.md)
+**Note: versions 2.1.0, 2.1.1 are intended only for the python version = 3.10 and can be installed only for it!**
 
 ## Tech Details
 
+### Project modules
+
+- **cli** - Command Line Integration/Interface - module is under development now :)
+- **config** - configuration module, can be used anywhere
+- **io** - input/output utilities
+- **log** - logging helper classes
+- **sys** - system modules
+- **utils** - various common utilities (common, strings, dates, structures, etc.)
+- **web** - web client, simple web/http server
+
 ### Library Usage Examples
 
-- [decorators usage](./examples/using_decorators.py) - decorators usages examples
-- [library logging configuration example](./examples/using_logging.py) - how to configure logging for this library
+See folder **[examples]** in the project root repository.
 
 ### Development Environment Setup
 
-TBD
+There are various shell scripts in the root of the project repository, all of them are well-commented - see there.
 
 ### Publishing to PyPi Registry
 
-TBD
+Look at the script **_deploy.sh** in the project repo root folder.

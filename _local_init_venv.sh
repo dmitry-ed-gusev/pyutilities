@@ -19,7 +19,7 @@
 #       - poetry must be installed
 #
 #   Created:  Dmitrii Gusev, 21.07.2025
-#   Modified: Dmitrii Gusev, 11.05.2026
+#   Modified: Dmitrii Gusev, 16.05.2026
 #
 # ##################################################################################################
 
@@ -34,6 +34,11 @@ export _VERBOSE_REMOVAL=""
 export _TEMPORARY_DIRS=('.venv/' 'dist/' '.coverage/' '.pytest_cache/' '.mypy_cache/' '.hypothesis/')
 export _STEP_DELAY=1
 
+# - parameters for pre-checks
+export _MAIN_CONFIG_FILE="pyproject.toml"
+export _MAIN_GIT_BRANCHES=('develop' 'dev' 'main' 'master')
+export _MAIN_BRANCH="no"
+
 # -- script error messages
 export _MSG_END_OF_STEP="= ========= done."
 export _MSG_ERR_DATETIME_CALC="= [ERROR] Calculating system date/time issue!"
@@ -43,6 +48,27 @@ export _MSG_ERR_TMP_FOLDER_REMOVE="= [ERROR] There are issues during removing th
 # -- get current date/time (we don't need export it), clear screen and print title
 _CURR_DATETIME="[$(date +"%d-%m-%Y %H:%M:%S")]" || { printf "\n%s\n" "${_MSG_ERR_DATETIME_CALC}"; exit 1; }
 clear; printf "=== %s Python Virtual Env init :: starting. ===\n\n" "${_CURR_DATETIME}";
+
+# -- Pre-Checks. Perform some pre-checks for the script
+printf "\n= [INFO] Pre-Checks: checking all necessary conditions for the script.\n"
+# - check existence of the pyproject.toml
+if [ -f "${_MAIN_CONFIG_FILE}" ]; then
+    printf "\n= [INFO] Config [%s] exists. OK.\n" "${_MAIN_CONFIG_FILE}"
+else
+    printf "\n= [ERROR] Config [%s] doesn't exists! Exiting...\n" "${_MAIN_CONFIG_FILE}"
+    exit 1
+fi
+sleep "${_STEP_DELAY}"
+# - check we are not in main branch - otherwise no changes!
+current_branch=$(git branch --show-current)
+for branch in "${_MAIN_GIT_BRANCHES[@]}"; do
+    if [ "${current_branch}" = "${branch}" ]; then
+        export _MAIN_BRANCH="yes"
+        break
+    fi
+done
+printf "\n= [INFO] Current is main branch: [%s], current branch: [%s].\n" "${_MAIN_BRANCH}" "$current_branch"
+sleep "${_STEP_DELAY}"
 
 # -- Step I. Check the machine and determine the python/pip versions
 printf "\n= [INFO] Step I: checking the architecture/python/pip/poetry versions.\n"
@@ -111,9 +137,11 @@ printf "\n=        Executing [poetry install] command:\n\n"
 poetry ${_VERBOSE} install
 printf "\n=        Executing [poetry sync] command in the virtual environment:\n\n"
 poetry ${_VERBOSE} sync
-# - update dependencies in the virtual environment
-printf "\n=        Executing [poetry update] command:\n\n"
-poetry ${_VERBOSE} update
+# - update dependencies in the virtual environment - only if we are not in the main git branch!
+if [ "${_MAIN_BRANCH}" != "yes" ]; then
+    printf "\n=        Executing [poetry update] command:\n\n"
+    poetry ${_VERBOSE} update
+fi
 # - purge cache for pip
 printf "\n=        Executing [pip cache purge] command:\n\n"
 poetry ${_VERBOSE} run python -m pip cache purge
@@ -121,7 +149,13 @@ printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
 # -- Step VI. Show list of the outdated dependencies in the virtual environment
 printf "\n= [INFO] Step VI. List of outdated dependencies in the virtual environment.\n\n"
-poetry ${_VERBOSE} run pip list --outdated
+outdated=$(poetry ${_VERBOSE} run pip list --outdated)
+printf "%s\n" "$outdated"
+# - put outdated to the file, only if we are NOT in a main branch (see list above)
+if [ "${_MAIN_BRANCH}" != "yes" ]; then
+    current_date=$(date +"%d-%m-%Y")
+    echo "$outdated" > "outdated_${current_date}.txt"
+fi
 printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 
 # -- print end-script message (with the current datetime)
