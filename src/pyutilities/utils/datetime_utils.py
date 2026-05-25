@@ -4,18 +4,25 @@
 Useful date/time utilities and functions.
 
 Created:  Dmitrii Gusev, 22.03.2026
-Modified: Dmitrii Gusev, 10.05.2026
+Modified: Dmitrii Gusev, 25.05.2026
 """
 
+import calendar
+import logging
 from datetime import datetime, timedelta, timezone
-
-import pendulum
-from pendulum import Date
+from functools import lru_cache
 
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
-MSK_TIMEZONE: timezone = timezone(timedelta(hours=3), name="Moscow Timezone (Russia)")
+# DATETIME :: timezones defaults
+MSK_TIMEZONE: timezone = timezone(timedelta(hours=3), name="Moscow Timezone (GMT+3)")
 MSK_TIMEZONE_NAME: str = "Europe/Moscow"
+# - CACHE :: cache setup (size) for cached functions/methods
+LRU_CACHE_SIZE: int = 128
+
+
+log = logging.getLogger(__name__)
+log.addHandler(logging.NullHandler())
 
 
 def get_timestamp(
@@ -33,45 +40,108 @@ def get_timestamp(
     )
 
 
-def get_dates_range_before_date(date: datetime) -> tuple[int, int]:
+@lru_cache(maxsize=LRU_CACHE_SIZE)
+def get_timestampc(
+    current_timezone: timezone = MSK_TIMEZONE,
+    days: float = 0,
+    hours: float = 0,
+    minutes: float = 0,
+    seconds: float = 0,
+) -> datetime:
+    """CACHED. Cached version of the get_timestamp() method."""
+
+    return get_timestamp(current_timezone, days, hours, minutes, seconds)
+
+
+def get_dates_range_before_date(date: datetime, tzinfo: timezone) -> tuple[int, int]:
     """Generates two dates range - date_from/date_to for the time period 'before today' - from the 1st day
     of the current month till the today - 1 day (current month). In case today is 1st day - range for the
     whole previous month, if today is 01.01.XXXX - range for 01.12.XXXX-1 - 31.12.XXXX-1.
     """
 
-    # - local variables
-    local_today: Date = Date(date.year, date.month, date.day)
-    date_from: Date
-    date_to: Date
+    log.debug("get_dates_range_before_date(): the date [%s].", date)
 
-    # - processing and calculating dates
-    if local_today.day == 1:  # today - 1st day of month, we need report for the previous month
+    tstamp_from: int = 0
+    tstamp_to: int = 0
 
-        if local_today.month == 1:  # we are at 01.01.XXXX - we need report for Dec.XXXX - 1
+    if date:  # if date is OK (not empty/None)
 
-            date_from = pendulum.date(local_today.year - 1, 12, 1)  # from: 01 Dec Year-1
-            date_to = pendulum.date(local_today.year - 1, 12, 31)  # to: 31 Dec Year-1
+        # - processing and calculating dates
+        if date.day == 1:  # today - 1st day of month, we need report for the previous month
 
-        else:  # we are at 01.XX.XXXX - we need report for previous month
+            if date.month == 1:  # we are at 01.01.XXXX - we need report for Dec.XXXX - 1
 
-            # from: 01 Month-1 Year
-            date_from = pendulum.date(local_today.year, local_today.month - 1, 1)
-            # to: Last Day Month-1 Year
-            date_to = pendulum.date(
-                local_today.year, local_today.month - 1, local_today.subtract(months=1).days_in_month
-            )
+                date_from = datetime(date.year - 1, 12, 1, tzinfo=tzinfo)  # from: 01 Dec Year-1 (prev. year)
+                date_to = datetime(date.year - 1, 12, 31, tzinfo=tzinfo)  # to: 31 Dec Year-1 (prev. year)
 
-    else:  # today isn't the 1st, we need report from 1st till yesterday
+            else:  # we are at 01.XX.XXXX - we need report for previous month
 
-        date_from = pendulum.date(local_today.year, local_today.month, 1)  # from: 01 Month Year
-        date_to = pendulum.date(local_today.year, local_today.month, date.day - 1)  # to: Day-1 Month Year
+                # from: 01 Month-1 Year
+                date_from = datetime(date.year, date.month - 1, 1, tzinfo=tzinfo)
+                # last day of the previous month
+                _, last_day = calendar.monthrange(date.year, date.month - 1)
+                # to: Last Day Month-1 Year
+                date_to = datetime(date.year, date.month - 1, last_day, tzinfo=tzinfo)
 
-    # - generate from/to timestamps
-    tstamp_from = pendulum.datetime(date_from.year, date_from.month, date_from.day)
-    tstamp_to = pendulum.datetime(date_to.year, date_to.month, date_to.day)
+        else:  # today isn't the 1st, we need report from 1st till yesterday
+
+            date_from = datetime(date.year, date.month, 1, tzinfo=tzinfo)  # from: 01 Month Year
+            date_to = datetime(date.year, date.month, date.day - 1, tzinfo=tzinfo)  # to: Day-1 Month Year
+
+        # - final date/time - date from: XX.XX.XX 00:00:00
+        tstamp_from = int(
+            datetime(
+                date_from.year, date_from.month, date_from.day, hour=0, minute=0, second=0, tzinfo=tzinfo
+            ).timestamp()
+        )
+        # - final date/time - # date to: XX.XX.XXXX 23:59:59
+        tstamp_to = int(
+            datetime(
+                date_to.year, date_to.month, date_to.day, hour=23, minute=59, second=59, tzinfo=tzinfo
+            ).timestamp()
+        )
+
+    log.debug("Timestamps for [%s]: from [%s], to [%s].", date, tstamp_from, tstamp_to)
 
     # - return the tuple of values
-    return (tstamp_from.int_timestamp, tstamp_to.int_timestamp)
+    return (tstamp_from, tstamp_to)
+
+
+@lru_cache(maxsize=LRU_CACHE_SIZE)
+def get_dates_range_before_datec(date: datetime, tzinfo: timezone) -> tuple[int, int]:
+    """CACHED. Cached version of the get_dates_range_before_date()."""
+
+    return get_dates_range_before_date(date, tzinfo)
+
+
+def human_readable_duration_seconds(duration_seconds):
+    """Convert duration in seconds into human-readable string-duration."""
+
+    days = duration_seconds // (24 * 3600)
+    hours = (duration_seconds % (24 * 3600)) // 3600
+    minutes = (duration_seconds % (24 * 3600)) % 3600 // 60
+    seconds = duration_seconds % 3600 % 60
+
+    result = ""
+    if days > 0:
+        result += f"{days} д. "
+    if hours > 0:
+        result += f"{hours} ч. "
+    if minutes > 0:
+        result += f"{minutes:02d} мин. "
+    result += f"{seconds:02d} сек."
+    result = result.strip()
+
+    log.debug("Converted duration: [%s] into readable str: [%s].", duration_seconds, result)
+
+    return result
+
+
+@lru_cache(maxsize=LRU_CACHE_SIZE)
+def human_readable_duration_secondsc(duration_seconds):
+    """CACHED. Cached version of the human_readable_duration_seconds() method."""
+
+    return human_readable_duration_seconds(duration_seconds)
 
 
 if __name__ == "__main__":
