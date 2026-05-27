@@ -8,7 +8,7 @@
 #       - most of modules should be typed (used mypy stubs libraries)
 #
 #   Created:  Dmitrii Gusev, 30.05.2025
-#   Modified: Dmitrii Gusev, 25.05.2026
+#   Modified: Dmitrii Gusev, 27.05.2026
 #
 ####################################################################################################
 
@@ -20,7 +20,7 @@ build-backend = "poetry.core.masonry.api"
 # -- project / poetry utility meta-information
 [project]
 name = "pyutilities"
-version = "2.5.1"
+version = "2.5.2"
 description = "PyUtilities :: Useful python 3+ utilities library for various use cases."
 authors     = [
     {name = "Dmitrii Gusev", email = "dmitry.ed.gusev@gmail.com"},
@@ -67,7 +67,7 @@ dependencies = [
     "pydantic-settings ==2.*",
     "marshmallow ~=4.1",
     "pyyaml ==6.*",
-    "ruamel.yaml ==0.18.*",
+    "ruamel.yaml ~=0.18",
 
     # -- technical libraries
     "urllib3~=2.6",  # - allowed: >=2.3.0 <3.0.0
@@ -82,7 +82,8 @@ dependencies = [
     # -- terminal pseudo-graphics / pretty output
     "prettytable ~=3.17", # - terminal tables
     "pyfiglet ~=1.0", # - ASCII graphics
-    "rich-pyfiglet ~=1.0", # - ASCII graphics addon (colors)
+    "rich ~=15.0",
+    "rich-pyfiglet ~=2.0", # - ASCII graphics addon (colors)
 
     # -- datetime utilities
     "pendulum ~=3.2",
@@ -139,7 +140,7 @@ dev = [
     # -- profiling/debugging libraries
     "snakeviz ==2.2.2",
     "memory-profiler ==0.61.0",
-    "py-spy ==0.4.1",
+    "py-spy ~=0.4",
     "viztracer ==1.1.1",
 
     # -- development-related process libraries
