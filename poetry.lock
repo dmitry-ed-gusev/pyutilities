@@ -878,15 +878,15 @@ pandas = ">=2.3"
 
 [[package]]
 name = "codeaudit"
-version = "1.6.6"
+version = "1.7.0"
 description = "A modern Python security source code analyzer (SAST) based on distrust."
 optional = false
 python-versions = ">=3.11"
 groups = ["dev"]
 markers = "python_version >= \"3.11\""
 files = [
-    {file = "codeaudit-1.6.6-py3-none-any.whl", hash = "sha256:3007a64bf9c4488b3913f7eff100a9f30cdc7c6b7a32a576701ec643020d0885"},
-    {file = "codeaudit-1.6.6.tar.gz", hash = "sha256:7fcb5dae7722d8e7fae199f7d81df524727cbcedb9983d516a3e63267c938914"},
+    {file = "codeaudit-1.7.0-py3-none-any.whl", hash = "sha256:4122b784478424d749e95756d583a6e17769a7ea60e1af559a364991a62ecd1b"},
+    {file = "codeaudit-1.7.0.tar.gz", hash = "sha256:2c7763164ece1e3df42d411c2804ca1a65d6998b4c6b93893b5887e319885f60"},
 ]
 
 [package.dependencies]
@@ -1321,14 +1321,14 @@ devel = ["colorama", "json-spec", "jsonschema", "pylint", "pytest", "pytest-benc
 
 [[package]]
 name = "filelock"
-version = "3.29.1"
+version = "3.29.2"
 description = "A platform independent file lock."
 optional = false
 python-versions = ">=3.10"
 groups = ["dev"]
 files = [
-    {file = "filelock-3.29.1-py3-none-any.whl", hash = "sha256:85199dfd706869641b72b2e8955d5416a4b2b7dc4b0e8e6d97b4cc1299a6983b"},
-    {file = "filelock-3.29.1.tar.gz", hash = "sha256:d97e6b1b9757569626c58caa07dc4beb1613f4a2938b1e8cc81afca398906c9e"},
+    {file = "filelock-3.29.2-py3-none-any.whl", hash = "sha256:f5d3feb44b2b8824832587543af5226822fe86baf086678ede47aa177fe47ca5"},
+    {file = "filelock-3.29.2.tar.gz", hash = "sha256:779d2f5443b584750c6b90457abffd49235bfb0e66ce82ef5a680867e518ca1c"},
 ]
 
 [[package]]
@@ -6082,4 +6082,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4"
-content-hash = "74a1c133fb75924420fcbcdef41396407a4914d18ec64e549d9899df97d67110"
+content-hash = "6cd61e1c990428cdab46fcbec23ad927d92ba13de6b060d49d2565d25c51d9fc"
