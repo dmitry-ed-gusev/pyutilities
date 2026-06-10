@@ -145,5 +145,46 @@ def file_size_str(file_path: str) -> str:
     return "unknown"
 
 
+def clear_directory_except_files(directory_path: str, files_to_keep: list[str], trace: bool = False):
+    """Cleanup folder <directory_path>, keeping files by list <files_to_keep>. Subdirectories are
+    not affected - they won't be removed (files in the subdirectories won't be touched as well).
+    Usage:
+        clear_directory_except_files("example_folder", ["keep_files.txt", "another_file.txt"])
+    """
+
+    if not os.path.exists(directory_path):
+        log.debug(f"{directory_path=} doesn't exist!")
+        return
+
+    for filename in os.listdir(directory_path):
+        file_path = os.path.join(directory_path, filename)
+        if os.path.isfile(file_path) and filename not in files_to_keep:
+            try:
+                os.remove(file_path)
+                if trace:
+                    log.debug(f"{file_path=} deleted OK.")
+            except FileNotFoundError:
+                log.debug(f"{file_path=} was already removed.")
+            except PermissionError:
+                log.error(f"Permission denied when trying to delete {file_path=}.")
+            except OSError as e:
+                log.exception(f"Error deleting {file_path=}: {e}")
+
+
+def clear_directory_except_files_recursive(directory_path, files_to_keep):
+    for root, _, files in os.walk(directory_path):
+        for filename in files:
+            file_path = os.path.join(root, filename)
+            if os.path.isfile(file_path) and filename not in files_to_keep:
+                try:
+                    os.remove(file_path)
+                    print(f"Файл {file_path} успешно удалён")
+                except Exception as e:
+                    print(f"Ошибка при удалении {file_path}: {e}")
+
+
+# Очистить папку `example_folder` от всех файлов, кроме `keep_files.txt` и `another_file.txt`, рекурсивно
+# clear_directory_except_files_recursive("example_folder", ["keep_files.txt", "another_file.txt"])
+
 if __name__ == "__main__":
     print(MSG_MODULE_ISNT_RUNNABLE)
