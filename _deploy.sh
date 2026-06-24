@@ -7,7 +7,7 @@
 #   system shell) and from the pipenv environment as well (pipenv shell).
 #
 #   Created:  Dmitrii Gusev, 27.11.2022
-#   Modified: Dmitrii Gusev, 19.04.2026
+#   Modified: Dmitrii Gusev, 24.06.2026
 #
 #############################################################################################################
 
@@ -25,20 +25,16 @@ printf "\n = INFO: using deploy env file: [%s]\n" "${ENV_FILE}"
 # shellcheck disable=SC2046
 [ ! -f "${ENV_FILE}" ] || export $(grep -v '^#' "${ENV_FILE}" | xargs)
 printf "\n = INFO: all environment variables from file [%s] were loaded.\n" "${ENV_FILE}"
-# - adding loaded token to poetry
+
+# -- Step III. Adding loaded token to poetry
 poetry config pypi-token.pypi "${PYUTILITIES_TOKEN}"
 printf "\n = INFO: added pypi token from the file [%s]\n" "${ENV_FILE}"
 sleep 2
 
-# -- Step III. Reload the local virtual environment and build the project
-# source ./_local_full_build.sh
-# sleep 2
-
-# -- Step V. Publishing the library to pypi.org
-printf "\n = INFO: publishing the library to [pypi.org]\n\n"
-
-# - key press before the actual publishing (deploy)
-printf "\t"; read -r -p "Press any key before the deploy..."
+# -- Step IV. Publishing the library to pypi.org
+printf "\n = INFO: published the library to [pypi.org]\n\n"
+# - waiting for the Enter key press before the actual publishing (deploy)
+printf "\t"; read -r -p "Press <Enter> key before the deploy..."
 # poetry publish --build --verbose --dry-run
 poetry publish --verbose
 sleep 2

@@ -1,16 +1,17 @@
 # -*- coding: utf-8 -*-
 
 """
-Useful utilities for excel files manipulation.
+Useful Excel utilities for improving excel working in python.
 
-Created:  Dmitrii Gusev, 28.05.2026
-Modified: Dmitrii Gusev, 29.05.2026
+Created:  Dmitrii Gusev, 24.06.2026
+Modified: Dmitrii Gusev, 24.06.2026
 """
 
 from openpyxl.cell.cell import Cell
 from openpyxl.styles import Alignment, Font
 from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.worksheet import Worksheet
+
 from pyutilities.utils.string_utils import is_empty
 
 # - styling constants/defaults
@@ -29,8 +30,15 @@ class XlsSheet:
     def __init__(self, ws: Worksheet):
         self.__ws = ws
 
-    def init_cell(self, address: str, value: str, bold: bool = False, aligned: bool = False,
-                  color: str = None, width: int = 0) -> Cell:
+    def init_cell(
+        self,
+        address: str,
+        value: str,
+        bold: bool = False,
+        aligned: bool = False,
+        color: str = None,
+        width: int = 0,
+    ) -> Cell:
         """Simple yet powerful method for cell initialization. Can init essential cell parameters."""
 
         cell = self.__ws[address]
@@ -59,20 +67,31 @@ class XlsSheet:
 
         return cell
 
-    def init_cell_bold(self, address, value, aligned: bool = False, color: str = None,
-                       width: int = 0) -> Cell:
+    def init_cell_bold(
+        self, address, value, aligned: bool = False, color: str = None, width: int = 0
+    ) -> Cell:
         """TBD"""
-        return self.init_cell(address=address, value=value, bold=True,
-                              aligned=aligned, color=color, width=width)
+        return self.init_cell(
+            address=address, value=value, bold=True, aligned=aligned, color=color, width=width
+        )
 
     # pylint: disable=too-many-arguments, too-many-positional-arguments
-    def init_cell_addr(self, row: int, column: int, value: str, bold: bool = False,
-                       aligned: bool = False, color: str = None, width: int = 0) -> Cell:
+    def init_cell_addr(
+        self,
+        row: int,
+        column: int,
+        value: str,
+        bold: bool = False,
+        aligned: bool = False,
+        color: str = None,
+        width: int = 0,
+    ) -> Cell:
         """TBD"""
 
         letter: str = get_column_letter(column)
-        return self.init_cell(address=f"{letter}{row}", value=value, bold=bold,
-                              aligned=aligned, color=color, width=width)
+        return self.init_cell(
+            address=f"{letter}{row}", value=value, bold=bold, aligned=aligned, color=color, width=width
+        )
 
     def set_column_width(self, column: str, width: int):
         """TBD"""
