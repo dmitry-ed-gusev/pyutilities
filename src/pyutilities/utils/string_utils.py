@@ -313,9 +313,7 @@ def generate_ascii_title(app_title: str, app_subtitle: str) -> str:
     """
 
     ascii_title: str = pyfiglet.figlet_format(f"{app_title}", font="doom")
-    ascii_title += f"\n\n{ascii_title}\n{app_subtitle}\n"
-
-    return ascii_title
+    return f"\n\n{ascii_title}\n{app_subtitle}\n"
 
 
 def coalesce(*args, trace: bool = False) -> str:
