@@ -85,7 +85,20 @@ sleep "${_STEP_SLEEP}"
 if (( OPTION_PROJECT_BUILD )); then # <- ON by default
     # - activate virtual environment
     printf "\n = [INFO] Activating the virtual environment...\n"
-    source ./.venv/Scripts/activate
+
+    # activating virtual environment based on the OS type
+    unameOut="$(uname -s)" # get machine name + info (short)
+    # - based on the machine type (OS) - setup aliases (env variables)
+    case "${unameOut}" in
+        # linux / macOS
+        Linux* | Darwin*) export VENV_ACTIVATE_SCRIPT="./.venv/bin/activate";;
+        # win emulators
+        CYGWIN* | MINGW*) export VENV_ACTIVATE_SCRIPT="./.venv/Scripts/activate";;
+        *)                printf "Unknown machine arch: [%s]!" "${unameOut}"; exit 1;;
+    esac
+    # shellcheck source=/dev/null
+    source "${VENV_ACTIVATE_SCRIPT}" # actually activate the virtual environment
+
     printf "\n = [INFO] OK: the virtual environment activated.\n"; sleep "${_STEP_SLEEP}"
     # - build the project
     printf "\n = [INFO] Building the %s project.\n" "${_APP_NAME}"; source ./_local_build.sh
