@@ -145,5 +145,50 @@ def file_size_str(file_path: str) -> str:
     return "unknown"
 
 
+def clear_directory_except_files(directory_path: str, files_to_keep: list[str], trace: bool = False) -> int:
+    """Cleanup folder <directory_path>, keeping files by list <files_to_keep>. Subdirectories are
+    not affected - they won't be removed (files in the subdirectories won't be touched as well).
+    Usage:
+        clear_directory_except_files("example_folder", ["keep_files.txt", "another_file.txt"])
+    """
+
+    if not os.path.exists(directory_path) or not os.path.isdir(directory_path):
+        log.debug("Path %s doesn't exist or not a directory!", directory_path)
+        return 0
+
+    counter: int = 0
+    for filename in os.listdir(directory_path):
+        file_path = os.path.join(directory_path, filename)
+        if os.path.isfile(file_path) and filename not in files_to_keep:
+            try:
+                os.remove(file_path)
+                counter += 1
+                if trace:
+                    log.debug("File %s deleted OK.", file_path)
+            except FileNotFoundError:
+                log.debug("File %s was already removed.", file_path)
+            except PermissionError:
+                log.error("Permission denied when trying to delete %s!", file_path)
+            except OSError as e:
+                log.exception("Error deleting file %s. Error: %s.", file_path, e)
+
+    return counter
+
+
+def clear_directory_except_files_recursive(directory_path, files_to_keep):
+    for root, _, files in os.walk(directory_path):
+        for filename in files:
+            file_path = os.path.join(root, filename)
+            if os.path.isfile(file_path) and filename not in files_to_keep:
+                try:
+                    os.remove(file_path)
+                    print(f"Файл {file_path} успешно удалён")
+                except Exception as e:
+                    print(f"Ошибка при удалении {file_path}: {e}")
+
+
+# Очистить папку `example_folder` от всех файлов, кроме `keep_files.txt` и `another_file.txt`, рекурсивно
+# clear_directory_except_files_recursive("example_folder", ["keep_files.txt", "another_file.txt"])
+
 if __name__ == "__main__":
     print(MSG_MODULE_ISNT_RUNNABLE)
