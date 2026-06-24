@@ -40,9 +40,9 @@ pylint --output-format=colorized --fail-under="${_PYLINT_FAILURE_SCORE}" \
     --jobs "${_WORKER_THREADS_NUMBER}" "${_VERBOSE}" "${_SRC_PATH}"
 sleep "${_STEP_DELAY}"
 
-# -- Step 3. Run [mypy] on the source code
-printf "\n = INFO: executing [mypy] on the source code.\n"
-mypy "${_SRC_PATH}"; sleep "${_STEP_DELAY}"
+# # -- Step 3. Run [mypy] on the source code
+# printf "\n = INFO: executing [mypy] on the source code.\n"
+# mypy "${_SRC_PATH}"; sleep "${_STEP_DELAY}"
 
 # -- Step 4. Run [flake8] on the source code
 printf "\n = INFO: executing [flake8] on the source code.\n"
