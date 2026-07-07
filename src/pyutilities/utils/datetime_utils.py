@@ -4,7 +4,7 @@
 Useful date/time utilities and functions.
 
 Created:  Dmitrii Gusev, 22.03.2026
-Modified: Dmitrii Gusev, 25.05.2026
+Modified: Dmitrii Gusev, 07.07.2026
 """
 
 import calendar
@@ -15,8 +15,8 @@ from functools import lru_cache
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
 # DATETIME :: timezones defaults
-MSK_TIMEZONE: timezone = timezone(timedelta(hours=3), name="Moscow Timezone (GMT+3)")
-MSK_TIMEZONE_NAME: str = "Europe/Moscow"
+MSK_TIMEZONE_NAME: str = "Moscow TZ (GMT+3)"
+MSK_TIMEZONE: timezone = timezone(timedelta(hours=3), name=MSK_TIMEZONE_NAME)
 # - CACHE :: cache setup (size) for cached functions/methods
 LRU_CACHE_SIZE: int = 128
 
@@ -25,32 +25,85 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 
-def get_timestamp(
-    current_timezone: timezone = MSK_TIMEZONE,
-    days: float = 0,
-    hours: float = 0,
-    minutes: float = 0,
-    seconds: float = 0,
-) -> datetime:
-    """Return timestamp: now (in the default timezone) +/- the specified time delta in hours / minutes /
-    seconds. Default timezone can be changed by the function argument."""
+def shift_timestamp(base_timestamp: datetime, delta_years: float = 0, delta_months: float = 0,
+                    delta_days: float = 0, delta_hours: float = 0, delta_minutes: float = 0,
+                    delta_seconds: float = 0, trace: bool = False) -> datetime:
+    """Shifts the provided timestamp by the specified delta (in years / months / days / hours / minutes
+    / seconds). Return timestamp."""
 
-    return datetime.now(current_timezone) + timedelta(
-        days=days, hours=hours, minutes=minutes, seconds=seconds
-    )
+    if not base_timestamp:
+        return None
+
+    # get parts of the base timestamp
+    year: int = base_timestamp.year  # get year
+    month: int = base_timestamp.month  # get month
+    day: int = base_timestamp.day  # get day
+    hour: int = base_timestamp.hour  # get hour
+    minute: int = base_timestamp.minute  # get minute
+    second: int = base_timestamp.second  # get second
+
+    # adjust YEAR according to delta
+    if delta_years != 0:
+        year += delta_years
+
+    # adjust MONTH + YEAR (if necessary)
+    if delta_months != 0:
+        month += delta_months
+        if abs(month) > 12:  # adding year(s) (roll over several months)
+            year += month // 12
+            month += month % 12
+        elif abs(month) < 1:  # subtracting year (month = 0 -> previous year, december)
+            year -= 1
+            month = 12
+        else:  # 1 <= abs(month) <= 12. but may be negative
+            if month < 0:
+                year -= 1
+                month = 12 + month
+
+    result: datetime = datetime(year, month, day, hour, minute, second) + \
+        timedelta(days=delta_days, hours=delta_hours, minutes=delta_minutes, seconds=delta_seconds)
+
+    if trace:
+        log.debug("Generated from [%s] timestamp [%s].", base_timestamp, result)
+
+    return result
 
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
-def get_timestampc(
-    current_timezone: timezone = MSK_TIMEZONE,
-    days: float = 0,
-    hours: float = 0,
-    minutes: float = 0,
-    seconds: float = 0,
-) -> datetime:
+def shift_timestampc(base_timestamp: datetime, delta_years: float = 0, delta_months: float = 0,
+                     delta_days: float = 0, delta_hours: float = 0, delta_minutes: float = 0,
+                     delta_seconds: float = 0, trace: bool = False) -> datetime:
+    """CASHED version of the shift_timestamp() method. Shifts the provided timestamp by the specified
+    delta (in years / months / days / hours / minutes / seconds). Return timestamp."""
+
+    return shift_timestamp(base_timestamp, delta_years, delta_months, delta_days, delta_hours,
+                           delta_minutes, delta_seconds, trace)
+
+
+def get_shifted_timestamp(current_timezone: timezone = MSK_TIMEZONE, delta_years: int = 0,
+                          delta_months: int = 0, delta_days: float = 0, delta_hours: float = 0,
+                          delta_minutes: float = 0, delta_seconds: float = 0,
+                          trace: bool = False) -> datetime:
+    """Return the current timestamp with delta: now (in the default timezone) +/- the specified time delta
+    in years / months / days / hours / minutes / seconds. Default timezone can be changed by the function
+    argument."""
+
+    # generate the current timestamp
+    current_timestamp: datetime = datetime.now(current_timezone) if current_timezone else datetime.now()
+
+    return shift_timestamp(current_timestamp, delta_years, delta_months, delta_days, delta_hours,
+                           delta_minutes, delta_seconds, trace)
+
+
+@lru_cache(maxsize=LRU_CACHE_SIZE)
+def get_shifted_timestampc(current_timezone: timezone = MSK_TIMEZONE, delta_years: int = 0,
+                           delta_months: int = 0, delta_days: float = 0, delta_hours: float = 0,
+                           delta_minutes: float = 0, delta_seconds: float = 0,
+                           trace: bool = False) -> datetime:
     """CACHED. Cached version of the get_timestamp() method."""
 
-    return get_timestamp(current_timezone, days, hours, minutes, seconds)
+    return get_shifted_timestamp(current_timezone, delta_years, delta_months, delta_days, delta_hours,
+                                 delta_minutes, delta_seconds, trace)
 
 
 def get_dates_range_before_date(date: datetime, tzinfo: timezone) -> tuple[int, int]:
