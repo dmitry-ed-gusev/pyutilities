@@ -12,6 +12,8 @@ import logging
 from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 
+from dateutil.relativedelta import relativedelta
+
 from pyutilities.defaults import MSG_MODULE_ISNT_RUNNABLE
 
 # DATETIME :: timezones defaults
@@ -25,43 +27,32 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 
-def shift_timestamp(base_timestamp: datetime, delta_years: float = 0, delta_months: float = 0,
+def shift_timestamp(base_timestamp: datetime, delta_years: int = 0, delta_months: int = 0,
                     delta_days: float = 0, delta_hours: float = 0, delta_minutes: float = 0,
-                    delta_seconds: float = 0, trace: bool = False) -> datetime:
+                    delta_seconds: float = 0, trace: bool = False) -> datetime | None:
     """Shifts the provided timestamp by the specified delta (in years / months / days / hours / minutes
     / seconds). Return timestamp."""
 
-    if not base_timestamp:
+    if not base_timestamp:  # fast-check/fail-fast
         return None
 
-    # get parts of the base timestamp
-    year: int = base_timestamp.year  # get year
-    month: int = base_timestamp.month  # get month
-    day: int = base_timestamp.day  # get day
-    hour: int = base_timestamp.hour  # get hour
-    minute: int = base_timestamp.minute  # get minute
-    second: int = base_timestamp.second  # get second
+    # Использование relativedelta решает проблему некорректных дней (например, 31 февраля)
+    # и делает это атомарно для лет/месяцев.
+    result: datetime
+    try:
+        # 1. Смещаем года и месяцы
+        result = base_timestamp + relativedelta(years=delta_years, months=delta_months)
 
-    # adjust YEAR according to delta
-    if delta_years != 0:
-        year += delta_years
+        # 2. Смещаем дробные/стандартные дни, часы, минуты и секунды
+        result += timedelta(days=delta_days, hours=delta_hours, minutes=delta_minutes, seconds=delta_seconds)
 
-    # adjust MONTH + YEAR (if necessary)
-    if delta_months != 0:
-        month += delta_months
-        if abs(month) > 12:  # adding year(s) (roll over several months)
-            year += month // 12
-            month += month % 12
-        elif abs(month) < 1:  # subtracting year (month = 0 -> previous year, december)
-            year -= 1
-            month = 12
-        else:  # 1 <= abs(month) <= 12. but may be negative
-            if month < 0:
-                year -= 1
-                month = 12 + month
+        # 3. Нормализуем таймзону (важно для DST границ)
+        if result.tzinfo is not None:
+            result = result.astimezone(result.tzinfo)
 
-    result: datetime = datetime(year, month, day, hour, minute, second) + \
-        timedelta(days=delta_days, hours=delta_hours, minutes=delta_minutes, seconds=delta_seconds)
+    except (ValueError, OverflowError):
+        # Защита от выхода за пределы поддерживаемых дат Python (года 1-9999)
+        return None
 
     if trace:
         log.debug("Generated from [%s] timestamp [%s].", base_timestamp, result)
@@ -70,9 +61,9 @@ def shift_timestamp(base_timestamp: datetime, delta_years: float = 0, delta_mont
 
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
-def shift_timestampc(base_timestamp: datetime, delta_years: float = 0, delta_months: float = 0,
+def shift_timestampc(base_timestamp: datetime, delta_years: int = 0, delta_months: int = 0,
                      delta_days: float = 0, delta_hours: float = 0, delta_minutes: float = 0,
-                     delta_seconds: float = 0, trace: bool = False) -> datetime:
+                     delta_seconds: float = 0, trace: bool = False) -> datetime | None:
     """CASHED version of the shift_timestamp() method. Shifts the provided timestamp by the specified
     delta (in years / months / days / hours / minutes / seconds). Return timestamp."""
 
@@ -83,7 +74,7 @@ def shift_timestampc(base_timestamp: datetime, delta_years: float = 0, delta_mon
 def get_shifted_timestamp(current_timezone: timezone = MSK_TIMEZONE, delta_years: int = 0,
                           delta_months: int = 0, delta_days: float = 0, delta_hours: float = 0,
                           delta_minutes: float = 0, delta_seconds: float = 0,
-                          trace: bool = False) -> datetime:
+                          trace: bool = False) -> datetime | None:
     """Return the current timestamp with delta: now (in the default timezone) +/- the specified time delta
     in years / months / days / hours / minutes / seconds. Default timezone can be changed by the function
     argument."""
@@ -99,11 +90,39 @@ def get_shifted_timestamp(current_timezone: timezone = MSK_TIMEZONE, delta_years
 def get_shifted_timestampc(current_timezone: timezone = MSK_TIMEZONE, delta_years: int = 0,
                            delta_months: int = 0, delta_days: float = 0, delta_hours: float = 0,
                            delta_minutes: float = 0, delta_seconds: float = 0,
-                           trace: bool = False) -> datetime:
+                           trace: bool = False) -> datetime | None:
     """CACHED. Cached version of the get_timestamp() method."""
 
     return get_shifted_timestamp(current_timezone, delta_years, delta_months, delta_days, delta_hours,
                                  delta_minutes, delta_seconds, trace)
+
+
+def get_str_month(dt: datetime,
+                  month_number_prefix: bool = True,
+                  year_number_postfix: bool = False,
+                  delimiter: str = ".") -> str:
+    """Return string name of the month with variations, for utility usage (folders names etc.)"""
+
+    prefix: str = ""
+    postfix: str = ""
+    if month_number_prefix:
+        prefix = f"{dt.month:02d}{delimiter}"
+    if year_number_postfix:
+        postfix = f"{delimiter}{dt.year}"
+
+    return f"{prefix}{calendar.month_name[dt.month]}{postfix}"
+
+
+def get_str_current_month():
+    return get_str_month(datetime.now(tz=MSK_TIMEZONE))
+
+
+def get_str_prev_month():
+    return get_str_month(get_shifted_timestamp(delta_months=-1))
+
+
+def get_str_next_month():
+    return get_str_month(get_shifted_timestamp(delta_months=1))
 
 
 def get_dates_range_before_date(date: datetime, tzinfo: timezone) -> tuple[int, int]:
