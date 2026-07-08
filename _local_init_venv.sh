@@ -19,7 +19,7 @@
 #       - poetry must be installed
 #
 #   Created:  Dmitrii Gusev, 21.07.2025
-#   Modified: Dmitrii Gusev, 16.05.2026
+#   Modified: Dmitrii Gusev, 08.07.2026
 #
 # ##################################################################################################
 
@@ -111,7 +111,8 @@ for folder in "${_TEMPORARY_DIRS[@]}"; do
 done
 # - remove cashes, pre-compiled files, coverage, etc.
 printf "\n=        Removing python caches and pre-compiled files\n"
-find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$|\.py,cover$)" | xargs rm -rf "${_VERBOSE_REMOVAL}" || \
+find . | grep -E "(/__pycache__$|\.pyc$|\.pyo$|\.py,cover$|/outdated_)" | \
+xargs rm -rf "${_VERBOSE_REMOVAL}" || \
 { printf "\n=        Nothing to remove, project is clean.\n"; }
 printf "\n%s\n" "${_MSG_END_OF_STEP}"; sleep "${_STEP_DELAY}"
 

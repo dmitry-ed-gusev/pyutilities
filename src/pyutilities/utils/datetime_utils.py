@@ -131,47 +131,37 @@ def get_dates_range_before_date(date: datetime, tzinfo: timezone) -> tuple[int, 
     whole previous month, if today is 01.01.XXXX - range for 01.12.XXXX-1 - 31.12.XXXX-1.
     """
 
+    if not isinstance(date, datetime):
+        raise ValueError("The 'date' argument must be a valid datetime object.")
+
     log.debug("get_dates_range_before_date(): the date [%s].", date)
 
     tstamp_from: int = 0
     tstamp_to: int = 0
 
-    if date:  # if date is OK (not empty/None)
+    # - processing and calculating dates
+    if date.day == 1:  # today - 1st day of month, we need report for the previous month
 
-        # - processing and calculating dates
-        if date.day == 1:  # today - 1st day of month, we need report for the previous month
+        if date.month == 1:  # we are at 01.01.XXXX - we need report for Dec.XXXX - 1
+            date_from = datetime(date.year - 1, 12, 1, tzinfo=tzinfo)  # from: 01 Dec Year-1 (prev. year)
+            date_to = datetime(date.year - 1, 12, 31, tzinfo=tzinfo)  # to: 31 Dec Year-1 (prev. year)
 
-            if date.month == 1:  # we are at 01.01.XXXX - we need report for Dec.XXXX - 1
+        else:  # we are at 01.XX.XXXX - we need report for previous month
+            date_from = datetime(date.year, date.month - 1, 1, tzinfo=tzinfo)  # from: 01 Month-1 Year
+            _, last_day = calendar.monthrange(date.year, date.month - 1)  # last day of the previous month
+            date_to = datetime(date.year, date.month - 1, last_day, tzinfo=tzinfo)  # to: LastDay Month-1 Year
 
-                date_from = datetime(date.year - 1, 12, 1, tzinfo=tzinfo)  # from: 01 Dec Year-1 (prev. year)
-                date_to = datetime(date.year - 1, 12, 31, tzinfo=tzinfo)  # to: 31 Dec Year-1 (prev. year)
+    else:  # today isn't the 1st, we need report from 1st till yesterday
 
-            else:  # we are at 01.XX.XXXX - we need report for previous month
+        date_from = datetime(date.year, date.month, 1, tzinfo=tzinfo)  # from: 01 Month Year
+        date_to = datetime(date.year, date.month, date.day - 1, tzinfo=tzinfo)  # to: Day-1 Month Year
 
-                # from: 01 Month-1 Year
-                date_from = datetime(date.year, date.month - 1, 1, tzinfo=tzinfo)
-                # last day of the previous month
-                _, last_day = calendar.monthrange(date.year, date.month - 1)
-                # to: Last Day Month-1 Year
-                date_to = datetime(date.year, date.month - 1, last_day, tzinfo=tzinfo)
-
-        else:  # today isn't the 1st, we need report from 1st till yesterday
-
-            date_from = datetime(date.year, date.month, 1, tzinfo=tzinfo)  # from: 01 Month Year
-            date_to = datetime(date.year, date.month, date.day - 1, tzinfo=tzinfo)  # to: Day-1 Month Year
-
-        # - final date/time - date from: XX.XX.XX 00:00:00
-        tstamp_from = int(
-            datetime(
-                date_from.year, date_from.month, date_from.day, hour=0, minute=0, second=0, tzinfo=tzinfo
-            ).timestamp()
-        )
-        # - final date/time - # date to: XX.XX.XXXX 23:59:59
-        tstamp_to = int(
-            datetime(
-                date_to.year, date_to.month, date_to.day, hour=23, minute=59, second=59, tzinfo=tzinfo
-            ).timestamp()
-        )
+    # - final date/time - date from: XX.XX.XX 00:00:00 - date to: XX.XX.XXXX 23:59:59
+    datetime_from = date_from.replace(hour=0, minute=0, second=0, microsecond=0)
+    datetime_to = date_to.replace(hour=23, minute=59, second=59, microsecond=0)
+    # timestamps from datetime objects
+    tstamp_from = int(datetime_from.timestamp())
+    tstamp_to = int(datetime_to.timestamp())
 
     log.debug("Timestamps for [%s]: from [%s], to [%s].", date, tstamp_from, tstamp_to)
 
