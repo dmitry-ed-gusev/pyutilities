@@ -13,7 +13,7 @@ For more data - see docstring for Configuration class.
 02.01.2025 Logging refactoring and minor improvements.
 
 Created:  Gusev Dmitrii, 2017
-Modified: Gusev Dmitrii, 02.01.2025
+Modified: Gusev Dmitrii, 09.07.2026
 """
 
 import logging
@@ -182,10 +182,10 @@ class Configuration:
         try:
             result = self.__get_value(key, self.config_dict)
             return result
-        except KeyError:
+        except KeyError as e:
             if default is not None:
                 return default
-            raise ConfigError(f"Configuration entry [{key}] not found!")
+            raise ConfigError(f"Configuration entry [{key}] not found!") from e
 
     def set(self, key, value):
         """Sets config value, creating all the nested levels if necessary
@@ -257,6 +257,7 @@ VALUES_COLUMN = 1
 class ConfigurationXls(Configuration):
     """Extension for Configuration class for work with excel config files."""
 
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     def __init__(
         self,
         path_to_xls,

@@ -3,7 +3,7 @@
 //   cSpell Settings JSON file (whole project configuration).
 //
 //   Created:  Dmitrii Gusev, 28.12.2024
-//   Modified: Dmitrii Gusev, 25.11.2025
+//   Modified: Dmitrii Gusev, 07.07.2026
 //
 //##############################################################################
 
@@ -33,8 +33,8 @@
         "xlwings", "pyyaml", "openpyxl", "urllib3", "paramiko", "prettytable", "useragent", "threadsafe",
         "forcelist", "httpclient", "rsps", "webclient", "fedit", "functool", "eexist", "hjson", "pyutils",
         "trimc", "filterc", "coalescec", "tstamp", "figlet", "emptyc", "timestampc", "datec", "secondsc",
-        "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "",
-        "", "", ""
+        "relativedelta", "autouse", "", "", "", "", "", "", "", "", "", "", "",
+        "", "", "", "", "", "", "", "", "", "", "", "", ""
     ],
 
     // a list of globs to specify which files are to be ignored
