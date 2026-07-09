@@ -23,7 +23,7 @@ CHECK_TYPE_CONTAINS = "contains"
 CHECK_TYPES = (CHECK_TYPE_STARTS, CHECK_TYPE_ENDS, CHECK_TYPE_CONTAINS)
 
 
-def check_str(args, check_type, source_str, test_str):
+def check_str(args, check_type, source_str: str, test_str: str) -> bool:
     """
     Check relation between string and test string, according to test type
     :param check_type: type of matching
@@ -32,14 +32,16 @@ def check_str(args, check_type, source_str, test_str):
     :return:
     """
 
+    result: bool = False
+
     if check_type == CHECK_TYPE_STARTS:
-        return source_str.startswith(test_str)
+        result = source_str.startswith(test_str)
+    elif args.edit_type == CHECK_TYPE_ENDS:
+        result = source_str.endswith(test_str)
+    elif args.edit_type == CHECK_TYPE_CONTAINS:
+        result = test_str in source_str
 
-    if args.edit_type == CHECK_TYPE_ENDS:
-        return source_str.endswith(test_str)
-
-    if args.edit_type == CHECK_TYPE_CONTAINS:
-        return test_str in source_str
+    return result
 
 
 def fedit():

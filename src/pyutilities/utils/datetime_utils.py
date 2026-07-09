@@ -27,17 +27,25 @@ log = logging.getLogger(__name__)
 log.addHandler(logging.NullHandler())
 
 
-def shift_timestamp(base_timestamp: datetime, delta_years: int = 0, delta_months: int = 0,
-                    delta_days: float = 0, delta_hours: float = 0, delta_minutes: float = 0,
-                    delta_seconds: float = 0, trace: bool = False) -> datetime | None:
+# pylint: disable=too-many-arguments,too-many-positional-arguments
+def shift_timestamp(
+    base_timestamp: datetime,
+    delta_years: int = 0,
+    delta_months: int = 0,
+    delta_days: float = 0,
+    delta_hours: float = 0,
+    delta_minutes: float = 0,
+    delta_seconds: float = 0,
+    trace: bool = False,
+) -> datetime:
     """Shifts the provided timestamp by the specified delta (in years / months / days / hours / minutes
     / seconds). Return timestamp."""
 
     if not base_timestamp:  # fast-check/fail-fast
-        return None
+        raise ValueError("Provided empty datetime value!")
 
-    # Использование relativedelta решает проблему некорректных дней (например, 31 февраля)
-    # и делает это атомарно для лет/месяцев.
+    # using function relativedelta() solving the issue of incorrect days (example: 31 февраля) and
+    # does it atomic for years/months
     result: datetime
     try:
         # 1. Смещаем года и месяцы
@@ -50,9 +58,9 @@ def shift_timestamp(base_timestamp: datetime, delta_years: int = 0, delta_months
         if result.tzinfo is not None:
             result = result.astimezone(result.tzinfo)
 
-    except (ValueError, OverflowError):
+    except (ValueError, OverflowError) as e:  # we won't 'silence' the issue
         # Защита от выхода за пределы поддерживаемых дат Python (года 1-9999)
-        return None
+        raise ValueError(f"Datetime value issue: {e}") from e
 
     if trace:
         log.debug("Generated from [%s] timestamp [%s].", base_timestamp, result)
@@ -61,20 +69,43 @@ def shift_timestamp(base_timestamp: datetime, delta_years: int = 0, delta_months
 
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
-def shift_timestampc(base_timestamp: datetime, delta_years: int = 0, delta_months: int = 0,
-                     delta_days: float = 0, delta_hours: float = 0, delta_minutes: float = 0,
-                     delta_seconds: float = 0, trace: bool = False) -> datetime | None:
+# pylint: disable=too-many-arguments,too-many-positional-arguments
+def shift_timestampc(
+    base_timestamp: datetime,
+    delta_years: int = 0,
+    delta_months: int = 0,
+    delta_days: float = 0,
+    delta_hours: float = 0,
+    delta_minutes: float = 0,
+    delta_seconds: float = 0,
+    trace: bool = False,
+) -> datetime:
     """CASHED version of the shift_timestamp() method. Shifts the provided timestamp by the specified
     delta (in years / months / days / hours / minutes / seconds). Return timestamp."""
 
-    return shift_timestamp(base_timestamp, delta_years, delta_months, delta_days, delta_hours,
-                           delta_minutes, delta_seconds, trace)
+    return shift_timestamp(
+        base_timestamp,
+        delta_years,
+        delta_months,
+        delta_days,
+        delta_hours,
+        delta_minutes,
+        delta_seconds,
+        trace,
+    )
 
 
-def get_shifted_timestamp(current_timezone: timezone = MSK_TIMEZONE, delta_years: int = 0,
-                          delta_months: int = 0, delta_days: float = 0, delta_hours: float = 0,
-                          delta_minutes: float = 0, delta_seconds: float = 0,
-                          trace: bool = False) -> datetime | None:
+# pylint: disable=too-many-arguments,too-many-positional-arguments
+def get_shifted_timestamp(
+    current_timezone: timezone = MSK_TIMEZONE,
+    delta_years: int = 0,
+    delta_months: int = 0,
+    delta_days: float = 0,
+    delta_hours: float = 0,
+    delta_minutes: float = 0,
+    delta_seconds: float = 0,
+    trace: bool = False,
+) -> datetime:
     """Return the current timestamp with delta: now (in the default timezone) +/- the specified time delta
     in years / months / days / hours / minutes / seconds. Default timezone can be changed by the function
     argument."""
@@ -82,25 +113,47 @@ def get_shifted_timestamp(current_timezone: timezone = MSK_TIMEZONE, delta_years
     # generate the current timestamp
     current_timestamp: datetime = datetime.now(current_timezone) if current_timezone else datetime.now()
 
-    return shift_timestamp(current_timestamp, delta_years, delta_months, delta_days, delta_hours,
-                           delta_minutes, delta_seconds, trace)
+    return shift_timestamp(
+        current_timestamp,
+        delta_years,
+        delta_months,
+        delta_days,
+        delta_hours,
+        delta_minutes,
+        delta_seconds,
+        trace,
+    )
 
 
 @lru_cache(maxsize=LRU_CACHE_SIZE)
-def get_shifted_timestampc(current_timezone: timezone = MSK_TIMEZONE, delta_years: int = 0,
-                           delta_months: int = 0, delta_days: float = 0, delta_hours: float = 0,
-                           delta_minutes: float = 0, delta_seconds: float = 0,
-                           trace: bool = False) -> datetime | None:
+# pylint: disable=too-many-arguments,too-many-positional-arguments
+def get_shifted_timestampc(
+    current_timezone: timezone = MSK_TIMEZONE,
+    delta_years: int = 0,
+    delta_months: int = 0,
+    delta_days: float = 0,
+    delta_hours: float = 0,
+    delta_minutes: float = 0,
+    delta_seconds: float = 0,
+    trace: bool = False,
+) -> datetime:
     """CACHED. Cached version of the get_timestamp() method."""
 
-    return get_shifted_timestamp(current_timezone, delta_years, delta_months, delta_days, delta_hours,
-                                 delta_minutes, delta_seconds, trace)
+    return get_shifted_timestamp(
+        current_timezone,
+        delta_years,
+        delta_months,
+        delta_days,
+        delta_hours,
+        delta_minutes,
+        delta_seconds,
+        trace,
+    )
 
 
-def get_str_month(dt: datetime,
-                  month_number_prefix: bool = True,
-                  year_number_postfix: bool = False,
-                  delimiter: str = ".") -> str:
+def get_str_month(
+    dt: datetime, month_number_prefix: bool = True, year_number_postfix: bool = False, delimiter: str = "."
+) -> str:
     """Return string name of the month with variations, for utility usage (folders names etc.)"""
 
     prefix: str = ""
@@ -113,15 +166,15 @@ def get_str_month(dt: datetime,
     return f"{prefix}{calendar.month_name[dt.month]}{postfix}"
 
 
-def get_str_current_month():
+def get_str_current_month() -> str:
     return get_str_month(datetime.now(tz=MSK_TIMEZONE))
 
 
-def get_str_prev_month():
+def get_str_prev_month() -> str:
     return get_str_month(get_shifted_timestamp(delta_months=-1))
 
 
-def get_str_next_month():
+def get_str_next_month() -> str:
     return get_str_month(get_shifted_timestamp(delta_months=1))
 
 

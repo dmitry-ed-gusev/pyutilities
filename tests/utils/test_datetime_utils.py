@@ -55,9 +55,9 @@ def test_get_shifted_timestamp():
     assert datetime.now(MSK_TIMEZONE) < get_shifted_timestamp(delta_seconds=+300)
 
 
-def test_shift_timestamp_returns_none_on_empty_input():
-    """Verifies that an empty or None base_timestamp returns None."""
-    assert shift_timestamp(None) is None
+def test_shift_timestamp_raise_error_on_empty_input():
+    with pytest.raises(ValueError):
+        assert shift_timestamp(None) is None
 
 
 def test_shift_timestamp_preserves_timezone():
