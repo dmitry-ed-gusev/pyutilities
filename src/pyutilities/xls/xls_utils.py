@@ -8,8 +8,8 @@ Modified: Dmitrii Gusev, 24.06.2026
 """
 
 from openpyxl.cell.cell import Cell
-from openpyxl.styles import Alignment, Font
-from openpyxl.utils import get_column_letter
+from openpyxl.styles import Alignment, Font  # type: ignore[attr-defined]
+from openpyxl.utils import get_column_letter  # type: ignore[attr-defined]
 from openpyxl.worksheet.worksheet import Worksheet
 
 from pyutilities.utils.string_utils import is_empty
@@ -30,18 +30,19 @@ class XlsSheet:
     def __init__(self, ws: Worksheet):
         self.__ws = ws
 
+    # pylint: disable=too-many-arguments,too-many-positional-arguments
     def init_cell(
         self,
         address: str,
         value: str,
         bold: bool = False,
         aligned: bool = False,
-        color: str = None,
+        color: str | None = None,
         width: int = 0,
     ) -> Cell:
         """Simple yet powerful method for cell initialization. Can init essential cell parameters."""
 
-        cell = self.__ws[address]
+        cell: Cell = self.__ws[address]
         cell.value = value
 
         if bold:  # font boldness
@@ -68,7 +69,7 @@ class XlsSheet:
         return cell
 
     def init_cell_bold(
-        self, address, value, aligned: bool = False, color: str = None, width: int = 0
+        self, address, value, aligned: bool = False, color: str | None = None, width: int = 0
     ) -> Cell:
         """TBD"""
         return self.init_cell(
@@ -83,7 +84,7 @@ class XlsSheet:
         value: str,
         bold: bool = False,
         aligned: bool = False,
-        color: str = None,
+        color: str | None = None,
         width: int = 0,
     ) -> Cell:
         """TBD"""
