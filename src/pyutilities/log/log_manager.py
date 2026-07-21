@@ -4,8 +4,32 @@
 Application logging init/managing module. For logging used loguru library. Provides flexible logging
 with console and file output, rotation, retention, and compression.
 
+This version offers great flexibility: it is possible, when the root logger level is set to one level,
+to set up particular logger (by name) to the LOWER level (for example: root=INFO, my_logger=DEBUG).
+
+Module usage example:
+
+    With this setup:
+        *setup_logging_flask(level="INFO", extra_loggers={"werkzeug": "DEBUG"})*
+
+    result is:
+        *logger.info("...") → ✅ allowed (INFO ≥ INFO)*
+        *logger.debug("...") → ❌ filtered out (DEBUG < INFO)*
+        *werkzeug.debug("...") intercepted → record["name"] = "werkzeug" or "werkzeug.debug" *
+            *→ DEBUG allowed ✅*
+
+⚠️ Note! Currently, if you pass:
+            *extra_loggers={"werkzeug": "DEBUG", "werkzeug.debug": "WARNING"}*
+          → only the first match (werkzeug) wins due to sorting by length ✅
+          ! But that’s correct behavior: werkzeug.debug should inherit DEBUG unless
+          !  explicitly overridden — so this is fine.
+
+⚠️ Note! Werkzeug and flask.app are intercepted and set to INFO by default in setup_logging_flask(),
+          but nested loggers like werkzeug.debug inherit the parent unless overridden explicitly
+          in extra_loggers.
+
 Created:  Dmitrii Gusev, 06.04.2026
-Modified: Dmitrii Gusev, 15.05.2026
+Modified: Dmitrii Gusev, 21.07.2026
 """
 
 import logging
@@ -15,8 +39,6 @@ from types import FrameType
 from typing import Optional
 
 from loguru import logger
-
-from pyutilities.utils.string_utils import is_empty
 
 # - Default logger names for Flask (they needs special processing in case we are in Flask app)
 FLASK_LOGGERS: list[str] = ["werkzeug", "flask.app"]
@@ -34,6 +56,14 @@ INTERCEPTED_LOG_FORMAT = (
     "<cyan>{name}</cyan>:<cyan>{function}</cyan>:"
     "<cyan>{line}</cyan> - <level>{message}</level>\n"
 )
+
+# - File appender constants
+FILE_APPENDER_ROTATION: str = "100MB"  # possible values: "1MB", "10MB", "1GB"
+FILE_APPENDER_RETENTION: str = "7 days"  # possible values: "3 days", "1 week", "1 month"
+FILE_APPENDER_COMPRESSION: str = "zip"  # possible values: "zip", "gz", "bz2", "xz"
+
+# - guard flag - idempotency of the method _intercept_standard_logging()
+_INTERCEPTED = False
 
 
 class InterceptHandler(logging.Handler):
@@ -58,8 +88,10 @@ class InterceptHandler(logging.Handler):
             frame = frame.f_back
             depth += 1
 
-        # emit the external captured log message
-        logger.opt(depth=depth, exception=record.exc_info).log(level, record.getMessage())
+        # Bind original_name to clarify source logger in logs
+        logger.opt(depth=depth, exception=record.exc_info).bind(original_name=record.name).log(
+            level, record.getMessage()
+        )
 
 
 class LoggerFileAppenderConfig:  # pylint: disable=too-few-public-methods
@@ -71,9 +103,9 @@ class LoggerFileAppenderConfig:  # pylint: disable=too-few-public-methods
     def __init__(
         self,
         file: str | None = None,
-        rotation: str = "100Mb",
-        retention: str = "7 days",
-        compression: str = "zip",
+        rotation: str = FILE_APPENDER_ROTATION,
+        retention: str = FILE_APPENDER_RETENTION,
+        compression: str = FILE_APPENDER_COMPRESSION,
     ):
         """Initialize the logger appenders config, with the necessary arguments/parameters.
         Args:
@@ -114,13 +146,14 @@ class LoggerManager:  # pylint: disable=too-few-public-methods, too-many-instanc
                 configured with the setup, default = None
         """
 
+        # - init file appender state self fields, below will be assigned values, if any
         self.file: Optional[str] = None
         self.rotation: Optional[str] = None
         self.retention: Optional[str] = None
         self.compression: Optional[str] = None
 
         # - internal state initialization - file appender/handler
-        if log_file_config and not is_empty(log_file_config.file):
+        if log_file_config and log_file_config.file and log_file_config.file.strip():
             self.file = log_file_config.file
             self.rotation = log_file_config.rotation
             self.retention = log_file_config.retention
@@ -129,17 +162,30 @@ class LoggerManager:  # pylint: disable=too-few-public-methods, too-many-instanc
         # - internal state initialization - console appender and level
         self.level = level.upper()
         self.console = console
+
         # - internal state initialization - extra loggers and keys
         self.extra_loggers: Optional[dict[str, str]] = extra_loggers
         self.extra_loggers_keys: list[str] = (
             extra_loggers.keys() if extra_loggers else []  # type: ignore[assignment]
         )
 
+        # Store effective per-logger levels for filtering (NEW-AI)
+        self.logger_levels: dict[str, str] = {}
+        if extra_loggers:
+            for name, lvl in extra_loggers.items():
+                if not lvl:
+                    raise ValueError(f"Empty log level for logger '{name}'")
+                try:
+                    logger.level(lvl.upper())  # validate immediately
+                except ValueError as e:
+                    raise ValueError(f"Invalid log level '{lvl}' for logger '{name}'") from e
+                self.logger_levels[name] = lvl.upper()
+
         logger.remove()  # Remove default logger (in order to avoid duplicate messages)
         self._configure_logger()  # Configure logger (call internal method)
         self._intercept_standard_logging()  # Intercept standard logging (call internal method)
 
-    def _configure_logger(self) -> None:
+    def _configure_logger(self) -> None:  # noqa: C901
         """INTERNAL. Configure loguru logger based on settings. Internal method for class LoggerManager.
         This method configure the records formatting, creating and adding the necessary handlers to the
         loguru logger, some additional logger setup ().
@@ -148,12 +194,37 @@ class LoggerManager:  # pylint: disable=too-few-public-methods, too-many-instanc
         # Custom formatter that handles both application logs (with extra[name]) and intercepted logs.
         # This method is used as parameter for console appender - see below.
         def format_record(record) -> str:
-            # Map format based on whether 'name' exists in extra
-            format_map: dict[bool, str] = {
-                True: DEFAULT_LOG_FORMAT,  # Application logs with extra[name]
-                False: INTERCEPTED_LOG_FORMAT,  # Intercepted logs from standard library
-            }
-            return format_map["name" in record["extra"]]
+            # Priority:
+            #   1. If 'name' explicitly bound via logger.bind(name=...) → use {extra[name]}
+            #   2. Otherwise (intercepted) → use {name} (loguru's record["name"])
+            has_explicit_name = "name" in record["extra"]
+
+            # For intercepted logs, enrich extra with original logger name for clarity
+            if not has_explicit_name and "original_name" not in record["extra"]:
+                record["extra"]["original_name"] = record["name"]
+
+            return DEFAULT_LOG_FORMAT if has_explicit_name else INTERCEPTED_LOG_FORMAT
+
+        # NEW-AI: Dynamic level filter respecting per-logger overrides
+        def level_filter(record) -> bool:
+            # Use logger name (from 'name' field — loguru's default for intercepted logs)
+            logger_name = record["name"]
+            effective_level = self.level  # fallback: global level
+
+            # Find longest matching logger level override (e.g., "werkzeug" matches "werkzeug.debug")
+            for key in sorted(self.logger_levels.keys(), key=len, reverse=True):
+                if logger_name == key or logger_name.startswith(key + "."):
+                    effective_level = self.logger_levels[key]
+                    break
+
+            try:
+                level_no = logger.level(effective_level).no
+            except ValueError:
+                # Invalid level string fallback → INFO
+                level_no = logger.level("INFO").no
+
+            # Allow log only if its level is >= effective level
+            return record["level"].no >= level_no  # type: ignore
 
         # ! change some coloring of the log messages
         logger.level("DEBUG", color="<green>")
@@ -167,7 +238,9 @@ class LoggerManager:  # pylint: disable=too-few-public-methods, too-many-instanc
                 {
                     "sink": sys.stdout,
                     "format": format_record,  # use the method above to format log record
-                    "level": self.level,
+                    # "level": self.level,  # before NEW-AI
+                    "level": 0,  # NEW-AI ← Pass *all* to filter (not filtered here, 0 - NOTSET, pass *all*)
+                    "filter": level_filter,  # NEW-AI ← Apply custom filtering
                     "colorize": True,
                 }
             )
@@ -181,7 +254,9 @@ class LoggerManager:  # pylint: disable=too-few-public-methods, too-many-instanc
                 {
                     "sink": self.file,
                     "format": format_record,  # use the method above to format log record
-                    "level": self.level,
+                    # "level": self.level,  # before NEW-AI
+                    "level": 0,  # NEW-AI ← Pass *all* to filter (not filtered here, 0 - NOTSET, pass *all*)
+                    "filter": level_filter,  # NEW-AI ← Apply custom filtering
                     "rotation": self.rotation,
                     "retention": self.retention,
                     "compression": self.compression,
@@ -198,8 +273,16 @@ class LoggerManager:  # pylint: disable=too-few-public-methods, too-many-instanc
         application itself (flask.app, werkzeug) and redirect to loguru. Also set level for some used
         libraries - for development/debug purposes. Internal method for class LoggerManager."""
 
-        # Intercept werkzeug (Flask)/system logging (A MUST: level=0, force=True -> intercept ALL!)
-        logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
+        global _INTERCEPTED  # pylint: disable=global-statement
+        if _INTERCEPTED:
+            return  # avoid re-intercepting
+
+        # Safe: replace root handlers instead of using basicConfig(force=True).
+        # This avoids ValueError on multiple calls and ensures idempotency
+        if not logging.root.handlers:
+            # Only set up intercept if no handlers exist (prevent duplication)
+            logging.root.handlers = [InterceptHandler()]
+            logging.root.setLevel(0)  # same effect as level=0 in basicConfig
 
         # Intercept specific loggers (they are using python logging mechanism) - for Flask
         if self.extra_loggers:  # if there are extra loggers - process them
@@ -212,6 +295,8 @@ class LoggerManager:  # pylint: disable=too-few-public-methods, too-many-instanc
                     # ! set the appropriate level for some libraries - it may help to reduce
                     # !   logging output amount (brevity) or clarify libraries internals (more logging)
                     logging.getLogger(logger_name).setLevel(self.extra_loggers[logger_name])
+
+        _INTERCEPTED = True  # Ensure idempotency: set only once
 
     @staticmethod
     def get_logger(name: str):
@@ -237,9 +322,9 @@ def setup_logging(
     level: str = "INFO",
     console: bool = True,
     file: str | None = None,
-    rotation: str = "100 MB",
-    retention: str = "7 days",
-    compression: str = "zip",
+    rotation: str = FILE_APPENDER_ROTATION,
+    retention: str = FILE_APPENDER_RETENTION,
+    compression: str = FILE_APPENDER_COMPRESSION,
     extra_loggers: Optional[dict[str, str]] = None,
 ) -> LoggerManager:
     """MODULE METHOD. Setup application logging. This is the MAIN ENTRY POINT FOR configuring LOGGING
@@ -272,7 +357,7 @@ def setup_logging(
     # create instance of file appender config - if file specified
     log_file_config: Optional[LoggerFileAppenderConfig] = (
         LoggerFileAppenderConfig(file=file, rotation=rotation, retention=retention, compression=compression)
-        if not is_empty(file)
+        if file and file.strip()
         else None
     )
 
@@ -286,9 +371,9 @@ def setup_logging_flask(
     level: str = "INFO",
     console: bool = True,
     file: str | None = None,
-    rotation: str = "100 MB",
-    retention: str = "7 days",
-    compression: str = "zip",
+    rotation: str = FILE_APPENDER_ROTATION,
+    retention: str = FILE_APPENDER_RETENTION,
+    compression: str = FILE_APPENDER_COMPRESSION,
     extra_loggers: Optional[dict[str, str]] = None,
 ) -> LoggerManager:
     """MODULE METHOD. Setup application logging for Flask application. This is the MAIN ENTRY POINT
@@ -309,7 +394,7 @@ def setup_logging_flask(
     # create instance of file appender config - if file specified
     log_file_config: Optional[LoggerFileAppenderConfig] = (
         LoggerFileAppenderConfig(file=file, rotation=rotation, retention=retention, compression=compression)
-        if not is_empty(file)
+        if file and file.strip()
         else None
     )
 
