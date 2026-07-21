@@ -8,7 +8,7 @@
 #       - most of modules should be typed (used mypy stubs libraries)
 #
 #   Created:  Dmitrii Gusev, 30.05.2025
-#   Modified: Dmitrii Gusev, 07.07.2026
+#   Modified: Dmitrii Gusev, 21.07.2026
 #
 ####################################################################################################
 
@@ -20,7 +20,7 @@ build-backend = "poetry.core.masonry.api"
 # -- project / poetry utility meta-information
 [project]
 name = "pyutilities"
-version = "2.8.0dev1"
+version = "2.8.0"
 description = "PyUtilities :: Useful python 3+ utilities library for various use cases."
 authors     = [
     {name = "Dmitrii Gusev", email = "dmitry.ed.gusev@gmail.com"},
