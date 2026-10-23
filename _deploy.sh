@@ -18,7 +18,8 @@ export LANG="en_US.UTF-8"
 printf "=== Deploy the [PyUtilities] library :: starting. ===\n\n"
 
 # -- Step I. Select .env* config file - by default we use the local config
-export ENV_FILE=".env.deploy"
+# export ENV_FILE=".env.deploy"
+export ENV_FILE=".pypi.token.pyutilities"
 printf "\n = INFO: using deploy env file: [%s]\n" "${ENV_FILE}"
 
 # -- Step II. Loading env variables from file to shell - get lines <name=value> not starting with #

@@ -9,14 +9,14 @@ Useful materials:
         how-do-i-convert-this-list-of-dictionaries-to-a-csv-file
 
 Created:  Gusev Dmitrii, 10.10.2022
-Modified: Dmitrii Gusev, 14.05.2026
+Modified: Dmitrii Gusev, 23.10.2026
 """
 
 import csv
 import inspect
 import logging
 import os
-from typing import Any, Dict, List, Tuple
+from typing import Any, Dict, List, Sized, Tuple
 
 from pyutilities.defaults import DEFAULT_ENCODING, MSG_MODULE_ISNT_RUNNABLE
 from pyutilities.exception import PyUtilitiesException
@@ -102,6 +102,36 @@ def get_value_safely(dictionary: dict[str, str | None], key: str, default_value:
         return dictionary.get(key, default_value)  # The .get() method handles the missing key gracefully
 
     return default_value  # If the dictionary itself is None, return the default value
+
+
+def is_empty(value: Any) -> bool:
+    """Универсально проверяет, является ли значение пустым или None.
+    - Возвращает True для: None, "", "        ", [], {}, set(), (), range(0).
+    - Возвращает False для: численных типов (0, 0.0), булевых (False, True),
+        а также непустых строк и коллекций.
+    """
+
+    if value is None:
+        return True
+
+    # Строки проверяем отдельно (они тоже Sized, но строки из пробелов " " часто не считают пустыми)
+    if isinstance(value, str):
+        return len(value.strip()) == 0
+
+    # Исключаем bool (так как bool — это подкласс int в Python, а isinstance(False, int) -> True)
+    if isinstance(value, bool):
+        return False
+
+    # Исключаем int, float, complex и другие числовые типы
+    if isinstance(value, (int, float, complex)):
+        return False
+
+    # Если объект реализует интерфейс Sized (коллекции, словари, списки, кортежи, множества)
+    if isinstance(value, Sized):
+        return len(value) == 0
+
+    # Для всех остальных неопределенных объектов по умолчанию возвращаем False
+    return False
 
 
 if __name__ == "__main__":
