@@ -20,11 +20,7 @@ build-backend = "poetry.core.masonry.api"
 # -- project / poetry utility meta-information
 [project]
 name = "pyutilities"
-<<<<<<< HEAD
-version = "2.9.1"
-=======
-version = "2.9.0"
->>>>>>> main
+version = "2.9.2dev1"
 description = "PyUtilities :: Useful python 3+ utilities library for various use cases."
 authors     = [
     {name = "Dmitrii Gusev", email = "dmitry.ed.gusev@gmail.com"},
