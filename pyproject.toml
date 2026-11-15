@@ -8,7 +8,7 @@
 #       - most of modules should be typed (used mypy stubs libraries)
 #
 #   Created:  Dmitrii Gusev, 30.05.2025
-#   Modified: Dmitrii Gusev, 23.10.2026
+#   Modified: Dmitrii Gusev, 15.11.2026
 #
 ####################################################################################################
 
@@ -20,7 +20,7 @@ build-backend = "poetry.core.masonry.api"
 # -- project / poetry utility meta-information
 [project]
 name = "pyutilities"
-version = "2.9.0dev1"
+version = "2.9.1dev1"
 description = "PyUtilities :: Useful python 3+ utilities library for various use cases."
 authors     = [
     {name = "Dmitrii Gusev", email = "dmitry.ed.gusev@gmail.com"},
@@ -53,7 +53,7 @@ classifiers = [
 dependencies = [
 
     # -- loguru
-    "loguru==0.7.3",
+    "loguru ==0.8.*",
 
     # -- ms word / ms excel libraries
     "xlrd ~=2.0",
@@ -87,7 +87,8 @@ dependencies = [
 
     # -- datetime utilities
     "pendulum ~=3.2",
-    "python-dateutil ==3.*",
+    # "python-dateutil ==4.*",
+    "python-dateutil >=3.0,<5.0",
     "pytz ==2026.*"
 
 ]
@@ -110,7 +111,7 @@ dev = [
 
     # -- testing-related libraries --
     "mock ==5.*",
-    "mockito ~=2",
+    "mockito ==2.*",
     "nose2 ==0.*",
     "hypothesis ==6.*",
 
@@ -144,8 +145,10 @@ dev = [
     "viztracer ==1.1.1",
 
     # -- development-related process libraries
-    "sphinx ==8.* ; python_version == '3.10'", # - docs lib - for python == 3.10
-    "sphinx ==9.* ; python_version >= '3.11' and python_version < '4.0'", # - docs lib - for python > 3.10
+    # "sphinx ==8.* ; python_version == '3.10'", # - docs lib - for python == 3.10
+    # "sphinx ==9.* ; python_version >= '3.11' and python_version < '4.0'", # - docs lib - for python > 3.10
+    "sphinx >=8.0,<9.0 ; python_version == '3.10'",
+    "sphinx >=9.0,<10.0 ; python_version >= '3.11'",
 
     "watchdog ==6.0.0", # - file monitor and auto-reloader
     "responses ==0.*", # - used by many testing/code quality libraries
